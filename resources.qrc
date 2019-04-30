@@ -1,0 +1,74 @@
+<RCC>
+  <qresource prefix="sigrdap">
+    <file>icons/xbee.png</file>
+    <file>icons/email.png</file>
+    <file>icons/email2.png</file>
+    <file>icons/dual.png</file>
+    <file>icons/dual2.png</file>
+    <file>icons/nuevo.png</file>
+    <file>icons/nuevo2.png</file>
+    <file>icons/database.png</file>
+    <file>icons/eliminar.png</file>
+    <file>icons/eliminar2.png</file>
+    <file>icons/historial.png</file>
+    <file>icons/historial2.png</file>
+    <file>icons/refresh.png</file>
+    <file>icons/fullscreen.png</file>
+    <file>icons/fullscreen2.png</file>
+    <file>icons/mover.png</file>
+    <file>icons/mover2.png</file>
+    <file>icons/logo.png</file>
+    <file>icons/edit.png</file>
+    <file>icons/edit2.png</file>
+    <file>icons/picture.png</file>
+    <file>icons/picture2.png</file>
+    <file>icons/usuario.png</file>
+    <file>icons/usuario2.png</file>
+  </qresource>
+  <qresource prefix="VentanaGrupos">
+    <file>icons/nuevoGrupo.png</file>
+  </qresource>
+  <qresource prefix="VentanaZigBee">
+    <file>icons/play.png</file>
+    <file>icons/switch.png</file>
+    <file>icons/broadcast.png</file>
+    <file>icons/reset.png</file>
+    <file>icons/stop.png</file>
+    <file>icons/off.png</file>
+    <file>icons/on.png</file>
+  </qresource>
+  <qresource prefix="VentanaHistorial">
+    <file>icons/filtrar.png</file>
+    <file>icons/calendario.png</file>
+    <file>icons/grafica.png</file>
+  </qresource>
+  <qresource prefix="VentanaAsociar">
+    <file>icons/coordenadas.png</file>
+  </qresource>
+  <qresource prefix="Calendario">
+    <file>icons/act-calendario.png</file>
+    <file>icons/rep-calendario.png</file>
+    <file>icons/rep-dia.png</file>
+    <file>icons/act-dia.png</file>
+  </qresource>
+  <qresource prefix="Estados">
+    <file>icons/goodconnection.png</file>
+    <file>icons/intermconnection.png</file>
+    <file>icons/noconnection.png</file>
+    <file>icons/unknownconnection.png</file>
+  </qresource>
+  <qresource prefix="VenanaConectados">
+    <file>icons/act-tabla.png</file>
+  </qresource>
+  <qresource prefix="Varios">
+    <file>icons/SIGRDAP.png</file>
+    <file>icons/logosig.png</file>
+    <file>icons/loading.gif</file>
+    <file>icons/collapse.png</file>
+    <file>icons/expand.png</file>
+  </qresource>
+  <qresource prefix="VentanaGrupos">
+    <file>icons/loadPicture.png</file>
+    <file>icons/nuevoGrupo.png</file>
+  </qresource>
+</RCC>

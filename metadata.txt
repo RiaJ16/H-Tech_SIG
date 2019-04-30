@@ -1,0 +1,39 @@
+# This file contains metadata for your plugin. Since 
+# version 2.0 of QGIS this is the proper way to supply 
+# information about a plugin. The old method of 
+# embedding metadata in __init__.py will 
+# is no longer supported since version 2.0.
+
+# This file should be included when you package your plugin.# Mandatory items:
+
+[general]
+name=H-Tech SIG
+qgisMinimumVersion=3.0
+description=Sistema de Información Geográfica que permite realizar operaciones relacionadas con una Red de Distribución de Agua Potable.
+version=3.5
+author=Jair Nájera @ H-Tech
+email=jair.najera@htech.mx
+
+about=Este plugin permite la realización de operaciones de una Red de Distribución de Agua Potable. Para ello, se comunica con un servidor que recopila información de la red gracias al uso de sensores.
+Changelog: -Las sesiones ahora se mantienen abiertas.<br>-Cierra automáticamente sesiones rezagadas.<br>-Corregidos bugs.
+tracker=http://bugs
+repository=http://repo
+# End of mandatory metadata
+
+# Recommended items:
+
+# Uncomment the following line and add your changelog:
+# changelog=
+
+# Tags are comma separated with spaces allowed
+tags=python
+
+homepage=https://htech.mx
+category=Plugins
+icon=icon.png
+# experimental flag
+experimental=False
+
+# deprecated flag (applies to the whole plugin, not just a single version)
+deprecated=False
+

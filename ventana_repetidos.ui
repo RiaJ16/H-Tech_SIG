@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ventanaRepetidos</class>
+ <widget class="QWidget" name="ventanaRepetidos">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>802</width>
+    <height>320</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Elige uno de los sensores</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>:/BarraDeHerramientas/icons/refresh.png</normaloff>:/BarraDeHerramientas/icons/refresh.png</iconset>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QPushButton:enabled{
+background-color: #3498db;
+color: rgb(255, 255, 255);
+}
+
+QPushButton:disabled{
+background-color: #adc1ce;
+color: rgb(255, 255, 255);
+}</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_3">
+   <item>
+    <layout class="QVBoxLayout" name="verticalLayout" stretch="0">
+     <property name="spacing">
+      <number>7</number>
+     </property>
+     <property name="sizeConstraint">
+      <enum>QLayout::SetMinimumSize</enum>
+     </property>
+     <property name="leftMargin">
+      <number>5</number>
+     </property>
+     <property name="topMargin">
+      <number>5</number>
+     </property>
+     <property name="rightMargin">
+      <number>5</number>
+     </property>
+     <property name="bottomMargin">
+      <number>5</number>
+     </property>
+     <item>
+      <widget class="QTableWidget" name="tablaSensores">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>770</width>
+         <height>250</height>
+        </size>
+       </property>
+       <property name="sizeIncrement">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">selection-color: #FFFFFF;
+selection-background-color: #5bade4;
+alternate-background-color: #ddf1ff;</string>
+       </property>
+       <property name="alternatingRowColors">
+        <bool>true</bool>
+       </property>
+       <property name="showGrid">
+        <bool>false</bool>
+       </property>
+       <attribute name="horizontalHeaderVisible">
+        <bool>false</bool>
+       </attribute>
+       <attribute name="verticalHeaderVisible">
+        <bool>false</bool>
+       </attribute>
+       <column>
+        <property name="text">
+         <string>Grupo</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>Tipo de sensor</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>Municipio</string>
+        </property>
+       </column>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QPushButton" name="botonAceptar">
+       <property name="font">
+        <font>
+         <family>Verdana</family>
+         <pointsize>10</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>ACEPTAR</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>tablaSensores</tabstop>
+  <tabstop>botonAceptar</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>

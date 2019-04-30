@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>VentanaEliminar</class>
+ <widget class="QDialog" name="VentanaEliminar">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>562</width>
+    <height>204</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>562</width>
+    <height>100</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Eliminar Sensor</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>:/sigrdap/icons/eliminar.png</normaloff>:/sigrdap/icons/eliminar.png</iconset>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QPushButton:enabled{
+background-color: #3498db;
+color: rgb(255, 255, 255);
+}
+
+QPushButton:disabled{
+background-color: #adc1ce;
+color: rgb(255, 255, 255);
+}</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <item>
+        <widget class="QLabel" name="labelGrupo">
+         <property name="font">
+          <font>
+           <family>Verdana</family>
+           <pointsize>12</pointsize>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">color: rgb(41, 128, 185);</string>
+         </property>
+         <property name="text">
+          <string>Cargando...</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="labelTipo">
+         <property name="font">
+          <font>
+           <family>Verdana</family>
+           <pointsize>9</pointsize>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="labelDireccion">
+         <property name="font">
+          <font>
+           <family>Verdana</family>
+           <pointsize>9</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <widget class="QLabel" name="labelFoto">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::WinPanel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Plain</enum>
+       </property>
+       <property name="text">
+        <string>Imagen</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="Line" name="line">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="label">
+     <property name="font">
+      <font>
+       <family>Verdana</family>
+       <pointsize>9</pointsize>
+       <weight>50</weight>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>¿Está seguro de que desea eliminar este sensor?</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QPushButton" name="botonAceptar">
+       <property name="font">
+        <font>
+         <family>Verdana</family>
+         <pointsize>10</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>ELIMINAR</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="botonCancelar">
+       <property name="font">
+        <font>
+         <family>Verdana</family>
+         <pointsize>10</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>CANCELAR</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
