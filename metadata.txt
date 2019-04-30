@@ -9,15 +9,15 @@
 [general]
 name=H-Tech SIG
 qgisMinimumVersion=3.0
-description=Sistema de Información Geográfica que permite realizar operaciones relacionadas con una Red de Distribución de Agua Potable.
+description=Geographic Information System for Water Supply Networks.<br><br>Sistema de Información Geográfica que permite realizar operaciones relacionadas con una Red de Distribución de Agua Potable.
 version=3.5
 author=Jair Nájera @ H-Tech
 email=jair.najera@htech.mx
 
-about=Este plugin permite la realización de operaciones de una Red de Distribución de Agua Potable. Para ello, se comunica con un servidor que recopila información de la red gracias al uso de sensores.
-Changelog: -Las sesiones ahora se mantienen abiertas.<br>-Cierra automáticamente sesiones rezagadas.<br>-Corregidos bugs.
-tracker=http://bugs
-repository=http://repo
+about=This is a tool developed with the specific purpose of allowing users to connect to H-Tech Cloud, so they can view or modify information about a Water Supply Network. To use all the features within this app, you have to have an H-Tech Cloud account.<br><br>Esta herramienta permite la realización de operaciones de una Red de Distribución de Agua Potable. Para ello, se comunica con el servidor H-Tech Cloud. Necesitas tener una cuenta de H-Tech Cloud para poder hacer uso de todas las funciones de esta app.
+Changelog: -Sessions now remain active.<br>-Old sessions are closed automatically.<br>-Fixed bugs.<br><br>-Las sesiones ahora se mantienen abiertas.<br>-Cierra automáticamente sesiones rezagadas.<br>-Corregidos bugs.
+tracker=https://github.com/RiaJ16/H-Tech_SIG/issues
+repository=https://github.com/RiaJ16/H-Tech_SIG
 # End of mandatory metadata
 
 # Recommended items:
@@ -28,9 +28,9 @@ repository=http://repo
 # Tags are comma separated with spaces allowed
 tags=python
 
-homepage=https://htech.mx
+homepage=https://github.com/RiaJ16/H-Tech_SIG/blob/master/README.md
 category=Plugins
-icon=icon.png
+icon=icons/logo.png
 # experimental flag
 experimental=False
 
