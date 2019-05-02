@@ -8,6 +8,9 @@ This is a tool developed with the specific purpose of allowing users to connect 
 
 Before you begin using this plugin, you have to create an environment variable pointing to your Windows user folder called HOME.
 
+***
+# H-Tech_SIG
+
 Un plugin para QGIS escrito en Python.
 
 Sistema de Información Geográfica que permite realizar operaciones relacionadas con una Red de Distribución de Agua Potable.
