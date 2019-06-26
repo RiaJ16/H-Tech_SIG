@@ -1,5 +1,8 @@
 <RCC>
   <qresource prefix="sigrdap">
+    <file>icons/configsensor2.png</file>
+    <file>icons/configsensor3.png</file>
+    <file>icons/configsensor.png</file>
     <file>icons/xbee.png</file>
     <file>icons/email.png</file>
     <file>icons/email2.png</file>
@@ -25,6 +28,16 @@
     <file>icons/usuario.png</file>
     <file>icons/usuario2.png</file>
   </qresource>
+  <qresource prefix="VentanaConfiguracion">
+    <file>icons/icon_off.png</file>
+    <file>icons/icon_on.png</file>
+    <file>icons/alarma_active.png</file>
+    <file>icons/datetime_active.png</file>
+    <file>icons/intervalo_active.png</file>
+    <file>icons/datetime.png</file>
+    <file>icons/intervalo.png</file>
+    <file>icons/alarma.png</file>
+  </qresource>
   <qresource prefix="VentanaGrupos">
     <file>icons/nuevoGrupo.png</file>
   </qresource>
@@ -46,6 +59,8 @@
     <file>icons/coordenadas.png</file>
   </qresource>
   <qresource prefix="Calendario">
+    <file>icons/rep-cancelar.png</file>
+    <file>icons/rep-personalizable.png</file>
     <file>icons/act-calendario.png</file>
     <file>icons/rep-calendario.png</file>
     <file>icons/rep-dia.png</file>
@@ -61,6 +76,7 @@
     <file>icons/act-tabla.png</file>
   </qresource>
   <qresource prefix="Varios">
+    <file>icons/bomba-3.gif</file>
     <file>icons/SIGRDAP.png</file>
     <file>icons/logosig.png</file>
     <file>icons/loading.gif</file>

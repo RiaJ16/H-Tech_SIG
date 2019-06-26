@@ -68,21 +68,13 @@ class Online(QObject):
 	EDITAR_GRUPO = 3
 	INSERTAR_CORREO = 4
 	EDITAR_CORREO = 5
-	
-	CONSULTAR_HISTORICO_DIARIO = 0
-	INSERTAR_HISTORICO_DIARIO = 1
-	ACTUALIZAR_HISTORICO_DIARIO = 2
-	CONSULTAR_PRESION = 3
-	CONSULTAR_PRESION_MES = 4
-	CONSULTAR_QUINCE_MINUTOS = 5
-	CONSULTAR_ACUMULADO_DEL_MES = 6
 
 	IP = "https://webservice.htech.mx"
-	IMAGES_DIR = "http://images.htech.mx/images/grupos/"
+	IMAGES_DIR = "http://images.htech.mx/grupos/"
 	TIMEOUT = 10
 
 	def login(self,usuario="",password="",sendSignal=True):
-		androidToken = get_mac()
+		androidToken = "A%d" % get_mac()
 		sesion = self.__leerSesion()
 		try:
 			if(usuario == '' and password == ''):
@@ -221,6 +213,7 @@ class Online(QObject):
 			self.historicos = historicos
 			token = int((int(fechaInicial) + int(fechaFinal))/1000000)
 			self.signalHistoricos.emit(token)
+		return historicos
 
 	def consultarMunicipios(self):
 		args = {'opcion':self.CONSULTAR_MUNICIPIOS}
@@ -497,51 +490,25 @@ class Online(QObject):
 
 	def consultarReportes(self,args,seed=False):
 		sesion = self.__leerSesion()
-		r = sesion.post('%s/reportes.php' % self.IP,data=args,timeout=self.TIMEOUT)
-		sesion.close()
-		if r.text == '0' and not seed:
-			self.login(sendSignal=False)
-			return self.consultar(args,True)
-		else:
-			jsondoc = r.json()
-			if jsondoc == 0:
-				jsondoc = [jsondoc]
-			return jsondoc
-
-	def insertarHistoricoDiario(self,historicoDiario):
-		args = {'opcion':self.INSERTAR_HISTORICO_DIARIO}
-		sesion = self.__leerSesion()
-		url = '%s/reportes.php' % self.IP
 		try:
-			jsondoc = historicoDiario.json()
-			#print(jsondoc)
-			jsondoc.update(args)
-			r = sesion.post(url,json=jsondoc,timeout=self.TIMEOUT)
+			r = sesion.post('%s/reportes.php' % self.IP,data=args,timeout=self.TIMEOUT)
 			sesion.close()
-			return True
+			if r.text == '0' and not seed:
+				self.login(sendSignal=False)
+				return self.consultar(args,True)
+			else:
+				jsondoc = r.json()
+				if jsondoc == 0:
+					jsondoc = [jsondoc]
+				return jsondoc
 		except ConnectionError:
 			self.signalErrorConexion.emit()
-			return False
+			return 0
 
-	def actualizarHistoricoDiario(self,historicoDiario):
-		args = {'opcion':self.ACTUALIZAR_HISTORICO_DIARIO}
-		sesion = self.__leerSesion()
-		url = '%s/reportes.php' % self.IP
-		try:
-			jsondoc = historicoDiario.json()
-			jsondoc.update(args)
-			r = sesion.post(url,json=jsondoc,timeout=self.TIMEOUT)
-			sesion.close()
-			return True
-		except ConnectionError:
-			self.signalErrorConexion.emit()
-			return False
-
-	def consultarHistoricoDiario(self,idSensor,fecha,minmax=0):
-		args = {'opcion':self.CONSULTAR_HISTORICO_DIARIO,'id_sensor':idSensor,'fecha':fecha,'minmax':minmax}
+	def consultarHistorial(self,idSensor,fecha):
+		args = {'id_sensor':idSensor,'fecha':fecha}
 		jsondoc = self.consultarReportes(args)
-		#self.signalSensorConsultado.emit()
-		return jsondoc[0]
+		return jsondoc
 
 	#Presión
 

@@ -4,7 +4,7 @@ from objdict import ObjDict
 
 class Sensor:
 
-	def __init__(self,idSensor=0,idDispositivo=0,idFeature=0,calle='',colonia='',cp=0,tipoSensor=0,municipio=0,area=0.0,datoMaximo=0.0,datoMinimo=0.0,alarma=0,altura=0,datoActual=0,grupo=0,estado=0,correoEnviado=0,online=0,maximo=30,x=0,y=0):
+	def __init__(self,idSensor=0,idDispositivo=0,idFeature=0,calle='',colonia='',cp=0,tipoSensor=0,municipio=0,area=0.0,datoMaximo=0.0,datoMinimo=0.0,alarma=0,altura=0,datoActual=0,grupo=0,estado=0,correoEnviado=0,online=0,maximo=30,x=0,y=0,idSubsistema=0):
 		self.idSensor = idSensor
 		self.idDispositivo = idDispositivo
 		self.idFeature = idFeature
@@ -47,6 +47,7 @@ class Sensor:
 			self.y = 0.0
 		else:
 			self.y = float(y)
+		self.idSubsistema = idSubsistema
 
 	def set(self,registro):
 		try:
@@ -86,7 +87,11 @@ class Sensor:
 				pass
 			try:
 				self.x = registro['x']
-				self.y =registro['y']
+				self.y = registro['y']
+			except:
+				pass
+			try:
+				self.idSubsistema = registro['idSubsistema']
 			except:
 				pass
 		except TypeError:
@@ -115,4 +120,5 @@ class Sensor:
 		data.maximo = self.maximo
 		data.x = self.x
 		data.y = self.y
+		data.idSubsistema = self.idSubsistema
 		return json.loads(data.dumps())

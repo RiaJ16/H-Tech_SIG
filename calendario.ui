@@ -116,12 +116,15 @@ gridline-color: rgb(46,204,113);</string>
        <item>
         <widget class="QPushButton" name="botonDia">
          <property name="enabled">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
          <property name="font">
           <font>
            <pointsize>10</pointsize>
           </font>
+         </property>
+         <property name="toolTip">
+          <string>Generar reporte diario</string>
          </property>
          <property name="text">
           <string/>
@@ -132,8 +135,8 @@ gridline-color: rgb(46,204,113);</string>
          </property>
          <property name="iconSize">
           <size>
-           <width>36</width>
-           <height>36</height>
+           <width>45</width>
+           <height>45</height>
           </size>
          </property>
         </widget>
@@ -141,7 +144,7 @@ gridline-color: rgb(46,204,113);</string>
        <item>
         <widget class="QPushButton" name="botonMes">
          <property name="enabled">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
          <property name="font">
           <font>
@@ -149,6 +152,9 @@ gridline-color: rgb(46,204,113);</string>
            <weight>50</weight>
            <bold>false</bold>
           </font>
+         </property>
+         <property name="toolTip">
+          <string>Generar reporte mensual</string>
          </property>
          <property name="text">
           <string/>
@@ -159,8 +165,28 @@ gridline-color: rgb(46,204,113);</string>
          </property>
          <property name="iconSize">
           <size>
-           <width>36</width>
-           <height>36</height>
+           <width>45</width>
+           <height>45</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="botonPersonalizado">
+         <property name="toolTip">
+          <string>Generar reporte personalizado</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>:/Calendario/icons/rep-personalizable.png</normaloff>:/Calendario/icons/rep-personalizable.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>45</width>
+           <height>45</height>
           </size>
          </property>
         </widget>
@@ -432,6 +458,24 @@ gridline-color: rgb(46,204,113);</string>
       </spacer>
      </item>
      <item>
+      <widget class="QLabel" name="labelFechas">
+       <property name="font">
+        <font>
+         <family>Verdana</family>
+         <pointsize>10</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">color:#2980b9;</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item>
       <spacer name="horizontalSpacer_7">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -446,6 +490,12 @@ gridline-color: rgb(46,204,113);</string>
      </item>
      <item>
       <widget class="QLabel" name="labelEstado">
+       <property name="font">
+        <font>
+         <family>Verdana</family>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>Listo</string>
        </property>

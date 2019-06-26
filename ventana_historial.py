@@ -20,6 +20,7 @@ from .calendario import Calendario
 from .graficas import Graficas
 from .fecha_widget_item import FechaWidgetItem
 from .obtener_capa import ObtenerCapa
+from .opciones_sensor import OpcionesSensor
 from .sensor import Sensor
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
@@ -77,6 +78,9 @@ class VentanaHistorial(QtWidgets.QDialog, FORM_CLASS):
 		self.online.signalConsultarGrupo.connect(self.actualizarFoto)
 		self.online.signalHistoricos.connect(self.cargarRegistros)
 		self.online.signalErrorConexion.connect(self.__errorConexion)
+		self.botonConfiguracion.pressed.connect(self.iconoPresionado)
+		self.botonConfiguracion.released.connect(self.iconoSoltado)
+		self.botonConfiguracion.clicked.connect(self.configuracion)
 
 	def objetoGeograficoSeleccionado(self,objetoGeografico):
 		self.objetoGeografico = objetoGeografico
@@ -102,6 +106,8 @@ class VentanaHistorial(QtWidgets.QDialog, FORM_CLASS):
 		self.show()
 		self.activateWindow()
 		ObtenerCapa.capa().removeSelection()
+		if hasattr(self,'opcionesSensor'):
+			self.opcionesSensor.hide()
 
 	#<Métodos para alterar la interfaz de la ventana de acuerdo a las opciones de filtrado
 
@@ -308,6 +314,22 @@ class VentanaHistorial(QtWidgets.QDialog, FORM_CLASS):
 		html = "<p><img src=\'%s' width='%f' height='%f'></p>" % (filename,newWidth,newHeight)
 		self.labelFoto.setToolTip(html)
 
+	def iconoPresionado(self):
+		icon = QIcon(':sigrdap/icons/configsensor2.png')
+		self.botonConfiguracion.setIcon(icon)
+
+	def iconoSoltado(self):
+		icon = QIcon(':sigrdap/icons/configsensor.png')
+		self.botonConfiguracion.setIcon(icon)
+
+	def configuracion(self):
+		if not hasattr(self,'opcionesSensor'):
+			self.opcionesSensor = OpcionesSensor()
+		else:
+			self.opcionesSensor.show()
+			self.opcionesSensor.activateWindow()
+		self.opcionesSensor.setSensor(self.online.sensor,self.windowTitle())
+
 	#<Métodos para el filtrado
 	
 	def filtrar(self):
@@ -385,7 +407,7 @@ class VentanaHistorial(QtWidgets.QDialog, FORM_CLASS):
 			self.tablaValores.removeRow(self.tablaValores.rowCount()-1)
 
 	def __estilizarTabla(self):
-		self.tablaValores.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch);
+		self.tablaValores.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
 		self.tablaValores.setFocusPolicy(Qt.NoFocus)
 
 	#!filtrar fin>
@@ -421,7 +443,7 @@ class VentanaHistorial(QtWidgets.QDialog, FORM_CLASS):
 
 	def reportes(self):
 		sensor = self.online.sensor
-		reportes = Calendario(self.online,sensor)
+		self.calendario = Calendario(self.online,sensor)
 		self.close()
 
 	#!reportes fin>

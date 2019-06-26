@@ -150,7 +150,7 @@ class VentanaDatos(QtWidgets.QDialog, FORM_CLASS,QObject):
 		self.editCP.setText(sensor.cp)
 		self.selectorMunicipio.setCurrentIndex(sensor.municipio-1)
 		self.selectorTipoSensor.setCurrentIndex(sensor.tipoSensor-1)
-		self.selectorGrupo.setCurrentIndex(sensor.grupo-1)
+		self.selectorGrupo.setCurrentIndex(self.__searchGroupByIndex(sensor.grupo))
 		self.editNivelMaximo.setText(str(sensor.datoMaximo))
 		self.editNivelMinimo.setText(str(sensor.datoMinimo))
 		self.editArea.setText(str(sensor.area))
@@ -167,6 +167,14 @@ class VentanaDatos(QtWidgets.QDialog, FORM_CLASS,QObject):
 			self.botonOnline.setChecked(True)
 			self.botonOnline.setText("Sensor En línea")
 
+	def __searchGroupByIndex(self,idGrupo):
+		i = 0
+		for elemento in self.listaGrupos:
+			if int(elemento.getIdGrupo()) == int(idGrupo):
+				break
+			i += 1
+		return i
+
 	def checkboxCambiada(self):
 		if not self.activarAlarma.isChecked():
 			self.editNivelMaximo.setEnabled(False)
@@ -182,7 +190,8 @@ class VentanaDatos(QtWidgets.QDialog, FORM_CLASS,QObject):
 			alarma = 1
 		if self.botonOnline.isChecked():
 			GPRS = 1
-		sensor = Sensor(self.id,self.editIdDispositivo.text(),self.idFeature,self.editCalle.text(),self.editColonia.text(),self.editCP.text(),self.selectorTipoSensor.currentIndex()+1,self.selectorMunicipio.currentIndex()+1,self.editArea.text(),self.editNivelMaximo.text(),self.editNivelMinimo.text(),alarma,self.editAltura.text(),grupo=self.selectorGrupo.currentIndex()+1,online=GPRS,maximo=self.editGrafica.text(),x=self.coordenadaX,y=self.coordenadaY)
+		grupo = self.listaGrupos[self.selectorGrupo.currentIndex()]
+		sensor = Sensor(self.id,self.editIdDispositivo.text(),self.idFeature,self.editCalle.text(),self.editColonia.text(),self.editCP.text(),self.selectorTipoSensor.currentIndex()+1,self.selectorMunicipio.currentIndex()+1,self.editArea.text(),self.editNivelMaximo.text(),self.editNivelMinimo.text(),alarma,self.editAltura.text(),grupo=grupo.getIdGrupo(),online=GPRS,maximo=self.editGrafica.text(),x=self.coordenadaX,y=self.coordenadaY,idSubsistema=grupo.getIdSubsistema())
 		if not banderaEditar:
 			if self.online.insertarSensor(sensor):
 				aviso = "El nuevo sensor se almacenó correctamente"
@@ -279,11 +288,11 @@ class VentanaDatos(QtWidgets.QDialog, FORM_CLASS,QObject):
 		self.sensorCambiado(True)
 
 	def __llenarGrupos(self):
-		listaGrupos = self.online.getGrupos()
-		if listaGrupos == []:
+		self.listaGrupos = self.online.getGrupos()
+		if self.listaGrupos == []:
 			self.selectorGrupo.setEnabled(False)
 		else:
-			for grupo in listaGrupos:
+			for grupo in self.listaGrupos:
 				self.selectorGrupo.addItem(grupo.getNombre())
 		self.sensorCambiado(True)
 

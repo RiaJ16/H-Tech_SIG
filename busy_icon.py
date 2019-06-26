@@ -10,6 +10,7 @@ class BusyIcon(QLabel):
 		layout.addWidget(self)
 
 	def startAnimation(self):
+		#movie = QMovie(":Varios/icons/valve60fps.mp4")
 		movie = QMovie(":Varios/icons/loading.gif")
 		movie.setScaledSize(QSize(30,30))
 		self.setMovie(movie)
