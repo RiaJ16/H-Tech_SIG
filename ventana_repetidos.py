@@ -46,7 +46,7 @@ class VentanaRepetidos(QtWidgets.QDialog, FORM_CLASS):
 				error = "Inicie sesión antes de ver la información"
 				self.iface.messageBar().pushMessage("Error", error, level=Qgis.Critical,duration=3)
 				self.adjustSize()
-				ObtenerCapa.capa().removeSelection()
+				ObtenerCapa().capa().removeSelection()
 			else:
 				self.tablaSensores.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch);
 				#self.tablaSensores.horizontalHeader().setSectionResizeMode(QHeaderView.Fixed);
@@ -69,14 +69,14 @@ class VentanaRepetidos(QtWidgets.QDialog, FORM_CLASS):
 						numcol += 1
 					#self.tablaSensores.resizeColumnsToContents()
 					#self.adjustSize() 
-				capaActiva = ObtenerCapa.capa()
+				capaActiva = ObtenerCapa().capa()
 				self.seleccionados = capaActiva.selectedFeatures()
 				self.exec_()
 		except IndexError:
 			self.setWindowTitle("Error")
 			#self.busy.hide()
 			self.adjustSize()
-			ObtenerCapa.capa().removeSelection()
+			ObtenerCapa().capa().removeSelection()
 
 	def seleccionCambiada(self):
 		try:
@@ -86,18 +86,18 @@ class VentanaRepetidos(QtWidgets.QDialog, FORM_CLASS):
 			for caracteristica in self.seleccionados:
 				if idSeleccionado == caracteristica.attribute('id'):
 					id = caracteristica.id()
-			capaActiva = ObtenerCapa.capa()
+			capaActiva = ObtenerCapa().capa()
 			capaActiva.removeSelection()
 			capaActiva.select(id)
 			self.botonAceptar.setEnabled(True)
 		except:
 			self.botonAceptar.setEnabled(False)
-			capaActiva = ObtenerCapa.capa()
+			capaActiva = ObtenerCapa().capa()
 			capaActiva.removeSelection()
 
 	def cerrar(self):
 		self.hide()
 
 	def reject(self):
-		ObtenerCapa.capa().removeSelection()
+		ObtenerCapa().capa().removeSelection()
 		QtWidgets.QDialog.reject(self)

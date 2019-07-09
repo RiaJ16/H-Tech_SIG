@@ -86,12 +86,12 @@ class Sensor:
 			except:
 				pass
 			try:
-				self.x = registro['x']
-				self.y = registro['y']
+				self.x = float(registro['x'])
+				self.y = float(registro['y'])
 			except:
 				pass
 			try:
-				self.idSubsistema = registro['idSubsistema']
+				self.idSubsistema = int(registro['idSubsistema'])
 			except:
 				pass
 		except TypeError:

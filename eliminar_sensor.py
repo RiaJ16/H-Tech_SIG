@@ -115,13 +115,13 @@ class EliminarSensor(QtWidgets.QDialog, FORM_CLASS, QObject):
 			#print("Abrir ventana de login")
 
 	def eliminarObjetoGeografico(self):
-		capaActiva = ObtenerCapa.capa()
+		capaActiva = ObtenerCapa().capa()
 		capaActiva.dataProvider().deleteFeatures([capaActiva.selectedFeatures()[0].id()])
 		capaActiva.triggerRepaint()
 		self.hide()
 
 	def obtenerId(self):
-		capaActiva = ObtenerCapa.capa()
+		capaActiva = ObtenerCapa().capa()
 		objetoGeografico = capaActiva.selectedFeatures()[0]
 		id = objetoGeografico.attribute('id')
 		return id

@@ -1,6 +1,7 @@
 # -*- coding: UTF8 -*-
 
 import datetime
+import locale
 import os
 import qgis.utils
 import sys
@@ -38,10 +39,11 @@ class VentanaHistorial(QtWidgets.QDialog, FORM_CLASS):
 		self.online = online
 		self.iface = qgis.utils.iface
 		self.semaforo = True
+		self.loadedRows = 0
 		self.__visualizacionInicial()
 		self.__signals()
 		self.__estilizarTabla()
-		
+
 	#INICIALIZACIÓN	
 		
 	def __visualizacionInicial(self):
@@ -81,6 +83,7 @@ class VentanaHistorial(QtWidgets.QDialog, FORM_CLASS):
 		self.botonConfiguracion.pressed.connect(self.iconoPresionado)
 		self.botonConfiguracion.released.connect(self.iconoSoltado)
 		self.botonConfiguracion.clicked.connect(self.configuracion)
+		self.tablaValores.verticalScrollBar().valueChanged.connect(self.scrolleado)
 
 	def objetoGeograficoSeleccionado(self,objetoGeografico):
 		self.objetoGeografico = objetoGeografico
@@ -105,7 +108,7 @@ class VentanaHistorial(QtWidgets.QDialog, FORM_CLASS):
 		self.adjustSize()
 		self.show()
 		self.activateWindow()
-		ObtenerCapa.capa().removeSelection()
+		ObtenerCapa().capa().removeSelection()
 		if hasattr(self,'opcionesSensor'):
 			self.opcionesSensor.hide()
 
@@ -355,60 +358,66 @@ class VentanaHistorial(QtWidgets.QDialog, FORM_CLASS):
 	def cargarRegistros(self,token):
 		if token == self.semaforoHistoricos:
 			self.__reiniciarTabla()
-			historicos = self.online.historicos
-			sensor = self.online.sensor
-			unidades = self.__unidades(sensor.tipoSensor)
-			fuenteFecha = QFont("Verdana",7)
-			fuenteDato = QFont("Verdana",18)
-			fuenteUnidades = QFont("Verdana",8)
-			for registro in historicos:
-				self.tablaValores.insertRow(self.tablaValores.rowCount())
-				#HORA Y FECHA
-				fecha = "{}-{}-{}".format(registro.fecha[8:10],registro.fecha[5:7],registro.fecha[0:4])
-				hora = "%s" % registro.fecha[11:16]
-				date = datetime.date(int(fecha[6:10]),int(fecha[3:5]),int(fecha[0:2]))
-				time = datetime.time(int(hora[0:2]),int(hora[3:5]),0)				
-				dateandtime = datetime.datetime.combine(date,time)
-				item = FechaWidgetItem(dateandtime)
-				item.setFont(fuenteFecha)
-				self.tablaValores.setCellWidget(self.tablaValores.rowCount()-1,0,item)
-				self.tablaValores.resizeRowToContents(self.tablaValores.rowCount()-1)
-				#self.tablaValores.setItem(self.tablaValores.rowCount()-1,0,item)
-				#VALOR
-				dato = float("{0:.2f}".format(float(registro.dato)))
-				item = QTableWidgetItem(str("%.2f" % dato))
-				item.setFont(fuenteDato)
-				item.setTextAlignment(Qt.AlignRight|Qt.AlignVCenter)
-				#item.setForeground(QBrush(QColor("#2980b9")))
-				item.setFlags(Qt.ItemIsSelectable|Qt.ItemIsEnabled)
-				self.tablaValores.setItem(self.tablaValores.rowCount()-1,1,item)
-				#UNIDADES
-				item = QTableWidgetItem(unidades)
-				item.setFont(fuenteUnidades)
-				item.setTextAlignment(Qt.AlignLeft|Qt.AlignVCenter)
-				item.setForeground(QBrush(QColor("gray")))
-				item.setFlags(Qt.ItemIsSelectable|Qt.ItemIsEnabled)
-				self.tablaValores.setItem(self.tablaValores.rowCount()-1,2,item)
-				'''#NÚMEROS
-				item = QTableWidgetItem("%s" % self.tablaValores.rowCount())
-				item.setFont(fuenteUnidades)
-				item.setTextAlignment(Qt.AlignCenter|Qt.AlignBottom)
-				item.setForeground(QBrush(QColor("gray")))
-				item.setFlags(Qt.ItemIsSelectable|Qt.ItemIsEnabled)
-				self.tablaValores.setItem(self.tablaValores.rowCount()-1,0,item)
-				self.tablaValores.resizeColumnToContents(2)'''
-			self.labelValor.setToolTip(str(self.tablaValores.rowCount()))
+			self.cargar100()
 			self.busy.hide()
 			self.tablaValores.setEnabled(True)
 			self.adjustSize()
 
+	def cargar100(self):
+		sensor = self.online.sensor
+		unidades = self.__unidades(sensor.tipoSensor)
+		historicos = self.online.historicos
+		fuenteFecha = QFont("Verdana",7)
+		fuenteDato = QFont("Verdana",18)
+		fuenteUnidades = QFont("Verdana",8)
+		rows = self.loadedRows+100
+		for registro in historicos[self.loadedRows:]:
+			self.tablaValores.insertRow(self.tablaValores.rowCount())
+			#HORA Y FECHA
+			fecha = "{}-{}-{}".format(registro.fecha[8:10],registro.fecha[5:7],registro.fecha[0:4])
+			hora = "%s" % registro.fecha[11:16]
+			date = datetime.date(int(fecha[6:10]),int(fecha[3:5]),int(fecha[0:2]))
+			time = datetime.time(int(hora[0:2]),int(hora[3:5]),0)
+			dateandtime = datetime.datetime.combine(date,time)
+			item = FechaWidgetItem(dateandtime)
+			item.setFont(fuenteFecha)
+			self.tablaValores.setCellWidget(self.tablaValores.rowCount()-1,0,item)
+			self.tablaValores.resizeRowToContents(self.tablaValores.rowCount()-1)
+			#VALOR
+			dato = float("{0:.2f}".format(float(registro.dato)))
+			item = QTableWidgetItem(str("%.2f" % dato))
+			item.setFont(fuenteDato)
+			item.setTextAlignment(Qt.AlignRight|Qt.AlignVCenter)
+			item.setFlags(Qt.ItemIsSelectable|Qt.ItemIsEnabled)
+			self.tablaValores.setItem(self.tablaValores.rowCount()-1,1,item)
+			#UNIDADES
+			item = QTableWidgetItem(unidades)
+			item.setFont(fuenteUnidades)
+			item.setTextAlignment(Qt.AlignLeft|Qt.AlignVCenter)
+			item.setForeground(QBrush(QColor("gray")))
+			item.setFlags(Qt.ItemIsSelectable|Qt.ItemIsEnabled)
+			self.tablaValores.setItem(self.tablaValores.rowCount()-1,2,item)
+
+			self.loadedRows += 1
+			if self.loadedRows >= rows:
+				break
+		self.labelValor.setToolTip(str(self.tablaValores.rowCount()))
+
 	def __reiniciarTabla(self):
+		self.loadedRows = 0
 		while not self.tablaValores.rowCount() == 0:
 			self.tablaValores.removeRow(self.tablaValores.rowCount()-1)
 
 	def __estilizarTabla(self):
 		self.tablaValores.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
 		self.tablaValores.setFocusPolicy(Qt.NoFocus)
+
+	def scrolleado(self,value):
+		if not (value == 0):
+			#print("%d - %d" % (value,self.tablaValores.verticalScrollBar().maximum()))
+			if value == self.tablaValores.verticalScrollBar().maximum():
+				if len(self.online.historicos) > self.loadedRows:
+					self.cargar100()
 
 	#!filtrar fin>
 	
@@ -419,11 +428,10 @@ class VentanaHistorial(QtWidgets.QDialog, FORM_CLASS):
 		i = 0
 		dateandtimes = []
 		values = []
-		while i<self.tablaValores.rowCount():
-			dateAndTime = self.tablaValores.cellWidget(i,0).dateAndTime()
+		for historico in self.online.historicos:
+			dateAndTime = datetime.datetime(int(historico.fecha[0:4]),int(historico.fecha[5:7]),int(historico.fecha[8:10]),int(historico.fecha[11:13]),int(historico.fecha[14:16]),int(historico.fecha[17:19]))
 			dateandtimes.append(dateAndTime)
-			values.append(float(self.tablaValores.item(i,1).text()))
-			i=i+1
+			values.append(float(historico.dato))
 		periodo = self.seleccionarPeriodo.currentIndex()
 		self.graficas = Graficas(sensor.tipoSensor)
 		self.graficas.graficar(dateandtimes,values,self.getDateTimes(),periodo,sensor.maximo)

@@ -19,6 +19,7 @@ from .ventana_repetidos import VentanaRepetidos
 class ClickLienzo(QObject):
 
 	signalCambio = pyqtSignal()
+	signalNoCapa = pyqtSignal()
 
 	def __init__(self,bandera,online):
 		QObject.__init__(self)
@@ -37,56 +38,60 @@ class ClickLienzo(QObject):
 		self.guardaClick.canvasClicked.connect(self.onClicked)
 
 	def onClicked(self,punto):
-		capaActiva = ObtenerCapa.capa()
-		capaActiva.removeSelection()
-		radio = self.lienzo.mapUnitsPerPixel() * 12
-		rect = QgsRectangle(punto.x() - radio,
-			punto.y() - radio,
-			punto.x() + radio,
-			punto.y() + radio)
-		capaActiva.selectByRect(rect, False)
-		#self.lienzo.setSelectionColor( QColor(1, 1, 1, 90) )
-		self.lienzo.setSelectionColor(QColor(255,102,0))
-		if capaActiva.selectedFeatures():
-			for objetoGeografico in capaActiva.selectedFeatures():
-				id = objetoGeografico.id()
-			if len(capaActiva.selectedFeatures()) > 1:
-				cadena = ''
-				contador = 0
+		capaActiva = ObtenerCapa().capa()
+		if capaActiva == '':
+			self.signalNoCapa.emit()
+		else:
+			capaActiva.removeSelection()
+			radio = self.lienzo.mapUnitsPerPixel() * 12
+			rect = QgsRectangle(punto.x() - radio,
+				punto.y() - radio,
+				punto.x() + radio,
+				punto.y() + radio)
+			capaActiva.selectByRect(rect, False)
+			#self.lienzo.setSelectionColor( QColor(1, 1, 1, 90) )
+			self.lienzo.setSelectionColor(QColor(255,102,0))
+			if capaActiva.selectedFeatures():
 				for objetoGeografico in capaActiva.selectedFeatures():
+					id = objetoGeografico.id()
+				if len(capaActiva.selectedFeatures()) > 1:
+					cadena = ''
+					contador = 0
+					for objetoGeografico in capaActiva.selectedFeatures():
+						try:
+							cadena += '{},'.format(objetoGeografico.attribute('id'))
+							contador += 1
+						except:
+							pass
+					if contador > 1:
+						ventanaRepetidos = VentanaRepetidos(self.online)
+						ventanaRepetidos.inicializar()
+						ventanaRepetidos.buscarSensores(cadena[0:-1])
+				if self.bandera == 1:
+					if not hasattr(self,'ventanaHistorial'):
+						self.ventanaHistorial = VentanaHistorial(self.online)
 					try:
-						cadena += '{},'.format(objetoGeografico.attribute('id'))
-						contador += 1
-					except:
+						self.ventanaHistorial.objetoGeograficoSeleccionado(capaActiva.selectedFeatures()[0])
+						self.ventanaHistorial.mostrarVentana()
+					except IndexError:
 						pass
-				if contador > 1:
-					ventanaRepetidos = VentanaRepetidos(self.online)
-					ventanaRepetidos.inicializar()
-					ventanaRepetidos.buscarSensores(cadena[0:-1])
-			if self.bandera == 1:
-				if not hasattr(self,'ventanaHistorial'):
-					self.ventanaHistorial = VentanaHistorial(self.online)
-				try:
-					self.ventanaHistorial.objetoGeograficoSeleccionado(capaActiva.selectedFeatures()[0])
-					self.ventanaHistorial.mostrarVentana()
-				except IndexError:
-					pass
-			elif self.bandera == 2:
-				if not hasattr(self,'ventanaDatos'):
-					self.ventanaDatos = VentanaDatos()
-					self.ventanaDatos.signalCambio.connect(self.cambio)
-				try:
-					capaActiva.selectedFeatures()[0]
-					self.ventanaDatos.inicializar(True)
-				except IndexError:
-					pass
-			else:
-				try:
-					capaActiva.selectedFeatures()[0]
-					self.eliminarSensor = EliminarSensor(self.online)
-					self.eliminarSensor.signalCambio.connect(self.cambio)
-				except IndexError:
-					pass
+				elif self.bandera == 2:
+					if not hasattr(self,'ventanaDatos'):
+						self.ventanaDatos = VentanaDatos()
+						self.ventanaDatos.signalCambio.connect(self.cambio)
+					try:
+						capaActiva.selectedFeatures()[0]
+						(x,y) = capaActiva.selectedFeatures()[0].geometry().asPoint()
+						self.ventanaDatos.inicializar(True,x,y)
+					except IndexError:
+						pass
+				else:
+					try:
+						capaActiva.selectedFeatures()[0]
+						self.eliminarSensor = EliminarSensor(self.online)
+						self.eliminarSensor.signalCambio.connect(self.cambio)
+					except IndexError:
+						pass
 
 	def cambio(self):
 		self.signalCambio.emit()
@@ -104,4 +109,7 @@ class ClickLienzo(QObject):
 		if hasattr(self,'ventanaDatos'):
 			self.ventanaDatos.close()
 			self.guardaClick.canvasClicked.disconnect(self.onClicked)
-		ObtenerCapa.capa().removeSelection()
+		try:
+			ObtenerCapa().capa().removeSelection()
+		except AttributeError:
+			pass

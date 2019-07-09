@@ -34,9 +34,11 @@ from .abstract_worker import *
 from .administrar_grupos import AdministrarGrupos
 from .alarmas import Alarmas
 from .boton_nuevo import BotonNuevo
+from .buscar_capa import BuscarCapa
 from .click_lienzo import ClickLienzo
 from .direcciones_de_correo import DireccionesDeCorreo
 from .dual import Dual
+from .limpiar_objetos import LimpiarObjetos
 from .login import Login
 from .online import Online
 from .pantalla_completa import PantallaCompleta
@@ -136,6 +138,7 @@ class SIGRDAP:
 		self.tiempoReal.signalActualizar.connect(self.slotActualizarTiempoReal)
 		self.actualizarTiempoReal()
 		self.toolbar.visibilityChanged.connect(self.aumentarIconos)
+		#self.limpiar()
 
 	def aumentarIconos(self):
 		self.toolbar.setIconSize(QSize(48,48))
@@ -266,6 +269,10 @@ class SIGRDAP:
 		self.deshabilitarAcciones(1)
 		if not hasattr(self,'botonNuevo'):
 			self.botonNuevo = BotonNuevo()
+			try:
+				self.botonNuevo.signalNoCapa.connect(self.seleccionarCapa)
+			except:
+				pass
 			#self.botonNuevo.signalCambio.connect(self.conexionZigBee.actualizarTablaDatos)
 		self.botonNuevo.inicializar()
 
@@ -274,6 +281,7 @@ class SIGRDAP:
 		if self.actions[2].isChecked():
 			self.clickLienzo = ClickLienzo(2,self.online)
 			try:
+				self.clickLienzo.signalNoCapa.connect(self.seleccionarCapa)
 				self.clickLienzo.signalCambio.connect(self.conexionZigBee.actualizarTablaDatos)
 			except:
 				pass
@@ -283,6 +291,7 @@ class SIGRDAP:
 		if self.actions[3].isChecked():
 			self.clickLienzo = ClickLienzo(0,self.online)
 			try:
+				self.clickLienzo.signalNoCapa.connect(self.seleccionarCapa)
 				self.clickLienzo.signalCambio.connect(self.conexionZigBee.actualizarTablaDatos)
 			except:
 				pass
@@ -291,6 +300,7 @@ class SIGRDAP:
 		self.deshabilitarAcciones(4)
 		if self.actions[4].isChecked():
 			self.clickLienzo = ClickLienzo(1,self.online)
+			self.clickLienzo.signalNoCapa.connect(self.seleccionarCapa)
 
 	def modoDual(self):
 		if not hasattr(self,'dual'):
@@ -370,6 +380,14 @@ class SIGRDAP:
 
 	def slotActualizarTiempoReal(self):
 		self.alarma.login()
+
+	def limpiar(self):
+		self.limpiarObjetos = LimpiarObjetos()
+		self.limpiarObjetos.limpiar()
+
+	def seleccionarCapa(self):
+		buscarCapa = BuscarCapa()
+		buscarCapa.cargarLista()
 '''
 ───────────────────────────────
 ───────────────████─███────────

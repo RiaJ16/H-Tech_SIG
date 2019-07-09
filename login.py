@@ -15,6 +15,7 @@ from PyQt5.QtWidgets import QLayout
 from PyQt5.QtCore import Qt, QObject, pyqtSignal, pyqtSlot, QSize
 
 from .busy_icon import BusyIcon
+from .limpiar_objetos import LimpiarObjetos
 from .online import Online
 from .validacion import Validacion
 
@@ -85,6 +86,7 @@ class Login(QtWidgets.QDialog,FORM_CLASS,QObject):
 			self.signalConexionExitosa.emit()
 			self.__comprobarDirectorio()
 			self.guardarDatos()
+			LimpiarObjetos().limpiar()
 		else:
 			self.mostrarOcultar(True)
 

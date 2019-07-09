@@ -11,13 +11,17 @@ from PyQt5.QtWidgets import QDialog, QLabel, QLayout, QHBoxLayout, QMessageBox, 
 from PyQt5.QtCore import pyqtSignal, pyqtSlot, QObject, QSize, Qt
 
 from .busy_icon import BusyIcon
+from .obtener_capa import ObtenerCapa
 from .ventana_datos import VentanaDatos
 from .validacion import Validacion
 import qgis.utils
 
+
 class BotonNuevo(QObject):
 
 	signalCambio = pyqtSignal()
+	signalNoCapa = pyqtSignal()
+
 	def __init__(self,direccion=''):
 		QObject.__init__(self)
 		self.iface = qgis.utils.iface
@@ -25,10 +29,14 @@ class BotonNuevo(QObject):
 		self.direccion = direccion
 
 	def inicializar(self):
-		self.crearBarra()
-		self.validacion = Validacion(self.widget.sender)
-		self.validacion.validarDoble([self.textoX,self.textoY])
-		self.obtenerCoordenadas()
+		obtenerCapa = ObtenerCapa().capa()
+		if obtenerCapa == '':
+			self.signalNoCapa.emit()
+		else:
+			self.crearBarra()
+			self.validacion = Validacion(self.widget.sender)
+			self.validacion.validarDoble([self.textoX,self.textoY])
+			self.obtenerCoordenadas()
 
 	def crearBarra(self):
 		if not hasattr(self, 'widget'):

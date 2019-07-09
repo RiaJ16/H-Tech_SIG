@@ -115,11 +115,11 @@ class Online(QObject):
 			self.signalLoggedOut.emit(1)
 
 	def __guardarSesion(self,sesion):
-		path = '%s\.sigrdap\\' % os.environ['HOME']
+		path = '%s\.sigrdap\\' % os.path.expanduser('~')
 		if not os.path.exists(path):
 			os.makedirs(path)
 		try:
-			with open('%s\.sigrdap\sesion' % os.environ['HOME'],'wb') as f:
+			with open('%s\.sigrdap\sesion' % os.path.expanduser('~'),'wb') as f:
 				pickle.dump(sesion,f)
 		except:
 			pass
@@ -127,7 +127,7 @@ class Online(QObject):
 	def __leerSesion(self):
 		sesion = requests.session()
 		try:
-			with open('%s\.sigrdap\sesion' % os.environ['HOME'],'rb') as f:
+			with open('%s\.sigrdap\sesion' % os.path.expanduser('~'),'rb') as f:
 				sesion = pickle.load(f)
 		except:
 			pass

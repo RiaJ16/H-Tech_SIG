@@ -10,7 +10,7 @@ import numpy as np
 class Graficas:
 
 	def __init__(self,tipoSensor):
-		locale.setlocale(locale.LC_ALL,'esm') #podría dar problemas con Linux
+		#locale.setlocale(locale.LC_ALL,'esm') #podría dar problemas con Linux
 		self.tipoSensor = tipoSensor
 
 	def graficar(self,x,y,dt,periodo,maximo):
@@ -22,7 +22,7 @@ class Graficas:
 		i=0
 		for a, b in zip(x,y):
 			#ax.plot([a,a],[0,b],color=colores[i])
-			ax.plot([a],[b],color=colores[i],marker='.')
+			ax.plot([a],[b],color=colores[i],marker='.',markersize=3)
 			i+= 1
 			if i>9:
 				i=0

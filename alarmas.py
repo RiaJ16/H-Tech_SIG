@@ -5,7 +5,7 @@ import time
 
 import qgis.utils
 
-from qgis.core import QgsVectorLayerJoinInfo, QgsProject
+from qgis.core import QgsFeature, QgsGeometry, QgsPointXY, QgsProject, QgsVectorLayerJoinInfo
 
 from .obtener_capa import ObtenerCapa
 from .online import Online
@@ -22,7 +22,7 @@ class Alarmas():
 	def __signals(self):
 		self.online.signalLoggedIn.connect(self.consultarSensores)
 		self.online.signalSensoresConsultados.connect(self.actualizar)
-		pass
+		self.online.signalSensoresConsultados.connect(self.revisarSensores)
 
 	def login(self):
 		try:
@@ -38,7 +38,7 @@ class Alarmas():
 
 	def actualizar(self):
 		try:
-			layer = ObtenerCapa.capa()
+			layer = ObtenerCapa().capa()
 			provider = layer.dataProvider()
 			updateMap = {}
 			fieldId0 = provider.fields().indexFromName('id')
@@ -59,6 +59,35 @@ class Alarmas():
 				layer.triggerRepaint()
 		except:
 			pass
+
+	def revisarSensores(self):
+		try:
+			layer = ObtenerCapa().capa()
+			provider = layer.dataProvider()
+			fields = layer.fields()
+			for sensor in self.online.sensores:
+				flag = 1
+				for objeto in provider.getFeatures():
+					if sensor.idFeature == objeto.attribute(0):
+						(x,y) = objeto.geometry().asPoint()
+						if not (round(sensor.x,8) == round(x,8) and round(sensor.y,8) == round(y,8)):
+							#print("%.02f is this" % sensor.idFeature)
+							geometria = QgsGeometry.fromPointXY(QgsPointXY(sensor.x,sensor.y))
+							provider.changeGeometryValues({objeto.id():geometria})
+							layer.triggerRepaint()
+						flag = 0
+						break
+				if flag:
+					#print("%.02f is no good" % sensor.idFeature)
+					#print("%.06f - %.06f" % (sensor.x,sensor.y))
+					objeto = QgsFeature(layer.fields())
+					objeto.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(sensor.x,sensor.y)))
+					objeto.setAttributes([sensor.idFeature, sensor.tipoSensor, sensor.alarma])
+					provider.addFeatures([objeto])
+					layer.triggerRepaint()
+		except AttributeError:
+			pass
+		pass
 
 	def getSensor(self,idFeature):
 		sensores = self.online.getSensores()

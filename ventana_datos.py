@@ -95,7 +95,7 @@ class VentanaDatos(QtWidgets.QDialog, FORM_CLASS,QObject):
 					#self.online.generarId()
 					self.sensorCambiado(False)
 				else:
-					capaActiva = ObtenerCapa.capa()
+					capaActiva = ObtenerCapa().capa()
 					objetoGeografico = capaActiva.selectedFeatures()[0]
 					self.idFeature = objetoGeografico.attribute('id')
 					t1 = threading.Thread(target=self.online.consultarIdFromIdFeature,args=(self.idFeature,))
@@ -233,7 +233,7 @@ class VentanaDatos(QtWidgets.QDialog, FORM_CLASS,QObject):
 			self.agregarNodo(banderaEditar)
 			if not banderaEditar:
 				lienzo = qgis.utils.iface.mapCanvas()
-				capaActiva = ObtenerCapa.capa()
+				capaActiva = ObtenerCapa().capa()
 				self.agregarObjetoGeografico(self.coordenadaX,self.coordenadaY,self.idFeature,capaActiva)
 				self.close()
 		alarma = Alarmas()
@@ -243,7 +243,7 @@ class VentanaDatos(QtWidgets.QDialog, FORM_CLASS,QObject):
 		self.adjustSize()
 
 	def getIdFeature(self):
-		capaActiva = ObtenerCapa.capa()
+		capaActiva = ObtenerCapa().capa()
 		capaActiva.selectAll()
 		idFeature = 0
 		for feature in capaActiva.getSelectedFeatures():

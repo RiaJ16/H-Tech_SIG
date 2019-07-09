@@ -10,12 +10,12 @@
 name=H-Tech SIG
 qgisMinimumVersion=3.0
 description=Geographic Information System for Water Supply Networks.<br><br>Sistema de Información Geográfica que permite realizar operaciones relacionadas con una Red de Distribución de Agua Potable.
-version=3.6
+version=3.7
 author=Jair Nájera @ H-Tech
 email=jair.najera@htech.mx
 
 about=This is a tool developed with the specific purpose of allowing users to connect to H-Tech Cloud, so they can view or modify information about a Water Supply Network. To use all the features within this app, you have to have an H-Tech Cloud account.<br><br>Esta herramienta permite la realización de operaciones de una Red de Distribución de Agua Potable. Para ello, se comunica con el servidor H-Tech Cloud. Necesitas tener una cuenta de H-Tech Cloud para poder hacer uso de todas las funciones de esta app.
-Changelog: -Calculated data optimizations. Data is no longer calculated locally, now they're only consulted online while the server does the rest of the work.<br>-Excel reports are back, now they can be generated daily, monthly and with custom dates.<br>-Fixed bugs.<br><br>-Optimizaciones en los datos calculados. Ya no se calculan localmente, ahora sólo se consulta mientras que el servidor hace el resto del trabajo.<br>-Los reportes de Excel están de vuelta, ahora se pueden generar diarios, mensuales y personalizados<br>-Corregidos bugs.
+Changelog: -Sensor data now loads as the windows is scrolled.<br>-Sensors are automatically located as features in the assigned layer according to the coordinates stored in the database.<br>-Sensors layer can be now generated automatically or asigned by the user.<br>-Enviroment variable Home is no longer needed.<br>-Fixed bugs.<br><br>-Los datos de los sensores ahora cargan poco a poco mientras se desplaza la ventana.<br>-Los sensores ahora se ubican automáticamente como puntos en la capa seleccionada según las coordenadas almacenadas en la base de datos.<br>-La capa sensores ahora se puede generar automáticamente si el usuario lo desea, o se puede proporcionar una existente.<br>-Ya no es necesaria la variable de entorno Home.<br>-Corregidos bugs.
 tracker=https://github.com/RiaJ16/H-Tech_SIG/issues
 repository=https://github.com/RiaJ16/H-Tech_SIG
 # End of mandatory metadata
