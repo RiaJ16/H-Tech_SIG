@@ -6,8 +6,7 @@ This is a tool developed with the specific purpose of allowing users to connect 
 
 ## Needed configuration
 
-Before you begin using this plugin, you have to create an environment variable pointing to your Windows user folder called HOME.
-You also need to install two Python dependencies for this plugin to work, **objdict** and **XlsxWriter**. Here are the instructions:
+Before you begin using this plugin, you need to install two Python dependencies for it to work, **objdict** and **XlsxWriter**. Here are the instructions:
 
 1. Open OSGeo Shell as an administrator (usually located at C:\Program Files\QGIS 3.X\OSGeo4W.bat).
 2. Enter *py3_env* (to install dependencies in QGIS' internal Python 3).
@@ -28,8 +27,7 @@ Esta herramienta permite la realización de operaciones de una Red de Distribuci
 
 ## Configuración necesaria
 
-Antes de empezar a usar el plugin, necesitas crear una variable de entorno llamada HOME que apunte a tu carpeta de usuario de Windows.
-También necesitas instalar dos dependencias de Python para que el plugin funcione, **objdict** y **XlsxWriter**. Aquí están las instrucciones:
+Antes de empezar a usar el plugin, necesitas instalar dos dependencias de Python para que funcione, **objdict** y **XlsxWriter**. Aquí están las instrucciones:
 
 1. Abre OSGeo Shell como administrador (el archivo se encuentra usualmente en C:\Program Files\QGIS 3.X\OSGeo4W.bat).
 2. Escribe *py3_env* (para instalar las dependencias en el Python 3 interno de QGIS).
