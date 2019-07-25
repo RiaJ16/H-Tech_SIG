@@ -54,12 +54,15 @@ font-size: 10pt;color: #7f8f98;background-color: #cbe3f2;boder: 5px solid #64D6E
         </spacer>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton">
+        <widget class="QPushButton" name="botonAlarma">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: #F0F0F0;</string>
          </property>
          <property name="text">
           <string/>
@@ -207,7 +210,7 @@ font-size: 10pt;color: #7f8f98;background-color: #cbe3f2;boder: 5px solid #64D6E
     </spacer>
    </item>
    <item>
-    <widget class="QPushButton" name="pushButton_2">
+    <widget class="QPushButton" name="botonEnviar">
      <property name="text">
       <string>ENVIAR</string>
      </property>

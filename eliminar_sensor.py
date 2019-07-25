@@ -108,10 +108,10 @@ class EliminarSensor(QtWidgets.QDialog, FORM_CLASS, QObject):
 		codigo = self.online.eliminarSensor(self.idSensor)
 		if codigo == '0':
 			self.eliminarObjetoGeografico()
-			self.signalCambio.emit()
+			#self.signalCambio.emit()
 		elif codigo == '1':
-			self.eliminarObjetoGeografico()
-			self.signalCambio.emit()
+			self.iface.messageBar().pushMessage("Error de permisos", "No cuenta con los permisos necesarios para realizar esta operación", level=Qgis.Critical,duration=3)
+			#self.signalCambio.emit()
 			#print("Abrir ventana de login")
 
 	def eliminarObjetoGeografico(self):

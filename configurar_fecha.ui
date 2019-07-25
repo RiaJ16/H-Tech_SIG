@@ -132,7 +132,7 @@ font-weight: bold;
      <item>
       <widget class="QDateEdit" name="selectorFecha">
        <property name="enabled">
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -151,7 +151,7 @@ font-weight: bold;
      <item>
       <widget class="QTimeEdit" name="selectorHora">
        <property name="enabled">
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
        <property name="frame">
         <bool>false</bool>
@@ -183,7 +183,7 @@ font-weight: bold;
     </spacer>
    </item>
    <item>
-    <widget class="QPushButton" name="pushButton">
+    <widget class="QPushButton" name="botonEnviar">
      <property name="text">
       <string>ENVIAR</string>
      </property>

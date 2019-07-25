@@ -126,10 +126,12 @@ class SIGRDAP:
 
 	def initGui(self):
 		"""Create the menu entries and toolbar icons inside the QGIS GUI."""
-		self.online = Online()
-		self.online.login()
-		#self.toolbar.setIconSize(QSize(48,48))
 		self.acciones()
+		self.ocultarIconos()
+		self.online = Online()
+		self.online.login(first=True)
+		#self.toolbar.setIconSize(QSize(48,48))
+		self.online.signalPermisos.connect(self.ocultarIconos)
 		self.guiExtras()
 		self.exclusivas()
 		self.actions[7].setChecked(int(PantallaCompleta().isPresionado()))
@@ -139,6 +141,14 @@ class SIGRDAP:
 		self.actualizarTiempoReal()
 		self.toolbar.visibilityChanged.connect(self.aumentarIconos)
 		#self.limpiar()
+
+	def ocultarIconos(self,permiso=3):
+		flag = False
+		if permiso < 2:
+			flag = True
+		self.actions[1].setVisible(flag)
+		self.actions[2].setVisible(flag)
+		self.actions[3].setVisible(flag)
 
 	def aumentarIconos(self):
 		self.toolbar.setIconSize(QSize(48,48))
@@ -263,6 +273,7 @@ class SIGRDAP:
 		self.deshabilitarAcciones()
 		if not hasattr(self,'login'):
 			self.login = Login(self.online)
+			self.login.signalLoggedOut.connect(self.ocultarIconos)
 		self.login.inicializar()
 
 	def nuevo(self):

@@ -5,6 +5,7 @@ import json
 import os
 import pickle
 import requests
+import threading
 
 from requests.exceptions import ConnectionError
 
@@ -39,6 +40,7 @@ class Online(QObject):
 	signalSubsistemasConsultados = pyqtSignal()
 	signalTotalGrupos = pyqtSignal(int)
 	signalFotoDescargada = pyqtSignal(int)
+	signalPermisos = pyqtSignal(int)
 
 	CONSULTAR_ULTIMO_ID = 0
 	COMPROBAR_ID_FEATURE = 1
@@ -61,6 +63,8 @@ class Online(QObject):
 	CONSULTAR_SUBSISTEMAS_POR_TIPO = 19
 	CONSULTAR_GRUPOS_POR_SUBSISTEMA = 21
 	CONSULTAR_TOTAL_GRUPOS = 22
+	CONSULTAR_PERMISOS = 25
+	CONSULTAR_PASSWORD_IOT = 26
 	
 	INSERTAR_SENSOR = 0
 	EDITAR_SENSOR = 1
@@ -68,19 +72,23 @@ class Online(QObject):
 	EDITAR_GRUPO = 3
 	INSERTAR_CORREO = 4
 	EDITAR_CORREO = 5
+	CONFIGURAR_ALARMA = 6
 
 	IP = "https://webservice.htech.mx"
 	IMAGES_DIR = "http://images.htech.mx/grupos/"
 	TIMEOUT = 10
 
-	def login(self,usuario="",password="",sendSignal=True):
+	def login(self,usuario="",password="",sendSignal=True,first=False):
+		datos = False
+		if not (usuario == '' and password == ''):
+			datos = True
 		androidToken = "A%d" % get_mac()
 		sesion = self.__leerSesion()
 		try:
-			if(usuario == '' and password == ''):
-				r = sesion.post('%s/login.php' % self.IP,timeout=5)
-			else:
+			if datos:
 				r = sesion.post('%s/login.php' % self.IP,data={'usuario':usuario,'password':password,'token':androidToken},timeout=self.TIMEOUT)
+			else:
+				r = sesion.post('%s/login.php' % self.IP,timeout=5)
 			self.__guardarSesion(sesion)
 			sesion.close()
 			if sendSignal:
@@ -91,6 +99,9 @@ class Online(QObject):
 			if r.text == '5':
 				return (False)
 			else:
+				if datos or first:
+					t1 = threading.Thread(target=self.consultarPermisos)
+					t1.start()
 				return (True)
 		except ConnectionError:
 			if sendSignal:
@@ -367,6 +378,21 @@ class Online(QObject):
 		except TypeError:
 			pass
 
+	def consultarPermisos(self):
+		args = {'opcion':self.CONSULTAR_PERMISOS}
+		data = self.consultar(args)
+		permisos = 0
+		try:
+			permisos = int(data[0]["permisosqgis"])
+		except IndexError:
+			pass
+		self.signalPermisos.emit(permisos)
+
+	def consultarPasswordIoT(self):
+		args = {'opcion':self.CONSULTAR_PASSWORD_IOT}
+		data = self.consultar(args)
+		return data
+
 	def eliminarCorreo(self,idCorreo,tipoSubsistema):
 		args = {'opcion':self.ELIMINAR_CORREO,'id_correo':idCorreo,'tipo_subsistema':tipoSubsistema}
 		try:
@@ -399,6 +425,10 @@ class Online(QObject):
 		args = {'opcion':self.EDITAR_CORREO}
 		return self.insertar(args,correo)
 
+	def configurarAlarma(self,sensor):
+		args = {'opcion':self.CONFIGURAR_ALARMA}
+		return self.insertar(args,sensor)
+
 	def actualizarAlarmas(self):
 		url = '%s/alarmas.php' % self.IP
 		sesion = self.__leerSesion()
@@ -413,9 +443,9 @@ class Online(QObject):
 			r = sesion.post(url,data={'id_sensor':idSensor},timeout=self.TIMEOUT)
 			sesion.close()
 			texto = r.text
-			if r.text == '0' and not seed:
+			if r.text == '2' and not seed:
 				self.login(sendSignal=False)
-				texto = self.eliminarSensor(True)
+				texto = self.eliminarSensor(idSensor,True)
 			return texto
 		except ConnectionError:
 			self.signalErrorConexion.emit()

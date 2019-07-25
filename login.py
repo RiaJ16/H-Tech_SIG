@@ -26,6 +26,7 @@ FORM_CLASS, _ = uic.loadUiType(os.path.join(
 class Login(QtWidgets.QDialog,FORM_CLASS,QObject):
 
 	signalConexionExitosa = pyqtSignal()
+	signalLoggedOut = pyqtSignal()
 
 	def __init__(self,online,parent=None):
 		"""Constructor."""
@@ -147,6 +148,7 @@ class Login(QtWidgets.QDialog,FORM_CLASS,QObject):
 		self.mostrarOcultar(False)
 		self.estado = False
 		self.editPassword.setText('')
+		self.signalLoggedOut.emit()
 
 	def reconectar(self):
 		while(not self.online.login()):

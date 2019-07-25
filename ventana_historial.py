@@ -41,6 +41,7 @@ class VentanaHistorial(QtWidgets.QDialog, FORM_CLASS):
 		self.semaforo = True
 		self.loadedRows = 0
 		self.__visualizacionInicial()
+		self.comprobarPermisos()
 		self.__signals()
 		self.__estilizarTabla()
 
@@ -49,6 +50,7 @@ class VentanaHistorial(QtWidgets.QDialog, FORM_CLASS):
 	def __visualizacionInicial(self):
 		#self.__habilitarBotones(False)
 		self.graficoBarra.setVisible(False)
+		self.botonConfiguracion.setVisible(False)
 		self.__mostrarOcultarEstado(desconocido=True)
 		self.busy = BusyIcon(self.layout())
 		self.busy.startAnimation()
@@ -67,6 +69,15 @@ class VentanaHistorial(QtWidgets.QDialog, FORM_CLASS):
 		self.labelIntermitente.setVisible(intermitente)
 		self.labelSinConexion.setVisible(sinConexion)
 		self.labelDesconocido.setVisible(desconocido)
+
+	def comprobarPermisos(self):
+		self.online.signalPermisos.connect(self.comprobarOpcionesSensor)
+		t1 = threading.Thread(target=self.online.consultarPermisos)
+		t1.start()
+
+	def comprobarOpcionesSensor(self,permisos):
+		if permisos < 2:
+			self.botonConfiguracion.setVisible(True)
 
 	def __signals(self):
 		self.botonGraficar.clicked.connect(self.graficar)

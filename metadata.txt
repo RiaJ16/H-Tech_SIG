@@ -9,13 +9,13 @@
 [general]
 name=H-Tech SIG
 qgisMinimumVersion=3.0
-description=Geographic Information System for Water Supply Networks.<br><br>Sistema de Información Geográfica que permite realizar operaciones relacionadas con una Red de Distribución de Agua Potable.
-version=3.7
+description=Sistema de Información Geográfica que permite realizar operaciones relacionadas con una Red de Distribución de Agua Potable.
+version=3.8
 author=Jair Nájera @ H-Tech
 email=jair.najera@htech.mx
 
-about=This is a tool developed with the specific purpose of allowing users to connect to H-Tech Cloud, so they can view or modify information about a Water Supply Network. To use all the features within this app, you have to have an H-Tech Cloud account.<br><br>Esta herramienta permite la realización de operaciones de una Red de Distribución de Agua Potable. Para ello, se comunica con el servidor H-Tech Cloud. Necesitas tener una cuenta de H-Tech Cloud para poder hacer uso de todas las funciones de esta app.
-Changelog: -Sensor data now loads as the windows is scrolled.<br>-Sensors are automatically located as features in the assigned layer according to the coordinates stored in the database.<br>-Sensors layer can be now generated automatically or asigned by the user.<br>-Enviroment variable Home is no longer needed.<br>-Fixed bugs.<br><br>-Los datos de los sensores ahora cargan poco a poco mientras se desplaza la ventana.<br>-Los sensores ahora se ubican automáticamente como puntos en la capa seleccionada según las coordenadas almacenadas en la base de datos.<br>-La capa sensores ahora se puede generar automáticamente si el usuario lo desea, o se puede proporcionar una existente.<br>-Ya no es necesaria la variable de entorno Home.<br>-Corregidos bugs.
+about=Esta herramienta permite la realización de operaciones de una Red de Distribución de Agua Potable. Para ello, se comunica con el servidor H-Tech Cloud. Necesitas tener una cuenta de H-Tech Cloud para poder hacer uso de todas las funciones de esta app.
+Changelog: -Agregada interfaz para configurar los dispositivos remotamente.<br>-Ajustados los permisos para que sólo ciertos usuarios puedan realizar ciertas operaciones delicadas.<br>-Corregidos bugs.
 tracker=https://github.com/RiaJ16/H-Tech_SIG/issues
 repository=https://github.com/RiaJ16/H-Tech_SIG
 # End of mandatory metadata

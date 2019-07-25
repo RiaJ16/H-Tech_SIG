@@ -1,16 +1,23 @@
 # -*- coding: UTF8 -*-
 
+import datetime
+import os
 import qgis.utils
+import time
+
+from qgis.core import Qgis
 
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtWidgets import QButtonGroup, QVBoxLayout, QWidget
 
 from functools import partial
 
-import os
-
+from .online import Online
+from .publisher import Publisher
 from .resources import *
+from .strings import strings_opciones_sensor as strings
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
 	os.path.dirname(__file__), 'opciones_sensor.ui'))
@@ -29,6 +36,9 @@ class OpcionesSensor(QWidget, FORM_CLASS):
 		super(OpcionesSensor, self).__init__(parent)
 		self.setupUi(self)
 		self.iface = qgis.utils.iface
+		self.online = Online()
+		self.publicador = Publisher()
+		self.alarma = 0
 		self._visualizacionInicial()
 
 	def _visualizacionInicial(self):
@@ -51,11 +61,17 @@ class OpcionesSensor(QWidget, FORM_CLASS):
 		self._signals()
 		self.listaOpciones.setCurrentItem(self.listaOpciones.item(0))
 		self.fecha.listaFecha.setCurrentItem(self.fecha.listaFecha.item(0))
+		self.fecha.selectorFecha.setDate(datetime.date.today())
+		self.fecha.selectorHora.setTime(datetime.datetime.now().time())
 		self.show()
 
 	def _signals(self):
 		self.listaOpciones.itemSelectionChanged.connect(self.opcionCambiada)
 		self.fecha.listaFecha.itemSelectionChanged.connect(self.opcionFechaCambiada)
+		self.alarmas.botonAlarma.clicked.connect(self.interruptorAlarma)
+		self.alarmas.botonEnviar.clicked.connect(self.enviarAlarmas)
+		self.intervalo.botonEnviar.clicked.connect(self.enviarIntervalo)
+		self.fecha.botonEnviar.clicked.connect(self.enviarFechaYHora)
 
 	def _inicializarIntervalo(self):
 		layout = self.intervalo.layout().itemAt(0)
@@ -66,7 +82,7 @@ class OpcionesSensor(QWidget, FORM_CLASS):
 			botonRadio.setStyle(self.intervalo.style())
 			botonRadio.parent().setStyle(self.intervalo.style())
 			self.grupo.addButton(botonRadio)
-			botonRadio.toggled.connect(partial(self.cambiarIntervalo,botonRadio))		
+			botonRadio.toggled.connect(partial(self.cambiarIntervalo,botonRadio))
 		self.intervalo.min15.setChecked(True)
 
 	def opcionCambiada(self):
@@ -83,7 +99,22 @@ class OpcionesSensor(QWidget, FORM_CLASS):
 				self.alarmas.setVisible(False)
 				self.intervalo.setVisible(False)
 				self.fecha.setVisible(True)
-			
+
+	def interruptorAlarma(self):
+		self.cambiarBotonAlarma(not(self.alarma))
+
+	def cambiarBotonAlarma(self,flag=True):
+		icon = QIcon()
+		if flag:
+			icon.addPixmap(QPixmap(':VentanaConfiguracion/icons/icon_on.png'))
+			self.alarma = 1
+		else:
+			icon.addPixmap(QPixmap(':VentanaConfiguracion/icons/icon_off.png'))
+			self.alarma = 0
+		self.alarmas.minimo.setEnabled(flag)
+		self.alarmas.maximo.setEnabled(flag)
+		self.alarmas.botonAlarma.setIcon(icon)
+
 	def cambiarIntervalo(self,boton,flag):
 		if flag:
 			boton.parent().setProperty('state','on')
@@ -119,3 +150,89 @@ class OpcionesSensor(QWidget, FORM_CLASS):
 		self.alarmas.labelUnidades1.setText(unidades)
 		self.alarmas.labelUnidades2.setText(unidades)
 		self.setWindowTitle(titulo)
+		self.cambiarBotonAlarma(sensor.alarma)
+
+#---Métodos para publicar la opción seleccionada en cada una de las ventanas---
+
+	def enviarAlarmas(self):
+		password = self.online.consultarPasswordIoT()
+		if password == 1:
+			qgis.utils.iface.messageBar().pushMessage("Error", strings.general[1], level=Qgis.Critical,duration=4)
+		else:
+			password = password[0]['password']
+			stringIndex = 0
+			if self.alarma:
+				topic = "/sensores/{}".format(self.sensor.idDispositivo)
+				minimo = self.alarmas.minimo.value()
+				maximo = self.alarmas.maximo.value()
+				mensajeMinimo = "{\"Tipo\":\"Config\",\"Cadena\":\"Wa%sm%.02f\"}" % (self.sensor.tipoSensorTexto[0].upper(),minimo)
+				mensajeMaximo = "{\"Tipo\":\"Config\",\"Cadena\":\"Wa%sM%.02f\"}" % (self.sensor.tipoSensorTexto[0].upper(),maximo)
+				if not (self.sensor.datoMinimo == minimo):
+					self.publicador.publicar(topic,mensajeMinimo,password)
+					self.sensor.datoMinimo = minimo
+					stringIndex = stringIndex | 0b001
+					time.sleep(0.5)
+				if not (self.sensor.datoMaximo == maximo):
+					self.publicador.publicar(topic,mensajeMaximo,password)
+					self.sensor.datoMaximo = maximo
+					stringIndex = stringIndex | 0b010
+			if self.sensor.alarma > 0:
+				self.sensor.alarma = 1
+			if not (self.alarma == self.sensor.alarma):
+				self.sensor.alarma = self.alarma
+				self.online.configurarAlarma(self.sensor)
+				if self.alarma == 1:
+					stringIndex = stringIndex | 0b100
+				else:
+					stringIndex = 8
+			if stringIndex > 0:
+				qgis.utils.iface.messageBar().pushMessage("Aviso", strings.alarmas[stringIndex], level=Qgis.Info,duration=4)
+
+	def enviarIntervalo(self):
+		password = self.online.consultarPasswordIoT()
+		if password == 1:
+			qgis.utils.iface.messageBar().pushMessage("Error", strings.general[1], level=Qgis.Critical,duration=4)
+		else:
+			password = password[0]['password']
+			topic = "/sensores/{}".format(self.sensor.idDispositivo)
+			minutos = 15
+			if self.intervalo.min3.isChecked():
+				minutos = 3
+			elif self.intervalo.min5.isChecked():
+				minutos = 5
+			elif self.intervalo.min10.isChecked():
+				minutos = 10
+			elif self.intervalo.min15.isChecked():
+				minutos = 15
+			elif self.intervalo.min30.isChecked():
+				minutos = 30
+			elif self.intervalo.min45.isChecked():
+				minutos = 45
+			elif self.intervalo.min60.isChecked():
+				minutos = 60
+			mensaje = "{\"Tipo\":\"Config\",\"Cadena\":\"WR%d\"}" % minutos
+			self.publicador.publicar(topic,mensaje,password)
+			qgis.utils.iface.messageBar().pushMessage("Aviso", strings.intervalo[1], level=Qgis.Info,duration=4)
+
+	def enviarFechaYHora(self):
+		password = self.online.consultarPasswordIoT()
+		if password == 1:
+			qgis.utils.iface.messageBar().pushMessage("Error", strings.general[1], level=Qgis.Critical,duration=4)
+		else:
+			password = password[0]['password']
+			topic = "/sensores/{}".format(self.sensor.idDispositivo)
+			for i in range(0,self.fecha.listaFecha.count()):
+				if self.fecha.listaFecha.item(i) == self.fecha.listaFecha.currentItem():
+					break
+			if i == 0:
+				fecha = datetime.date.today().strftime("%d%m%Y")
+				hora = datetime.datetime.now().strftime("%H%M%S")
+			if i == 1:
+				fecha = self.fecha.selectorFecha.date().toString("ddMMyyyy")
+				hora = self.fecha.selectorHora.time().toString("HHmmss")
+			mensajeFecha = "{\"Tipo\":\"Config\",\"Cadena\":\"WD%s\"}" % fecha
+			mensajeHora = "{\"Tipo\":\"Config\",\"Cadena\":\"WT%s\"}" % hora
+			self.publicador.publicar(topic,mensajeFecha,password)
+			#time.sleep(0.5)
+			self.publicador.publicar(topic,mensajeHora,password)
+			qgis.utils.iface.messageBar().pushMessage("Aviso", strings.fecha[3], level=Qgis.Info,duration=4)
