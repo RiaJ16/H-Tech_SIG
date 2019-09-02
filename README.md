@@ -6,13 +6,14 @@ This is a tool developed with the specific purpose of allowing users to connect 
 
 ## Needed configuration
 
-Before you begin using this plugin, you need to install two Python dependencies for it to work, **objdict** and **XlsxWriter**. Here are the instructions:
+Before you begin using this plugin, you need to install three Python dependencies for it to work, **objdict**, **XlsxWriter** and **paho-mqtt**. Here are the instructions:
 
 1. Open OSGeo Shell as an administrator (usually located at C:\Program Files\QGIS 3.X\OSGeo4W.bat).
 2. Enter *py3_env* (to install dependencies in QGIS' internal Python 3).
 3. Enter *python -m pip install --upgrade pip* (to install/upgrade pip).
 4. Enter *pip install objdict*
 5. Enter *pip install XlsxWriter*
+5. Enter *pip install paho-mqtt*
 
 Once you've done this, you're good to go.
 
@@ -27,12 +28,13 @@ Esta herramienta permite la realización de operaciones de una Red de Distribuci
 
 ## Configuración necesaria
 
-Antes de empezar a usar el plugin, necesitas instalar dos dependencias de Python para que funcione, **objdict** y **XlsxWriter**. Aquí están las instrucciones:
+Antes de empezar a usar el plugin, necesitas instalar dos dependencias de Python para que funcione, **objdict**, **XlsxWriter** y **paho-mqtt**. Aquí están las instrucciones:
 
 1. Abre OSGeo Shell como administrador (el archivo se encuentra usualmente en C:\Program Files\QGIS 3.X\OSGeo4W.bat).
 2. Escribe *py3_env* (para instalar las dependencias en el Python 3 interno de QGIS).
 3. Escribe *python -m pip install --upgrade pip* (para instalar/actualizar pip).
 4. Escribe *pip install objdict*
 5. Escribe *pip install XlsxWriter*
+6. Escribe *pip install paho-mqtt*
 
 Una vez que las hayas instalado, podrás hacer uso del plugin.
