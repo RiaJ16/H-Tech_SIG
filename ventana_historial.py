@@ -255,6 +255,16 @@ class VentanaHistorial(QtWidgets.QDialog, FORM_CLASS):
 			self.adjustSize()
 		else:
 			self.__habilitarBotones(True)
+			conectado = sensor.conectado
+			if sensor.coordinador > 0:
+				self.coordinador = self.online.consultarCoordinador(sensor.coordinador)
+				conectado = self.coordinador.getConectado
+			if conectado == -1:
+				self.iconOff.setVisible(False)
+				self.iconOn.setVisible(False)
+			else:
+				self.iconOff.setVisible(not sensor.conectado)
+				self.iconOn.setVisible(sensor.conectado)
 			self.labelDireccion.setText("<b><font color='#2980b9'>Ubicación:</font></b> %s, %s, %s" % (sensor.calle,sensor.colonia,sensor.municipioTexto))
 			self.labelTipo.setText("<b><font color='#2980b9'>Tipo:</font></b> %s" % sensor.tipoSensorTexto)
 			self.labelGrupo.setText("<b>%s</b>" % sensor.grupoTexto.upper())
@@ -343,6 +353,10 @@ class VentanaHistorial(QtWidgets.QDialog, FORM_CLASS):
 			self.opcionesSensor.show()
 			self.opcionesSensor.activateWindow()
 		self.opcionesSensor.setSensor(self.online.sensor,self.windowTitle())
+		try:
+			self.opcionesSensor.setCoordinador(self.coordinador)
+		except:
+			pass
 
 	#<Métodos para el filtrado
 	

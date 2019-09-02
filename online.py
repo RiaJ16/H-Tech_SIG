@@ -13,6 +13,7 @@ from PyQt5.QtCore import QObject, pyqtSignal
 
 from uuid import getnode as get_mac
 
+from .coordinador import Coordinador
 from .correo import Correo
 from .grupo import Grupo
 from .historico import Historico
@@ -65,7 +66,8 @@ class Online(QObject):
 	CONSULTAR_TOTAL_GRUPOS = 22
 	CONSULTAR_PERMISOS = 25
 	CONSULTAR_PASSWORD_IOT = 26
-	
+	CONSULTAR_COORDINADOR = 27
+
 	INSERTAR_SENSOR = 0
 	EDITAR_SENSOR = 1
 	INSERTAR_GRUPO = 2
@@ -388,8 +390,8 @@ class Online(QObject):
 			pass
 		self.signalPermisos.emit(permisos)
 
-	def consultarPasswordIoT(self):
-		args = {'opcion':self.CONSULTAR_PASSWORD_IOT}
+	def consultarPasswordIoT(self,idDispositivo):
+		args = {'opcion':self.CONSULTAR_PASSWORD_IOT,'id_dispositivo':idDispositivo}
 		data = self.consultar(args)
 		return data
 
@@ -482,6 +484,13 @@ class Online(QObject):
 				self.signalFotoDescargada.emit(token)
 		except:
 			pass
+
+	def consultarCoordinador(self, idCoordinador):
+		args = {'opcion': self.CONSULTAR_COORDINADOR, 'id_coordinador': idCoordinador}
+		jsondoc = self.consultar(args)
+		coordinador = Coordinador()
+		coordinador.set(jsondoc[0])
+		return coordinador
 
 	def obtenerFoto(self,idGrupo):
 		pass

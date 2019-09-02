@@ -4,7 +4,7 @@ from objdict import ObjDict
 
 class Sensor:
 
-	def __init__(self,idSensor=0,idDispositivo=0,idFeature=0,calle='',colonia='',cp=0,tipoSensor=0,municipio=0,area=0.0,datoMaximo=0.0,datoMinimo=0.0,alarma=0,altura=0,datoActual=0,grupo=0,estado=0,correoEnviado=0,online=0,maximo=30,x=0,y=0,idSubsistema=0):
+	def __init__(self,idSensor=0,idDispositivo=0,idFeature=0,calle='',colonia='',cp=0,tipoSensor=0,municipio=0,area=0.0,datoMaximo=0.0,datoMinimo=0.0,alarma=0,altura=0,datoActual=0,grupo=0,estado=0,correoEnviado=0,online=0,maximo=30,x=0,y=0,idSubsistema=0,intervalo=15,conectado=False,fechaEstado='',coordinador=0):
 		self.idSensor = idSensor
 		self.idDispositivo = idDispositivo
 		self.idFeature = idFeature
@@ -48,6 +48,17 @@ class Sensor:
 		else:
 			self.y = float(y)
 		self.idSubsistema = idSubsistema
+		self.intervalo = int(intervalo)
+		try:
+			if int(conectado) == 0:
+				self.conectado = False
+			elif int(conectado) == 1:
+				self.conectado = True
+			elif int(conectado) == -1:
+				self.conectado = -1
+		except:
+			pass
+		self.coordinador = coordinador
 
 	def set(self,registro):
 		try:
@@ -92,6 +103,27 @@ class Sensor:
 				pass
 			try:
 				self.idSubsistema = int(registro['idSubsistema'])
+			except:
+				pass
+			try:
+				self.intervalo = int(registro['intervalo'])
+			except:
+				pass
+			try:
+				if int(registro['conectado']) == 0:
+					self.conectado = False
+				elif int(registro['conectado']) == 1:
+					self.conectado = True
+				elif int(registro['conectado']) == -1:
+					self.conectado = -1
+			except:
+				pass
+			try:
+				self.fechaEstado = registro['fechaEstado']
+			except:
+				pass
+			try:
+				self.coordinador = int(registro['coordinador'])
 			except:
 				pass
 		except TypeError:

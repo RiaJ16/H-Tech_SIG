@@ -149,24 +149,44 @@ class OpcionesSensor(QWidget, FORM_CLASS):
 			unidades = 'm'
 		self.alarmas.labelUnidades1.setText(unidades)
 		self.alarmas.labelUnidades2.setText(unidades)
+		if int(sensor.intervalo) == 3:
+			self.intervalo.min3.setChecked(True)
+		elif int(sensor.intervalo) == 5:
+			self.intervalo.min5.setChecked(True)
+		elif int(sensor.intervalo) == 10:
+			self.intervalo.min10.setChecked(True)
+		elif int(sensor.intervalo) == 15:
+			self.intervalo.min15.setChecked(True)
+		elif int(sensor.intervalo) == 30:
+			self.intervalo.min30.setChecked(True)
+		elif int(sensor.intervalo) == 45:
+			self.intervalo.min45.setChecked(True)
+		elif int(sensor.intervalo) == 60:
+			self.intervalo.min60.setChecked(True)
 		self.setWindowTitle(titulo)
 		self.cambiarBotonAlarma(sensor.alarma)
+
+	def setCoordinador(self, coordinador):
+		self.coordinador = coordinador
 
 #---Métodos para publicar la opción seleccionada en cada una de las ventanas---
 
 	def enviarAlarmas(self):
-		password = self.online.consultarPasswordIoT()
-		if password == 1:
-			qgis.utils.iface.messageBar().pushMessage("Error", strings.general[1], level=Qgis.Critical,duration=4)
-		else:
+		idDispositivo = self.sensor.idDispositivo
+		anexo = ''
+		if self.sensor.coordinador > 0:
+			idDispositivo = self.coordinador.getIdDispositivo
+			anexo = "_" + self.sensor.idDispositivo
+		password = self.online.consultarPasswordIoT(idDispositivo)
+		if self.comprobarPassword(password):
 			password = password[0]['password']
 			stringIndex = 0
 			if self.alarma:
 				topic = "/sensores/{}".format(self.sensor.idDispositivo)
 				minimo = self.alarmas.minimo.value()
 				maximo = self.alarmas.maximo.value()
-				mensajeMinimo = "{\"Tipo\":\"Config\",\"Cadena\":\"Wa%sm%.02f\"}" % (self.sensor.tipoSensorTexto[0].upper(),minimo)
-				mensajeMaximo = "{\"Tipo\":\"Config\",\"Cadena\":\"Wa%sM%.02f\"}" % (self.sensor.tipoSensorTexto[0].upper(),maximo)
+				mensajeMinimo = "{\"Tipo\":\"Config\",\"Cadena\":\"Wa%sm%.02f%s\"}" % (self.sensor.tipoSensorTexto[0].upper(),minimo,anexo)
+				mensajeMaximo = "{\"Tipo\":\"Config\",\"Cadena\":\"Wa%sM%.02f%s\"}" % (self.sensor.tipoSensorTexto[0].upper(),maximo,anexo)
 				if not (self.sensor.datoMinimo == minimo):
 					self.publicador.publicar(topic,mensajeMinimo,password)
 					self.sensor.datoMinimo = minimo
@@ -189,12 +209,15 @@ class OpcionesSensor(QWidget, FORM_CLASS):
 				qgis.utils.iface.messageBar().pushMessage("Aviso", strings.alarmas[stringIndex], level=Qgis.Info,duration=4)
 
 	def enviarIntervalo(self):
-		password = self.online.consultarPasswordIoT()
-		if password == 1:
-			qgis.utils.iface.messageBar().pushMessage("Error", strings.general[1], level=Qgis.Critical,duration=4)
-		else:
+		idDispositivo = self.sensor.idDispositivo
+		anexo = ''
+		if self.sensor.coordinador > 0:
+			idDispositivo = self.coordinador.getIdDispositivo
+			anexo = "_" + self.sensor.idDispositivo
+		password = self.online.consultarPasswordIoT(idDispositivo)
+		if self.comprobarPassword(password):
 			password = password[0]['password']
-			topic = "/sensores/{}".format(self.sensor.idDispositivo)
+			topic = "/sensores/{}".format(idDispositivo)
 			minutos = 15
 			if self.intervalo.min3.isChecked():
 				minutos = 3
@@ -210,17 +233,20 @@ class OpcionesSensor(QWidget, FORM_CLASS):
 				minutos = 45
 			elif self.intervalo.min60.isChecked():
 				minutos = 60
-			mensaje = "{\"Tipo\":\"Config\",\"Cadena\":\"WR%d\"}" % minutos
+			mensaje = "{\"Tipo\":\"Config\",\"Cadena\":\"WR%d%s\"}" % (minutos, anexo)
 			self.publicador.publicar(topic,mensaje,password)
 			qgis.utils.iface.messageBar().pushMessage("Aviso", strings.intervalo[1], level=Qgis.Info,duration=4)
 
 	def enviarFechaYHora(self):
-		password = self.online.consultarPasswordIoT()
-		if password == 1:
-			qgis.utils.iface.messageBar().pushMessage("Error", strings.general[1], level=Qgis.Critical,duration=4)
-		else:
+		idDispositivo = self.sensor.idDispositivo
+		anexo = ''
+		if self.sensor.coordinador > 0:
+			idDispositivo = self.coordinador.getIdDispositivo
+			anexo = "_" + self.sensor.idDispositivo
+		password = self.online.consultarPasswordIoT(idDispositivo)
+		if self.comprobarPassword(password):
 			password = password[0]['password']
-			topic = "/sensores/{}".format(self.sensor.idDispositivo)
+			topic = "/sensores/{}".format(idDispositivo)
 			for i in range(0,self.fecha.listaFecha.count()):
 				if self.fecha.listaFecha.item(i) == self.fecha.listaFecha.currentItem():
 					break
@@ -230,9 +256,19 @@ class OpcionesSensor(QWidget, FORM_CLASS):
 			if i == 1:
 				fecha = self.fecha.selectorFecha.date().toString("ddMMyyyy")
 				hora = self.fecha.selectorHora.time().toString("HHmmss")
-			mensajeFecha = "{\"Tipo\":\"Config\",\"Cadena\":\"WD%s\"}" % fecha
-			mensajeHora = "{\"Tipo\":\"Config\",\"Cadena\":\"WT%s\"}" % hora
+			mensajeFecha = "{\"Tipo\":\"Config\",\"Cadena\":\"WD%s%s\"}" % (fecha, anexo)
+			mensajeHora = "{\"Tipo\":\"Config\",\"Cadena\":\"WT%s%s\"}" % (hora, anexo)
 			self.publicador.publicar(topic,mensajeFecha,password)
 			#time.sleep(0.5)
 			self.publicador.publicar(topic,mensajeHora,password)
 			qgis.utils.iface.messageBar().pushMessage("Aviso", strings.fecha[3], level=Qgis.Info,duration=4)
+
+	def comprobarPassword(self,password):
+		if password == 1:
+			qgis.utils.iface.messageBar().pushMessage("Error", strings.general[1], level=Qgis.Critical,duration=7)
+			return False
+		elif password == 2:
+			qgis.utils.iface.messageBar().pushMessage("Error", strings.general[2], level=Qgis.Critical,duration=7)
+			return False
+		return True
+

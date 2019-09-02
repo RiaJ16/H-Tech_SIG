@@ -120,6 +120,32 @@ color: rgb(255, 255, 255);
       </widget>
      </item>
      <item>
+      <widget class="QLabel" name="iconOn">
+       <property name="toolTip">
+        <string>Conectado</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>:/Estados/icons/ledon_small.png</pixmap>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="iconOff">
+       <property name="toolTip">
+        <string>Desconectado</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>:/Estados/icons/ledoff_small.png</pixmap>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="botonConfiguracion">
        <property name="cursor">
         <cursorShape>PointingHandCursor</cursorShape>

@@ -1,7 +1,7 @@
 import paho.mqtt.client as paho
 
 #topic = "/sensores/F313CFA8"
-#message = "{\"Tipo\":\"Config\",\"Cadena\":\"WR15\"}"
+#message = "{\"Tipo\":\"Dato\",\"ID\":\"40D88C3E\",\"v1\":\"1\",\"v2\":\"2\",\"v3\":\"3\",\"c1\":\"1\",\"c2\":\"2\",\"c3\":\"3\"}"
 
 class Publisher:
 

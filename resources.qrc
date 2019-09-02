@@ -67,6 +67,8 @@
     <file>icons/act-dia.png</file>
   </qresource>
   <qresource prefix="Estados">
+    <file>icons/ledoff_small.png</file>
+    <file>icons/ledon_small.png</file>
     <file>icons/goodconnection.png</file>
     <file>icons/intermconnection.png</file>
     <file>icons/noconnection.png</file>
