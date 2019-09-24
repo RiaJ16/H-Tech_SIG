@@ -328,3 +328,6 @@ class VentanaDatos(QtWidgets.QDialog, FORM_CLASS,QObject):
 
 	def cerrar(self):
 		self.hide()
+
+	def closeEvent(self, event):
+		ObtenerCapa().capa().removeSelection()

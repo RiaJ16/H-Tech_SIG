@@ -549,6 +549,7 @@ alternate-background-color: #ddf1ff;
           <widget class="QPushButton" name="botonGraficar">
            <property name="font">
             <font>
+             <family>Verdana</family>
              <pointsize>10</pointsize>
              <weight>75</weight>
              <bold>true</bold>
@@ -570,6 +571,7 @@ alternate-background-color: #ddf1ff;
           <widget class="QPushButton" name="botonReportes">
            <property name="font">
             <font>
+             <family>Verdana</family>
              <pointsize>10</pointsize>
              <weight>75</weight>
              <bold>true</bold>

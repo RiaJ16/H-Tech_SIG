@@ -35,28 +35,28 @@ class PantallaCompleta:
 		estado = self.leerEstado()
 		barrasEstado = estado[0]
 		panelesEstado = estado[1]
-		path = "%s\\.sigrdap" % os.environ['HOME']
+		path = "%s/.sigrdap" % os.path.expanduser('~')
 		if not os.path.exists(path):
 			os.makedirs(path)
-		archivo = open("%s\\barras" % path,"w")
+		archivo = open("%s/barras" % path,"w")
 		for barra in barrasEstado:
 			archivo.write("%s\n" % barra)
 		archivo.close()
-		archivo = open("%s\\paneles" % path,"w")
+		archivo = open("%s/paneles" % path,"w")
 		for panel in panelesEstado:
 			archivo.write("%s\n" % panel)
 		archivo.close()
 
 	def cargarBarras(self):
-		path = "%s\\.sigrdap" % os.environ['HOME']
+		path = "%s/.sigrdap" % os.path.expanduser('~')
 		try:
-			with open("%s\\barras" % path) as archivo:
+			with open("%s/barras" % path) as archivo:
 				estadoBarras = archivo.readlines()
 			estadoBarras = [x.strip() for x in estadoBarras]
 		except FileNotFoundError:
 			estadoBarras = []
 		try:
-			with open("%s\\paneles" % path) as archivo:
+			with open("%s/paneles" % path) as archivo:
 				estadoPaneles = archivo.readlines()
 			estadoPaneles = [x.strip() for x in estadoPaneles]
 		except FileNotFoundError:
@@ -82,17 +82,17 @@ class PantallaCompleta:
 			pass
 
 	def setPresionado(self,presionado):
-		path = "%s\\.sigrdap" % os.environ['HOME']
+		path = "%s/.sigrdap" % os.path.expanduser('~')
 		if not os.path.exists(path):
 			os.makedirs(path)
-		archivo = open("%s\\pantalla_completa" % path,"w")
+		archivo = open("%s/pantalla_completa" % path,"w")
 		archivo.write("%s" % presionado)
 		archivo.close()
 
 	def isPresionado(self):
-		path = "%s\\.sigrdap" % os.environ['HOME']
+		path = "%s/.sigrdap" % os.path.expanduser('~')
 		try:
-			with open("%s\\pantalla_completa" % path) as archivo:
+			with open("%s/pantalla_completa" % path) as archivo:
 				presionado = archivo.readline()
 		except FileNotFoundError:
 			presionado = 0

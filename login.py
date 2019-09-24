@@ -35,7 +35,7 @@ class Login(QtWidgets.QDialog,FORM_CLASS,QObject):
 		self.setupUi(self)
 		self.iface = qgis.utils.iface
 		self.online = online
-		img = QImage(":Varios/icons/logosig.png");
+		img = QImage(":Varios/icons/logosig.png")
 		#img = img.scaled(475, 148, Qt.KeepAspectRatio)
 		self.logo.setPixmap(QPixmap.fromImage(img))
 		self.busy = BusyIcon(self.layout())
@@ -92,7 +92,7 @@ class Login(QtWidgets.QDialog,FORM_CLASS,QObject):
 			self.mostrarOcultar(True)
 
 	def __comprobarDirectorio(self):
-		directory = "%s\.sigrdap\Fotos\grupos\\%s" % (os.environ['HOME'],self.online.idSistema())
+		directory = "%s/.sigrdap/Fotos/grupos/%s" % (os.path.expanduser('~'),self.online.idSistema())
 		if not os.path.exists(directory):
 			os.makedirs(directory)
 
@@ -120,16 +120,16 @@ class Login(QtWidgets.QDialog,FORM_CLASS,QObject):
 
 	def guardarDatos(self):
 		usuario = self.editUsuario.text()
-		path = "{}\\.sigrdap".format(os.environ['HOME'])
+		path = "{}/.sigrdap".format(os.path.expanduser('~'))
 		if not os.path.exists(path):
 			os.makedirs(path)
-		archivo = open("{}\\usuario".format(path),"w")
+		archivo = open("{}/usuario".format(path),"w")
 		archivo.write("{}\n".format(usuario))
 		archivo.close()
 
 	def leerDatos(self):
 		try:
-			archivo = open("{}\\.sigrdap\\usuario".format(os.environ['HOME']),"r")
+			archivo = open("{}/.sigrdap/usuario".format(os.path.expanduser('~')),"r")
 			usuario = archivo.readline()[:-1]
 			archivo.close()
 		except:

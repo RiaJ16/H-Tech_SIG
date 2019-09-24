@@ -11,6 +11,7 @@ from PyQt5.QtGui import QDoubleValidator, QCursor, QColor
 
 from .ventana_historial import VentanaHistorial
 from .eliminar_sensor import EliminarSensor
+from .mover_sensor import MoverSensor
 from .obtener_capa import ObtenerCapa
 from .online import Online
 from .ventana_datos import VentanaDatos
@@ -85,6 +86,15 @@ class ClickLienzo(QObject):
 						self.ventanaDatos.inicializar(True,x,y)
 					except IndexError:
 						pass
+				elif self.bandera == 3:
+					if not hasattr(self,'moverSensor'):
+						self.moverSensor = MoverSensor()
+						self.moverSensor.signalEditado.connect(self._editado)
+					try:
+						self.moverSensor.pasarObjetoGeografico(capaActiva.selectedFeatures()[0])
+						self.moverSensor.crearBarra()
+					except IndexError:
+						pass
 				else:
 					try:
 						capaActiva.selectedFeatures()[0]
@@ -100,6 +110,9 @@ class ClickLienzo(QObject):
 		if hasattr(self,'ventanaHistorial'):
 			self.ventanaHistorial.nuevoDato(dato)
 
+	def _editado(self):
+		self.seleccionarObjetoGeografico()
+
 	def cerrar(self):
 		if hasattr(self, 'ventanaHistorial'):
 			self.ventanaHistorial.cerrar()
@@ -108,6 +121,9 @@ class ClickLienzo(QObject):
 			self.guardaClick.canvasClicked.disconnect(self.onClicked)
 		if hasattr(self,'ventanaDatos'):
 			self.ventanaDatos.close()
+			self.guardaClick.canvasClicked.disconnect(self.onClicked)
+		if hasattr(self,'moverSensor'):
+			self.moverSensor.widget.close()
 			self.guardaClick.canvasClicked.disconnect(self.onClicked)
 		try:
 			ObtenerCapa().capa().removeSelection()

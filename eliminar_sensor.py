@@ -132,11 +132,19 @@ class EliminarSensor(QtWidgets.QDialog, FORM_CLASS, QObject):
 		except:
 			filename = ""
 		if filename == "" or filename == None:
-			filename = "%s\\.sigrdap\\nodisponible.png" % os.environ['HOME']
+			filename = "%s/.sigrdap/Fotos/nodisponible.png" % os.path.expanduser('~')
+		else:
+			filename = "%s/.sigrdap/Fotos/%s" % (os.path.expanduser('~'),filename)
 		foto = QPixmap(filename)
+		if foto.isNull():
+			url = filename.split('/')
+			url = url[len(url)-1]
+			t1 = threading.Thread(target=self.online.descargarFoto,args=(url,filename))
+			t1.start()
+			foto = QPixmap(filename)
 		newHeight = 80
 		try:
-			newWidth = foto.width()*85/foto.height()
+			newWidth = foto.width()*newHeight/foto.height()
 		except:
 			newWidth = 0
 		if newWidth > 154:
@@ -158,3 +166,6 @@ class EliminarSensor(QtWidgets.QDialog, FORM_CLASS, QObject):
 		self.busy.setVisible(flag)
 		self.botonAceptar.setEnabled(not flag)
 		self.adjustSize()
+
+	def closeEvent(self, event):
+		ObtenerCapa().capa().removeSelection()

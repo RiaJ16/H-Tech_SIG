@@ -23,6 +23,9 @@
 """
 import locale
 import os.path
+import platform
+
+from qgis.PyQt.QtWidgets import QApplication
 
 from PyQt5.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, Qt, QSize
 from PyQt5.QtGui import QIcon, QPixmap
@@ -37,7 +40,7 @@ from .boton_nuevo import BotonNuevo
 from .buscar_capa import BuscarCapa
 from .click_lienzo import ClickLienzo
 from .direcciones_de_correo import DireccionesDeCorreo
-from .dual import Dual
+#from .dual import Dual
 from .limpiar_objetos import LimpiarObjetos
 from .login import Login
 from .online import Online
@@ -46,8 +49,27 @@ from .tiempo_real import TiempoReal
 
 class SIGRDAP:
 
+	#app = QApplication.instance()
+	#qss_file = open(r"C:\Program Files\QGIS 3.8\apps\qgis\resources\themes\Night Mapping\Style.qss").read()
+	#app.setStyleSheet(qss_file)
+
+	sistema = 0
+	sistemaString = platform.system().lower()
+	if sistemaString == "windows":
+		sistema = 0
+	elif sistemaString == "linux" or sistemaString == "linux2":
+		sistema = 1
+	elif sistemaString == "darwin":
+		sistema = 2
+
 	#locale.setlocale(locale.LC_ALL, 'es_MX.utf8')
-	locale.setlocale(locale.LC_ALL, 'es-MX')
+	try:
+		locale.setlocale(locale.LC_ALL, 'es-MX')
+	except locale.Error:
+		try:
+			locale.setlocale(locale.LC_ALL, 'es-ES')
+		except locale.Error:
+			pass
 
 	def __init__(self, iface):
 		self.iface = iface
@@ -149,6 +171,7 @@ class SIGRDAP:
 		self.actions[1].setVisible(flag)
 		self.actions[2].setVisible(flag)
 		self.actions[3].setVisible(flag)
+		self.actions[4].setVisible(flag)
 
 	def aumentarIconos(self):
 		self.toolbar.setIconSize(QSize(48,48))
@@ -178,26 +201,33 @@ class SIGRDAP:
 			icon_path_active=':sigrdap/icons/nuevo2.png',
 			parent=self.iface.mainWindow())
 		self.add_action(
+			':sigrdap/icons/mover_s.png',
+			text=self.tr(u'Mover sensor'),
+			callback=self.mover,
+			icon_path_active=':sigrdap/icons/mover_s2.png',
+			parent=self.iface.mainWindow())
+		self.actions[2].setCheckable(True)
+		self.add_action(
 			':sigrdap/icons/edit.png',
 			text=self.tr(u'Editar sensor'),
 			callback=self.editar,
 			icon_path_active=':sigrdap/icons/edit2.png',
 			parent=self.iface.mainWindow())
-		self.actions[2].setCheckable(True)
+		self.actions[3].setCheckable(True)
 		self.add_action(
 			':sigrdap/icons/eliminar.png',
 			text=self.tr(u'Eliminar sensor'),
 			callback=self.eliminar,
 			icon_path_active=':sigrdap/icons/eliminar2.png',
 			parent=self.iface.mainWindow())
-		self.actions[3].setCheckable(True)
+		self.actions[4].setCheckable(True)
 		self.add_action(
 			':sigrdap/icons/historial.png',
 			text=self.tr(u'Consultar historial'),
 			callback=self.historial,
 			icon_path_active=':sigrdap/icons/historial2.png',
 			parent=self.iface.mainWindow())
-		self.actions[4].setCheckable(True)
+		self.actions[5].setCheckable(True)
 		self.add_action(
 			':sigrdap/icons/dual.png',
 			text=self.tr(u'Iniciar recepción de datos'),
@@ -205,8 +235,8 @@ class SIGRDAP:
 			icon_path_active=':sigrdap/icons/dual2.png',
 			enabled_flag=True,
 			parent=self.iface.mainWindow())
-		self.actions[5].setCheckable(True)
-		self.actions[5].setVisible(False)
+		self.actions[6].setCheckable(True)
+		self.actions[6].setVisible(False)
 		self.add_action(
 			':sigrdap/icons/picture.png',
 			text=self.tr(u'Administrar grupos'),
@@ -228,7 +258,7 @@ class SIGRDAP:
 			icon_path_active=':sigrdap/icons/fullscreen2.png',
 			enabled_flag=True,
 			parent=self.iface.mainWindow())
-		self.actions[8].setCheckable(True)
+		self.actions[9].setCheckable(True)
 
 	def guiExtras(self):
 		self.iface.mainWindow().setWindowTitle("QGIS - H-Tech SIG")
@@ -287,9 +317,19 @@ class SIGRDAP:
 			#self.botonNuevo.signalCambio.connect(self.conexionZigBee.actualizarTablaDatos)
 		self.botonNuevo.inicializar()
 
-	def editar(self):
+	def mover(self):
 		self.deshabilitarAcciones(2)
 		if self.actions[2].isChecked():
+			self.clickLienzo = ClickLienzo(3,self.online)
+			try:
+				self.clickLienzo.signalNoCapa.connect(self.seleccionarCapa)
+				self.clickLienzo.signalCambio.connect(self.conexionZigBee.actualizarTablaDatos)
+			except:
+				pass
+
+	def editar(self):
+		self.deshabilitarAcciones(3)
+		if self.actions[3].isChecked():
 			self.clickLienzo = ClickLienzo(2,self.online)
 			try:
 				self.clickLienzo.signalNoCapa.connect(self.seleccionarCapa)
@@ -298,8 +338,8 @@ class SIGRDAP:
 				pass
 
 	def eliminar(self):
-		self.deshabilitarAcciones(3)
-		if self.actions[3].isChecked():
+		self.deshabilitarAcciones(4)
+		if self.actions[4].isChecked():
 			self.clickLienzo = ClickLienzo(0,self.online)
 			try:
 				self.clickLienzo.signalNoCapa.connect(self.seleccionarCapa)
@@ -308,8 +348,8 @@ class SIGRDAP:
 				pass
 
 	def historial(self):
-		self.deshabilitarAcciones(4)
-		if self.actions[4].isChecked():
+		self.deshabilitarAcciones(5)
+		if self.actions[5].isChecked():
 			self.clickLienzo = ClickLienzo(1,self.online)
 			self.clickLienzo.signalNoCapa.connect(self.seleccionarCapa)
 
@@ -317,10 +357,10 @@ class SIGRDAP:
 		if not hasattr(self,'dual'):
 			self.dual = Dual(self.online,self.toolbar)
 		if self.dual.isVisible():
-			self.actions[5].setChecked(False)
+			self.actions[6].setChecked(False)
 			self.dual.hide()
 		else:
-			self.actions[5].setChecked(True)
+			self.actions[6].setChecked(True)
 			self.dual.show()
 
 	def grupos(self):
@@ -335,15 +375,15 @@ class SIGRDAP:
 			self.direccionesDeCorreo = DireccionesDeCorreo(self.online)
 		self.direccionesDeCorreo.mostrar()
 		if self.direccionesDeCorreo.isVisible():
-			self.actions[6].setChecked(True)
+			self.actions[7].setChecked(True)
 		else:
-			self.actions[6].setChecked(False)
+			self.actions[7].setChecked(False)
 
 	def togglePantallaCompleta(self):
 		if not hasattr(self,'pantallaCompleta'):
 			self.pantallaCompleta = PantallaCompleta()
 			self.pantallaCompleta.restaurar()
-		if(self.actions[8].isChecked()):
+		if(self.actions[9].isChecked()):
 			self.pantallaCompleta.guardarBarras()
 			self.pantallaCompleta.ocultarBarras()
 			self.pantallaCompleta.setPresionado(1)
@@ -370,7 +410,7 @@ class SIGRDAP:
 			self.direccionesDeCorreo.hide()
 			del self.direccionesDeCorreo
 		for action in self.actions:
-			if action is not self.actions[8]:
+			if action is not self.actions[9]:
 			#if action is not self.actions[6] and action is not self.actions[7]:
 				if action is not self.actions[actual]:
 					action.setChecked(False)
@@ -384,7 +424,7 @@ class SIGRDAP:
 		accion = self.iface.actionPan()
 		group.addAction(accion)
 		#group.removeAction(self.actions[6])
-		group.removeAction(self.actions[8])
+		group.removeAction(self.actions[9])
 
 	def actualizarTiempoReal(self):
 		start_worker(self.tiempoReal,self.iface,'Iniciado el monitoreo en tiempo real')

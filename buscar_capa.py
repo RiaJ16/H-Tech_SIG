@@ -28,9 +28,10 @@ class BuscarCapa(QDialog,FORM_CLASS):
 	def leerDatos(self):
 		nombreCapa = "capaSensores"
 		linea = ''
-		path = "%s\\.sigrdap" % os.path.expanduser('~')
+		path = "%s/.sigrdap" % os.path.expanduser('~')
+		print(path)
 		try:
-			archivo = open("%s\\%s" % (path,nombreCapa), "r")
+			archivo = open("%s/%s" % (path,nombreCapa), "r")
 			linea = archivo.readline()
 			archivo.close()
 			self.obtenerCapa(linea)
@@ -48,10 +49,10 @@ class BuscarCapa(QDialog,FORM_CLASS):
 
 	def escribirDatos(self,capa):
 		nombreCapa = "capaSensores"
-		path = "%s\\.sigrdap" % os.path.expanduser('~')
+		path = "%s/.sigrdap" % os.path.expanduser('~')
 		if not os.path.exists(path):
 			os.makedirs(path)
-		archivo = open("%s\\%s" % (path,nombreCapa), "w")
+		archivo = open("%s/%s" % (path,nombreCapa), "w")
 		archivo.write("%s" % capa.id())
 		archivo.close()
 
@@ -77,12 +78,12 @@ class BuscarCapa(QDialog,FORM_CLASS):
 		proveedor = capa.dataProvider()
 		proveedor.addAttributes([QgsField("id", QVariant.Int),QgsField("tipoSensor", QVariant.Int),QgsField("alarma", QVariant.Int)])
 		capa.updateFields()
-		path = "%s\\.sigrdap\\capa" % os.path.expanduser('~')
+		path = "%s/.sigrdap/capa" % os.path.expanduser('~')
 		if not os.path.exists(path):
 			os.makedirs(path)
-		error = QgsVectorFileWriter.writeAsVectorFormat(capa,"%s\\capa" % path,"UTF-8", driverName="ESRI Shapefile")
+		error = QgsVectorFileWriter.writeAsVectorFormat(capa,"%s/capa" % path,"UTF-8", driverName="ESRI Shapefile")
 		if error[0] == QgsVectorFileWriter.NoError:
-			capa = QgsVectorLayer("%s\\capa.shp" % path, "Sensores", "ogr")
+			capa = QgsVectorLayer("%s/capa.shp" % path, "Sensores", "ogr")
 		self.reglas(capa)
 		QgsProject.instance().addMapLayer(capa)
 		self.hide()

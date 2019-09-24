@@ -166,7 +166,7 @@ class AdministrarGrupos(QtWidgets.QWidget,FORM_CLASS):
 		if filename == 'nodisponible.png' or filename == 'nosubsistemas.png' or filename == 'nogrupos.png':
 			isGrupo = False
 		if guardado:
-			filename = "%s\\.sigrdap/Fotos/%s" % (os.path.expanduser('~'),filename)
+			filename = "%s/.sigrdap/Fotos/%s" % (os.path.expanduser('~'),filename)
 		foto = QPixmap(filename)
 		if foto.isNull():
 			url = filename.split('/')
@@ -314,7 +314,7 @@ class AdministrarGrupos(QtWidgets.QWidget,FORM_CLASS):
 	def copiarFoto(self,source):
 		extension = os.path.splitext(source)[1]
 		#print(self.online.__leerCookies())
-		destination = "%s\.sigrdap\Fotos\grupos\\%s\gpo%d%s" % (os.path.expanduser('~'),self.online.idSistema(),self.obtenerId(),extension)
+		destination = "%s/.sigrdap/Fotos/grupos/%s/gpo%d%s" % (os.path.expanduser('~'),self.online.idSistema(),self.obtenerId(),extension)
 		copyfile(source,destination)
 		self.cambiandoFoto = False
 		return destination

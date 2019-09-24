@@ -308,9 +308,9 @@ class VentanaHistorial(QtWidgets.QDialog, FORM_CLASS):
 		except:
 			filename = ""
 		if filename == "" or filename == None:
-			filename = "%s\\.sigrdap\\Fotos\\nodisponible.png" % os.environ['HOME']
+			filename = "%s/.sigrdap/Fotos/nodisponible.png" % os.path.expanduser('~')
 		else:
-			filename = "%s\\.sigrdap/Fotos/%s" % (os.environ['HOME'],filename)
+			filename = "%s/.sigrdap/Fotos/%s" % (os.path.expanduser('~'),filename)
 		foto = QPixmap(filename)
 		if foto.isNull():
 			url = filename.split('/')

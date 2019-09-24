@@ -55,7 +55,7 @@ class Dual(QtWidgets.QDockWidget,FORM_CLASS,QObject):
 
 	def comprobarServicio(self):
 		if w32su.QueryServiceStatus("PyXbeeSvc")[1] == 4:
-			archivo = open("%s\.sigrdap\opcion" % os.environ['HOME'], 'r')
+			archivo = open("%s/.sigrdap/opcion" % os.path.expanduser('~'), 'r')
 			opcion = archivo.readline()
 			tiempo = opcion[0]
 			modo = opcion[1]
@@ -72,7 +72,7 @@ class Dual(QtWidgets.QDockWidget,FORM_CLASS,QObject):
 				self.lectorDatos.signalNuevoDato.connect(self.alarma.actualizar)
 				self.lectorDatos.signalNuevoDato.connect(self.nuevoDato)
 				commands = 'net start PyXbeeSvc'
-				archivo = open("%s\.sigrdap\opcion" % os.environ['HOME'], 'w+')
+				archivo = open("%s/.sigrdap/opcion" % os.path.expanduser('~'), 'w+')
 				archivo.write("%s%s1" % (self.selectorTiempo.currentIndex(),self.selectorModo.currentIndex()))
 				archivo.close()
 				try:
@@ -96,7 +96,7 @@ class Dual(QtWidgets.QDockWidget,FORM_CLASS,QObject):
 					self.lectorDatos = None
 					shell.ShellExecuteEx(lpVerb='runas', lpFile='cmd.exe', lpParameters='/c '+commands)
 					self.running = False
-					archivo = open("%s\.sigrdap\opcion" % os.environ['HOME'], 'w+')
+					archivo = open("%s/.sigrdap/opcion" % os.path.expanduser('~'), 'w+')
 					archivo.write("%s%s0" % (self.selectorTiempo.currentIndex(),self.selectorModo.currentIndex()))
 					archivo.close()
 					self.cambiarEstadoBotones(False)

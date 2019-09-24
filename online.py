@@ -67,6 +67,7 @@ class Online(QObject):
 	CONSULTAR_PERMISOS = 25
 	CONSULTAR_PASSWORD_IOT = 26
 	CONSULTAR_COORDINADOR = 27
+	ACTUALIZAR_COORDENADAS = 28
 
 	INSERTAR_SENSOR = 0
 	EDITAR_SENSOR = 1
@@ -128,11 +129,11 @@ class Online(QObject):
 			self.signalLoggedOut.emit(1)
 
 	def __guardarSesion(self,sesion):
-		path = '%s\.sigrdap\\' % os.path.expanduser('~')
+		path = '%s/.sigrdap/' % os.path.expanduser('~')
 		if not os.path.exists(path):
 			os.makedirs(path)
 		try:
-			with open('%s\.sigrdap\sesion' % os.path.expanduser('~'),'wb') as f:
+			with open('%s/.sigrdap/sesion' % os.path.expanduser('~'),'wb') as f:
 				pickle.dump(sesion,f)
 		except:
 			pass
@@ -140,7 +141,7 @@ class Online(QObject):
 	def __leerSesion(self):
 		sesion = requests.session()
 		try:
-			with open('%s\.sigrdap\sesion' % os.path.expanduser('~'),'rb') as f:
+			with open('%s/.sigrdap/sesion' % os.path.expanduser('~'),'rb') as f:
 				sesion = pickle.load(f)
 		except:
 			pass
@@ -390,13 +391,21 @@ class Online(QObject):
 			pass
 		self.signalPermisos.emit(permisos)
 
-	def consultarPasswordIoT(self,idDispositivo):
-		args = {'opcion':self.CONSULTAR_PASSWORD_IOT,'id_dispositivo':idDispositivo}
+	def consultarPasswordIoT(self,idDispositivo, flagCoordinador=0):
+		args = {'opcion':self.CONSULTAR_PASSWORD_IOT,'id_dispositivo':idDispositivo,'flag_coordinador':flagCoordinador}
 		data = self.consultar(args)
 		return data
 
 	def eliminarCorreo(self,idCorreo,tipoSubsistema):
 		args = {'opcion':self.ELIMINAR_CORREO,'id_correo':idCorreo,'tipo_subsistema':tipoSubsistema}
+		try:
+			self.consultar(args)
+			return True
+		except:
+			return False
+
+	def actualizarCoordenadas(self, idSensor, x, y):
+		args = {'opcion': self.ACTUALIZAR_COORDENADAS, 'id_sensor': idSensor, 'x': x, 'y': y}
 		try:
 			self.consultar(args)
 			return True

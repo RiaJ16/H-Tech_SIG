@@ -18,9 +18,9 @@ class ObtenerCapa:
 		if self.idCapa == '':
 			nombreCapa = "capaSensores"
 			linea = ''
-			path = "%s\\.sigrdap" % os.path.expanduser('~')
+			path = "%s/.sigrdap" % os.path.expanduser('~')
 			try:
-				archivo = open("%s\\%s" % (path,nombreCapa), "r")
+				archivo = open("%s/%s" % (path,nombreCapa), "r")
 				idCapa = archivo.readline()
 				archivo.close()
 			except IOError:

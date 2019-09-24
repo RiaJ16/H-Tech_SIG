@@ -174,10 +174,12 @@ class OpcionesSensor(QWidget, FORM_CLASS):
 	def enviarAlarmas(self):
 		idDispositivo = self.sensor.idDispositivo
 		anexo = ''
+		flagCoordinador = 0
 		if self.sensor.coordinador > 0:
+			flagCoordinador = 0
 			idDispositivo = self.coordinador.getIdDispositivo
 			anexo = "_" + self.sensor.idDispositivo
-		password = self.online.consultarPasswordIoT(idDispositivo)
+		password = self.online.consultarPasswordIoT(idDispositivo, flagCoordinador)
 		if self.comprobarPassword(password):
 			password = password[0]['password']
 			stringIndex = 0
@@ -211,10 +213,12 @@ class OpcionesSensor(QWidget, FORM_CLASS):
 	def enviarIntervalo(self):
 		idDispositivo = self.sensor.idDispositivo
 		anexo = ''
+		flagCoordinador = 0
 		if self.sensor.coordinador > 0:
+			flagCoordinador = 1
 			idDispositivo = self.coordinador.getIdDispositivo
 			anexo = "_" + self.sensor.idDispositivo
-		password = self.online.consultarPasswordIoT(idDispositivo)
+		password = self.online.consultarPasswordIoT(idDispositivo, flagCoordinador)
 		if self.comprobarPassword(password):
 			password = password[0]['password']
 			topic = "/sensores/{}".format(idDispositivo)
@@ -240,10 +244,12 @@ class OpcionesSensor(QWidget, FORM_CLASS):
 	def enviarFechaYHora(self):
 		idDispositivo = self.sensor.idDispositivo
 		anexo = ''
+		flagCoordinador = 0
 		if self.sensor.coordinador > 0:
+			flagCoordinador = 1
 			idDispositivo = self.coordinador.getIdDispositivo
 			anexo = "_" + self.sensor.idDispositivo
-		password = self.online.consultarPasswordIoT(idDispositivo)
+		password = self.online.consultarPasswordIoT(idDispositivo, flagCoordinador)
 		if self.comprobarPassword(password):
 			password = password[0]['password']
 			topic = "/sensores/{}".format(idDispositivo)

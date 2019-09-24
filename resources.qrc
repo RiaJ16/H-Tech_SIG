@@ -1,5 +1,7 @@
 <RCC>
   <qresource prefix="sigrdap">
+    <file>icons/mover_s.png</file>
+    <file>icons/mover_s2.png</file>
     <file>icons/configsensor2.png</file>
     <file>icons/configsensor3.png</file>
     <file>icons/configsensor.png</file>
