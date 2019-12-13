@@ -14,6 +14,7 @@ from .eliminar_sensor import EliminarSensor
 from .mover_sensor import MoverSensor
 from .obtener_capa import ObtenerCapa
 from .online import Online
+from .pantalla_bomba import PantallaBomba
 from .ventana_datos import VentanaDatos
 from .ventana_repetidos import VentanaRepetidos
 
@@ -39,12 +40,15 @@ class ClickLienzo(QObject):
 		self.guardaClick.canvasClicked.connect(self.onClicked)
 
 	def onClicked(self,punto):
+		multiplicador = 12
+		if self.bandera == 0:
+			multiplicador = 20
 		capaActiva = ObtenerCapa().capa()
 		if capaActiva == '':
 			self.signalNoCapa.emit()
 		else:
 			capaActiva.removeSelection()
-			radio = self.lienzo.mapUnitsPerPixel() * 12
+			radio = self.lienzo.mapUnitsPerPixel() * multiplicador
 			rect = QgsRectangle(punto.x() - radio,
 				punto.y() - radio,
 				punto.x() + radio,
@@ -53,22 +57,41 @@ class ClickLienzo(QObject):
 			#self.lienzo.setSelectionColor( QColor(1, 1, 1, 90) )
 			self.lienzo.setSelectionColor(QColor(255,102,0))
 			if capaActiva.selectedFeatures():
-				for objetoGeografico in capaActiva.selectedFeatures():
-					id = objetoGeografico.id()
-				if len(capaActiva.selectedFeatures()) > 1:
+				if len(capaActiva.selectedFeatures()) == 1:
+					if self.bandera == 0:
+						objetoGeografico = capaActiva.selectedFeatures()[0]
+						if objetoGeografico.attribute('bomba') <= 1:
+							capaActiva.removeSelection()
+				elif len(capaActiva.selectedFeatures()) > 1:
 					cadena = ''
 					contador = 0
 					for objetoGeografico in capaActiva.selectedFeatures():
 						try:
-							cadena += '{},'.format(objetoGeografico.attribute('id'))
-							contador += 1
+							if self.bandera == 0:
+								if objetoGeografico.attribute('tipoSensor') == 1 and objetoGeografico.attribute('bomba') > 1:
+									cadena += '{},'.format(objetoGeografico.attribute('id'))
+									contador += 1
+							else:
+								cadena += '{},'.format(objetoGeografico.attribute('id'))
+								contador += 1
 						except:
 							pass
-					if contador > 1:
-						ventanaRepetidos = VentanaRepetidos(self.online)
+					if contador == 0:
+						capaActiva.removeSelection()
+					elif contador > 1:
+						if self.bandera:
+							ventanaRepetidos = VentanaRepetidos(self.online)
+						else:
+							ventanaRepetidos = VentanaRepetidos(self.online, True)
 						ventanaRepetidos.inicializar()
 						ventanaRepetidos.buscarSensores(cadena[0:-1])
-				if self.bandera == 1:
+				if self.bandera == 0:
+					if capaActiva.selectedFeatures():
+						if not hasattr(self,'pantallaBomba'):
+							self.pantallaBomba = PantallaBomba(self.online)
+						self.pantallaBomba.objetoGeograficoSeleccionado(capaActiva.selectedFeatures()[0])
+						self.pantallaBomba.mostrarVentana()
+				elif self.bandera == 1:
 					if not hasattr(self,'ventanaHistorial'):
 						self.ventanaHistorial = VentanaHistorial(self.online)
 					try:
@@ -78,7 +101,7 @@ class ClickLienzo(QObject):
 						pass
 				elif self.bandera == 2:
 					if not hasattr(self,'ventanaDatos'):
-						self.ventanaDatos = VentanaDatos()
+						self.ventanaDatos = VentanaDatos(self.online, editar=True)
 						self.ventanaDatos.signalCambio.connect(self.cambio)
 					try:
 						capaActiva.selectedFeatures()[0]
@@ -88,7 +111,7 @@ class ClickLienzo(QObject):
 						pass
 				elif self.bandera == 3:
 					if not hasattr(self,'moverSensor'):
-						self.moverSensor = MoverSensor()
+						self.moverSensor = MoverSensor(self.online)
 						self.moverSensor.signalEditado.connect(self._editado)
 					try:
 						self.moverSensor.pasarObjetoGeografico(capaActiva.selectedFeatures()[0])
@@ -116,14 +139,22 @@ class ClickLienzo(QObject):
 	def cerrar(self):
 		if hasattr(self, 'ventanaHistorial'):
 			self.ventanaHistorial.cerrar()
+			self.ventanaHistorial.disconnectSignals()
 			self.guardaClick.canvasClicked.disconnect(self.onClicked)
 		if hasattr(self,'eliminarSensor'):
+			self.eliminarSensor.disconnectSignals()
 			self.guardaClick.canvasClicked.disconnect(self.onClicked)
 		if hasattr(self,'ventanaDatos'):
 			self.ventanaDatos.close()
+			self.ventanaDatos.disconnectSignals()
 			self.guardaClick.canvasClicked.disconnect(self.onClicked)
 		if hasattr(self,'moverSensor'):
 			self.moverSensor.widget.close()
+			self.moverSensor.disconnectSignals()
+			self.guardaClick.canvasClicked.disconnect(self.onClicked)
+		if hasattr(self,'pantallaBomba'):
+			self.pantallaBomba.close()
+			self.pantallaBomba.disconnectSignals()
 			self.guardaClick.canvasClicked.disconnect(self.onClicked)
 		try:
 			ObtenerCapa().capa().removeSelection()

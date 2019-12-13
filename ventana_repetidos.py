@@ -19,11 +19,12 @@ FORM_CLASS, _ = uic.loadUiType(os.path.join(
 
 class VentanaRepetidos(QtWidgets.QDialog, FORM_CLASS):
 
-	def __init__(self,online,parent=None):
+	def __init__(self, online, bomba=False, parent=None):
 		"""Constructor."""
 		super(VentanaRepetidos, self).__init__(parent)
 		self.setupUi(self)
 		self.online = online
+		self.bomba = bomba
 		self.iface = qgis.utils.iface
 		self.lienzo = qgis.utils.iface.mapCanvas()
 
@@ -53,7 +54,11 @@ class VentanaRepetidos(QtWidgets.QDialog, FORM_CLASS):
 				self.tablaSensores.setFocusPolicy(Qt.NoFocus)
 				for sensor in sensores:
 					self.tablaSensores.insertRow(self.tablaSensores.rowCount())
-					elementos = [sensor.grupoTexto,"\t"+sensor.tipoSensorTexto,"\t"+sensor.municipioTexto];
+					if self.bomba:
+						elementos = [sensor.grupoTexto,"\tBomba","\t"+sensor.municipioTexto]
+						self.setWindowTitle("Elige una de las bombas")
+					else:
+						elementos = [sensor.grupoTexto,"\t"+sensor.tipoSensorTexto,"\t"+sensor.municipioTexto]
 					numcol = 0
 					fuentes = (QFont("Verdana",12),QFont("Verdana",11),QFont("Verdana",7))
 					alineaciones = (Qt.AlignLeft|Qt.AlignVCenter,Qt.AlignLeft|Qt.AlignVCenter,Qt.AlignRight|Qt.AlignBottom)

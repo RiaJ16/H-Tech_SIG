@@ -15,6 +15,9 @@ from uuid import getnode as get_mac
 
 from .coordinador import Coordinador
 from .correo import Correo
+from .dragon.bomba import Bomba
+from .dragon.coordinador import Coordinador as CoordinadorDragon
+from .dragon.horario import Horario
 from .grupo import Grupo
 from .historico import Historico
 from .municipio import Municipio
@@ -42,6 +45,9 @@ class Online(QObject):
 	signalTotalGrupos = pyqtSignal(int)
 	signalFotoDescargada = pyqtSignal(int)
 	signalPermisos = pyqtSignal(int)
+	signalBombaConsultada = pyqtSignal()
+	signalPassword = pyqtSignal(str)
+	signalUsuarioConsultado = pyqtSignal(str, int)
 
 	CONSULTAR_ULTIMO_ID = 0
 	COMPROBAR_ID_FEATURE = 1
@@ -68,6 +74,9 @@ class Online(QObject):
 	CONSULTAR_PASSWORD_IOT = 26
 	CONSULTAR_COORDINADOR = 27
 	ACTUALIZAR_COORDENADAS = 28
+	CONSULTAR_BOMBAS = 100
+	CONSULTAR_HORARIOS = 104
+	CONSULTAR_BOMBA = 105
 
 	INSERTAR_SENSOR = 0
 	EDITAR_SENSOR = 1
@@ -111,6 +120,8 @@ class Online(QObject):
 				#self.signalLoggedIn.emit(6)
 				self.signalErrorConexion.emit()
 			return (False)
+		except requests.exceptions.ReadTimeout:
+			pass
 
 	def printSession(self):
 		r = requests.post('%s/cookies.php' % self.IP,timeout=self.TIMEOUT)#,cookies=cookies)
@@ -155,7 +166,7 @@ class Online(QObject):
 			self._idSistema = jsondoc[0]['idSistema']
 		return self._idSistema
 
-	def consultar(self,args,seed=False):
+	def consultar(self, args, seed=False, signal=True):
 		try:
 			sesion = self.__leerSesion()
 			r = sesion.post('%s/consultar.php' % self.IP,data=args,timeout=self.TIMEOUT)
@@ -169,10 +180,12 @@ class Online(QObject):
 					jsondoc = [jsondoc]
 				return jsondoc
 		except ConnectionError:
-			self.signalErrorConexion.emit()
+			if signal:
+				self.signalErrorConexion.emit()
 			return []
 		except requests.exceptions.ReadTimeout:
-			self.signalErrorConexion.emit()
+			if signal:
+				self.signalErrorConexion.emit()
 			return []
 
 	def insertar(self,args,elemento):
@@ -207,26 +220,29 @@ class Online(QObject):
 
 	def consultarHistoricos(self,idSensor,fechaInicial='0',fechaFinal='22220208140200',seed=False):
 		sesion = self.__leerSesion()
-		r = sesion.post('%s/consultar.php' % self.IP,
-			data={'opcion':self.CONSULTAR_HISTORICOS,'id_sensor':idSensor,'fecha_inicial':fechaInicial,'fecha_final':fechaFinal},timeout=self.TIMEOUT)
-		sesion.close()
-		if r.text == '0' and not seed:
-			self.login(sendSignal=False)
-			self.consultarHistoricos(idSensor,fechaInicial,fechaFinal,True)
-		else:
-			jsondoc = r.json()
-			historicos = []
-			try:
-				for registro in jsondoc:
-					historico = Historico()
-					historico.set(registro)
-					historicos.append(historico)
-			except:
-				pass
-				#pedir logueo
-			self.historicos = historicos
-			token = int((int(fechaInicial) + int(fechaFinal))/1000000)
-			self.signalHistoricos.emit(token)
+		historicos = []
+		try:
+			r = sesion.post('%s/consultar.php' % self.IP,
+				data={'opcion':self.CONSULTAR_HISTORICOS,'id_sensor':idSensor,'fecha_inicial':fechaInicial,'fecha_final':fechaFinal},timeout=self.TIMEOUT)
+			sesion.close()
+			if r.text == '0' and not seed:
+				self.login(sendSignal=False)
+				self.consultarHistoricos(idSensor,fechaInicial,fechaFinal,True)
+			else:
+				jsondoc = r.json()
+				try:
+					for registro in jsondoc:
+						historico = Historico()
+						historico.set(registro)
+						historicos.append(historico)
+				except:
+					pass
+					#pedir logueo
+				self.historicos = historicos
+				token = int((int(fechaInicial) + int(fechaFinal))/1000000)
+				self.signalHistoricos.emit(token)
+		except:
+			pass
 		return historicos
 
 	def consultarMunicipios(self):
@@ -345,6 +361,14 @@ class Online(QObject):
 		self.correos = correos
 		self.signalCorreosConsultados.emit()
 
+	def consultarUsuario(self):
+		args = {'opcion': self.CONSULTAR_USUARIO}
+		jsondoc = self.consultar(args)
+		try:
+			self.signalUsuarioConsultado.emit(jsondoc[0]['nombre'], int(jsondoc[0]['genero']))
+		except TypeError:
+			pass
+
 	def consultarSubsistemasPorTipo(self,tipoSubsistema):
 		args = {'opcion':self.CONSULTAR_SUBSISTEMAS_POR_TIPO,'tipo_subsistema':tipoSubsistema}
 		jsondoc = self.consultar(args)
@@ -372,7 +396,7 @@ class Online(QObject):
 
 	def consultarTotalGrupos(self):
 		args = {'opcion':self.CONSULTAR_TOTAL_GRUPOS}
-		data = self.consultar(args)
+		data = self.consultar(args, signal=False)
 		id = 0
 		try:
 			if not (data == []):
@@ -387,13 +411,20 @@ class Online(QObject):
 		permisos = 0
 		try:
 			permisos = int(data[0]["permisosqgis"])
+		except TypeError:
+			pass
 		except IndexError:
 			pass
 		self.signalPermisos.emit(permisos)
 
-	def consultarPasswordIoT(self,idDispositivo, flagCoordinador=0):
-		args = {'opcion':self.CONSULTAR_PASSWORD_IOT,'id_dispositivo':idDispositivo,'flag_coordinador':flagCoordinador}
+	def consultarPasswordIoT(self, idDispositivo, flagCoordinador, flagSignal=False):
+		args = {'opcion': self.CONSULTAR_PASSWORD_IOT, 'id_dispositivo': idDispositivo, 'flag_coordinador': flagCoordinador}
 		data = self.consultar(args)
+		if flagSignal:
+			try:
+				self.signalPassword.emit(data[0]['password'])
+			except (IndexError, TypeError, ValueError) as error:
+				self.signalPassword.emit(str(data))
 		return data
 
 	def eliminarCorreo(self,idCorreo,tipoSubsistema):
@@ -411,6 +442,10 @@ class Online(QObject):
 			return True
 		except:
 			return False
+
+	def consultarBombas(self):
+		args = {'opcion': self.CONSULTAR_BOMBAS}
+		return self.consultar(args)
 
 	def insertarSensor(self,sensor):
 		args = {'opcion':self.INSERTAR_SENSOR}
@@ -501,6 +536,34 @@ class Online(QObject):
 		coordinador.set(jsondoc[0])
 		return coordinador
 
+	def consultarHorarios(self, idGrupo):
+		args = {'opcion': self.CONSULTAR_HORARIOS, 'id_grupo': idGrupo}
+		jsondoc = self.consultar(args)
+		horarios = []
+		for registro in jsondoc:
+			horario = Horario()
+			horario.set(registro)
+			horarios.append(horario)
+		return horarios
+
+	def consultarBomba(self, idGrupo):
+		args = {'opcion': self.CONSULTAR_BOMBA, 'id_grupo': idGrupo}
+		jsondoc = self.consultar(args)
+		if jsondoc == []:
+			bomba = Bomba(-1)
+		else:
+			bomba = Bomba()
+		try:
+			bomba.set(jsondoc[0])
+			if bomba.getIdCoordinador > 0:
+				coordinador = CoordinadorDragon()
+				coordinador.setFromBomba(jsondoc[0])
+				bomba.setCoordinador(coordinador)
+		except:
+			pass
+		self.bomba = bomba
+		self.signalBombaConsultada.emit()
+
 	def obtenerFoto(self,idGrupo):
 		pass
 
@@ -524,6 +587,9 @@ class Online(QObject):
 
 	def getSubsistemas(self):
 		return self.subsistemas
+
+	def getBomba(self):
+		return self.bomba
 
 	def isEmpty(self,idSensor):
 		args = {'opcion':self.IS_EMPTY,'id_sensor':idSensor}
@@ -615,5 +681,5 @@ class Online(QObject):
 			pass
 		except requests.exceptions.ReadTimeout:
 			pass
-			
+
 #(>'-')> <('-'<) ^('-')^ v('-')v (>'-')> (^-^) If you're tired, just do a happy dance. Poyo!!!

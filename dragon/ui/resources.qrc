@@ -1,0 +1,68 @@
+<RCC>
+  <qresource prefix="main">
+    <file>monitor_icon.png</file>
+    <file>logored.png</file>
+  </qresource>
+  <qresource prefix="varios">
+    <file>icons/loading_dark.gif</file>
+    <file>icons/loading.gif</file>
+  </qresource>
+  <qresource prefix="buttons">
+    <file>icons/icon_off.png</file>
+    <file>icons/show_all.png</file>
+    <file>icons/show_multiple.png</file>
+    <file>icons/show_none.png</file>
+    <file>icons/show_one.png</file>
+    <file>icons/icon_on.png</file>
+  </qresource>
+  <qresource prefix="icons">
+    <file>icons/icon_automatico.png</file>
+    <file>icons/icon_manual.png</file>
+    <file>icons/monitor.png</file>
+    <file>icons/monitor2.png</file>
+    <file>icons/goodconnection.png</file>
+    <file>icons/noconnection.png</file>
+    <file>icons/ledoff_tiny.png</file>
+    <file>icons/ledon_tiny.png</file>
+    <file>icons/datetime.png</file>
+    <file>icons/icon_options.png</file>
+    <file>icons/ledoff_small.png</file>
+    <file>icons/ledon_small.png</file>
+    <file>icons/ledoff.png</file>
+    <file>icons/ledon.png</file>
+    <file>icons/f1off.png</file>
+    <file>icons/f1on.png</file>
+    <file>icons/f2off.png</file>
+    <file>icons/f2on.png</file>
+    <file>icons/f3off.png</file>
+    <file>icons/f3on.png</file>
+    <file>icons/768corriente.png</file>
+    <file>icons/corriente.png</file>
+    <file>icons/fase1.png</file>
+    <file>icons/fase2.png</file>
+    <file>icons/fase3.png</file>
+    <file>icons/flujo.png</file>
+    <file>icons/presion.png</file>
+    <file>icons/voltaje.png</file>
+    <file>icons/768fase1.png</file>
+    <file>icons/768fase2.png</file>
+    <file>icons/768fase3.png</file>
+    <file>icons/768flujo.png</file>
+    <file>icons/768presion.png</file>
+    <file>icons/768voltaje.png</file>
+    <file>icons/corriente.png</file>
+    <file>icons/fase1.png</file>
+    <file>icons/fase2.png</file>
+    <file>icons/fase3.png</file>
+    <file>icons/flujo.png</file>
+    <file>icons/presion.png</file>
+    <file>icons/voltaje.png</file>
+  </qresource>
+  <qresource prefix="images">
+    <file>images/H-Tech Monitor.png</file>
+    <file>images/bomba-off.png</file>
+    <file>images/bomba-animated.gif</file>
+    <file>images/bomba-small.png</file>
+    <file>images/bomba.png</file>
+  </qresource>
+</RCC>

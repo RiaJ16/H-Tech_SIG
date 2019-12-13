@@ -5,6 +5,7 @@ import os
 import qgis.utils
 import time
 
+from datetime import timedelta
 from functools import partial
 
 from qgis.core import *
@@ -153,6 +154,20 @@ class Calendario(QtWidgets.QWidget, FORM_CLASS):
 			self.labelFechas.setText('%s %s' % (fechaInicial.strftime("Del %d de %B de %Y al"),fechaFinal.strftime("%d de %B de %Y")))
 			reportes = Reportes(self.online)
 			try:
+				totalMeses = (fechaFinal.year - fechaInicial.year) * 12 + fechaFinal.month - fechaInicial.month
+				mes = fechaInicial
+				self.barraDeProgreso.setMaximum(totalMeses-1)
+				self.barraDeProgreso.setVisible(True)
+				for i in range(0,totalMeses-1):
+					mes = mes.replace(day=1) + timedelta(days = 32)
+					mes = mes.replace(day=1)
+					mesString = mes.strftime("%Y%m%d")
+					if mesString in self.datos:
+						pass
+					else:
+						self.datos[mesString] = self.online.consultarHistorial(self.sensor.idSensor,mesString)
+					self.barraDeProgreso.setValue(i+1)
+				self.barraDeProgreso.setVisible(False)
 				reportes.generarReportePersonalizado(self.sensor,fechaInicial,fechaFinal,self.datos)
 				self.labelFechas.setText('')
 				self.labelEstado.setText("Almacenado satisfactoriamente en la ruta indicada")
@@ -195,6 +210,8 @@ class Calendario(QtWidgets.QWidget, FORM_CLASS):
 			self.botonPersonalizado.clicked.connect(self.__cancelar)
 		else:
 			icon.addPixmap(QPixmap(':Calendario/icons/rep-personalizable.png'))
+			self.botonPersonalizado.disconnect()
+			self.botonPersonalizado.clicked.connect(self.__elegirFechas)
 		self.botonPersonalizado.setIcon(icon)
 
 	def __cancelar(self):
@@ -202,7 +219,10 @@ class Calendario(QtWidgets.QWidget, FORM_CLASS):
 		self.labelFechas.setText('')
 		self.botonPersonalizado.setToolTip("Generar reporte personalizado")
 		self.__bloquearInterfaz(False)
-		self.calendario.clicked.disconnect()
+		try:
+			self.calendario.clicked.disconnect()
+		except TypeError:
+			pass
 		self.calendario.selectionChanged.connect(self.cambioDeDia)
 		self.botonPersonalizado.disconnect()
 		self.botonPersonalizado.clicked.connect(self.__elegirFechas)

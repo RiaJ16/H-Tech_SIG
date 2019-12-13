@@ -4,7 +4,7 @@ import os
 import qgis.utils
 import threading
 
-from qgis.core import QgsGeometry, QgsPointXY
+from qgis.core import Qgis, QgsGeometry, QgsPointXY
 from qgis.gui import QgsHighlight, QgsMapToolEmitPoint
 
 from PyQt5 import QtCore, uic
@@ -13,6 +13,8 @@ from PyQt5.QtGui import QColor, QPixmap
 from PyQt5.QtWidgets import QDialog, QLayout
 
 from .busy_icon import BusyIcon
+from .descargador_fotos import DescargadorFotos
+from .flotante import Flotante
 from .obtener_capa import ObtenerCapa
 from .online import Online
 from .validacion import Validacion
@@ -22,19 +24,25 @@ class MoverSensor(QObject):
 
 	signalEditado = pyqtSignal()
 
-	def __init__(self):
+	def __init__(self, online):
 		QObject.__init__(self)
 		self.iface = qgis.utils.iface
 		self.lienzo = self.iface.mapCanvas()
 		self.capaActiva = ObtenerCapa().capa()
 		self.h_list = []
-		self.online = Online()
+		self.online = online
+		self.fotoFlotante = Flotante()
 		self._signals()
 
 	def _signals(self):
 		self.online.signalSensorConsultado.connect(self.consultarSensor)
 		self.online.signalConsultarGrupo.connect(self.actualizarFoto)
 		self.online.signalErrorConexion.connect(self._errorConexion)
+
+	def disconnectSignals(self):
+		self.online.signalSensorConsultado.disconnect(self.consultarSensor)
+		self.online.signalConsultarGrupo.disconnect(self.actualizarFoto)
+		self.online.signalErrorConexion.disconnect(self._errorConexion)
 
 	def _errorConexion(self):
 		try:
@@ -46,26 +54,26 @@ class MoverSensor(QObject):
 			error = "Conéctese a internet para hacer uso de esta aplicación."
 			self.widget.etiqueta.setText(error)
 		except NameError:
-			error = "Conéctese a internet para hacer uso de esta aplicación."
-		self.iface.messageBar().pushMessage("Error de conexión", error, level=Qgis.Critical,duration=3)
+			pass
+			#error = "Conéctese a internet para hacer uso de esta aplicación."
+		#self.iface.messageBar().pushMessage("Error de conexión", error, level=Qgis.Critical,duration=3)
 
 	def _errorLogin(self):
-		try:
-			self.widget.setWindowTitle("Error de autenticación")
-			self.widget.labelGrupo.setText("Error de autenticación")
-			self.loading(False)
-			self.widget.boton.setEnabled(False)
-			self.__mostrarOcultar(False)
-			error = "No se ha iniciado la sesión. Inicie sesión y vuelva a intentarlo."
-			self.etiqueta.setText(error)
-		except NameError:
-			error = "No se ha iniciado la sesión. Inicie sesión y vuelva a intentarlo."
+		self.widget.setWindowTitle("Error de autenticación")
+		self.widget.labelGrupo.setText("Error de autenticación")
+		self.loading(False)
+		self.widget.boton.setEnabled(False)
+		self._mostrarOcultar(False)
+		error = "No se ha iniciado la sesión. Inicie sesión y vuelva a intentarlo."
+		self.widget.etiqueta.setText(error)
 		self.iface.messageBar().pushMessage("Error", error, level=Qgis.Critical,duration=3)
 
-	def _mostrarOcultar(self,flag):
-		self.widget.labelFoto.setVisible(flag)
+	def _mostrarOcultar(self,flag=True):
+		self.widget.botonFoto.setVisible(flag)
 		self.widget.labelDireccion.setVisible(flag)
 		self.widget.labelTipo.setVisible(flag)
+		self.widget.textoX.setEnabled(flag)
+		self.widget.textoY.setEnabled(flag)
 		self.widget.adjustSize()
 
 	def pasarObjetoGeografico(self, objetoGeografico):
@@ -95,11 +103,13 @@ class MoverSensor(QObject):
 			self.widget.textoY.textChanged.connect(self.resaltarPunto)
 			self.widget.boton.setEnabled(False)
 			self.widget.boton.clicked.connect(self.editar)
+			self.widget.botonFoto.clicked.connect(self.fotoFlotante.show)
 			self.widget.layout().setSizeConstraint(QLayout.SetFixedSize)
 			self.busy = BusyIcon(self.widget.layout())
 			self.busy.startAnimation()
 			self.busy.hide()
 			self.widget.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
+		self._mostrarOcultar()
 		self.widget.closeEvent = self.closeEvent
 		t1 = threading.Thread(target=self.online.consultarSensorPorIdFeature,args=(self.objetoGeografico.attribute('id'),))
 		t1.start()
@@ -149,38 +159,13 @@ class MoverSensor(QObject):
 			pass
 
 	def actualizarFoto(self):
-		try:
-			filename = self.online.grupo.foto
-		except:
-			filename = ""
-		if filename == "" or filename == None:
-			filename = "%s/.sigrdap/Fotos/nodisponible.png" % os.path.expanduser('~')
-		else:
-			filename = "%s/.sigrdap/Fotos/%s" % (os.path.expanduser('~'),filename)
-		foto = QPixmap(filename)
-		if foto.isNull():
-			url = filename.split('/')
-			url = url[len(url)-1]
-			t1 = threading.Thread(target=self.online.descargarFoto,args=(url,filename))
-			t1.start()
-			foto = QPixmap(filename)
-		newHeight = 80
-		try:
-			newWidth = foto.width()*newHeight/foto.height()
-		except:
-			newWidth = 0
-		if newWidth > 154:
-			newWidth = 154
-			newHeight = foto.height()*newWidth/foto.width()
-		self.widget.labelFoto.setPixmap(foto.scaled(newWidth,newHeight))
-		self.widget.adjustSize()
-		newWidth = foto.width()
-		newHeight = foto.height()
-		if newWidth > 1024:
-			newWidth = 1024
-			newHeight = newHeight * newWidth / foto.width()
-		html = "<p><img src=\'%s' width='%f' height='%f'></p>" % (filename,newWidth,newHeight)
-		self.widget.labelFoto.setToolTip(html)
+		descargadorFotos = DescargadorFotos(self.online)
+		miniatura = descargadorFotos.obtenerMiniatura()
+		self.widget.botonFoto.setIcon(miniatura[0])
+		self.widget.botonFoto.setIconSize(miniatura[1])
+		reduccion = descargadorFotos.obtenerReduccion()
+		self.fotoFlotante.setFixedSize(reduccion[1].width(), reduccion[1].height())
+		self.fotoFlotante.setText(reduccion[0])
 		self.loading(False)
 
 	def loading(self, flag=True):

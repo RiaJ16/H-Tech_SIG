@@ -38,20 +38,30 @@ class Alarmas():
 
 	def actualizar(self):
 		try:
+			bombas = self.online.consultarBombas()
 			layer = ObtenerCapa().capa()
 			provider = layer.dataProvider()
 			updateMap = {}
 			fieldId0 = provider.fields().indexFromName('id')
 			fieldId1 = provider.fields().indexFromName('alarma')
 			fieldId2 = provider.fields().indexFromName('tipoSensor')
+			fieldId3 = provider.fields().indexFromName('bomba')
+			fieldId4 = provider.fields().indexFromName('estadoB')
 			features = provider.getFeatures()
-			t1 = threading.Thread(target=self.online.actualizarEstados)
-			t1.start()
+			#t1 = threading.Thread(target=self.online.actualizarEstados)
+			#t1.start()
 			diferentes = False
 			for feature in features:
 				sensor = self.getSensor(feature.attribute(fieldId0))
-				updateMap[feature.id()] = {fieldId1:sensor.alarma,fieldId2:sensor.tipoSensor}
-				if not (sensor.alarma == feature.attribute(2)):
+				bomba = self.getBomba(feature.attribute(fieldId0), bombas)
+				if bomba == 0:
+					idBomba = 0
+					estadoB = 0
+				else:
+					idBomba = int(bomba['idGrupo'])
+					estadoB = int(bomba['estado'])
+				updateMap[feature.id()] = {fieldId1:sensor.alarma,fieldId2:sensor.tipoSensor,fieldId3:idBomba,fieldId4:estadoB}
+				if not (sensor.alarma == feature.attribute(2) and idBomba == feature.attribute(3) and estadoB == feature.attribute(4)):
 					diferentes = True
 			if diferentes:
 				#print("diferentes")
@@ -94,3 +104,9 @@ class Alarmas():
 		for sensor in sensores:
 			if sensor.idFeature == idFeature:
 				return sensor
+
+	def getBomba(self, idFeature, bombas):
+		for bomba in bombas:
+			if int(bomba['idFeature']) == idFeature:
+				return bomba
+		return 0

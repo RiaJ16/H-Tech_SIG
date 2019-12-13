@@ -25,6 +25,7 @@ import locale
 import os.path
 import platform
 
+from qgis.core import Qgis
 from qgis.PyQt.QtWidgets import QApplication
 
 from PyQt5.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, Qt, QSize
@@ -40,6 +41,7 @@ from .boton_nuevo import BotonNuevo
 from .buscar_capa import BuscarCapa
 from .click_lienzo import ClickLienzo
 from .direcciones_de_correo import DireccionesDeCorreo
+from .dragon.dragon import Dragon
 #from .dual import Dual
 from .limpiar_objetos import LimpiarObjetos
 from .login import Login
@@ -102,6 +104,11 @@ class SIGRDAP:
 
 		self.pluginIsActive = False
 
+	def _errorConexion(self):
+		self.internet = False
+		error = "Conéctese a internet para hacer uso de esta aplicación"
+		self.iface.messageBar().pushMessage("Error de conexión", error, level=Qgis.Critical,duration=3)
+
 	# noinspection PyMethodMayBeStatic
 	def tr(self, message):
 		# noinspection PyTypeChecker,PyArgumentList,PyCallByClass
@@ -152,6 +159,7 @@ class SIGRDAP:
 		self.ocultarIconos()
 		self.online = Online()
 		self.online.login(first=True)
+		self.online.signalErrorConexion.connect(self._errorConexion)
 		#self.toolbar.setIconSize(QSize(48,48))
 		self.online.signalPermisos.connect(self.ocultarIconos)
 		self.guiExtras()
@@ -229,14 +237,14 @@ class SIGRDAP:
 			parent=self.iface.mainWindow())
 		self.actions[5].setCheckable(True)
 		self.add_action(
-			':sigrdap/icons/dual.png',
-			text=self.tr(u'Iniciar recepción de datos'),
-			callback=self.modoDual,
-			icon_path_active=':sigrdap/icons/dual2.png',
+			':sigrdap/icons/bomba2.png',
+			text=self.tr(u'Consultar bombas'),
+			callback=self.historialBomba,
+			icon_path_active=':sigrdap/icons/bomba.png',
 			enabled_flag=True,
 			parent=self.iface.mainWindow())
 		self.actions[6].setCheckable(True)
-		self.actions[6].setVisible(False)
+		#self.actions[6].setVisible(False)
 		self.add_action(
 			':sigrdap/icons/picture.png',
 			text=self.tr(u'Administrar grupos'),
@@ -252,13 +260,20 @@ class SIGRDAP:
 			enabled_flag=True,
 			parent=self.iface.mainWindow())
 		self.add_action(
+			':sigrdap/icons/monitor.png',
+			text=self.tr(u'Monitor'),
+			callback=self.monitor,
+			icon_path_active=':sigrdap/icons/monitor2.png',
+			enabled_flag=True,
+			parent=self.iface.mainWindow())
+		self.add_action(
 			':sigrdap/icons/fullscreen.png',
 			text=self.tr(u'Pantalla completa'),
 			callback=self.togglePantallaCompleta,
 			icon_path_active=':sigrdap/icons/fullscreen2.png',
 			enabled_flag=True,
 			parent=self.iface.mainWindow())
-		self.actions[9].setCheckable(True)
+		self.actions[10].setCheckable(True)
 
 	def guiExtras(self):
 		self.iface.mainWindow().setWindowTitle("QGIS - H-Tech SIG")
@@ -309,7 +324,7 @@ class SIGRDAP:
 	def nuevo(self):
 		self.deshabilitarAcciones(1)
 		if not hasattr(self,'botonNuevo'):
-			self.botonNuevo = BotonNuevo()
+			self.botonNuevo = BotonNuevo(self.online)
 			try:
 				self.botonNuevo.signalNoCapa.connect(self.seleccionarCapa)
 			except:
@@ -340,7 +355,7 @@ class SIGRDAP:
 	def eliminar(self):
 		self.deshabilitarAcciones(4)
 		if self.actions[4].isChecked():
-			self.clickLienzo = ClickLienzo(0,self.online)
+			self.clickLienzo = ClickLienzo(4,self.online)
 			try:
 				self.clickLienzo.signalNoCapa.connect(self.seleccionarCapa)
 				self.clickLienzo.signalCambio.connect(self.conexionZigBee.actualizarTablaDatos)
@@ -351,6 +366,12 @@ class SIGRDAP:
 		self.deshabilitarAcciones(5)
 		if self.actions[5].isChecked():
 			self.clickLienzo = ClickLienzo(1,self.online)
+			self.clickLienzo.signalNoCapa.connect(self.seleccionarCapa)
+
+	def historialBomba(self):
+		self.deshabilitarAcciones(6)
+		if self.actions[6].isChecked():
+			self.clickLienzo = ClickLienzo(0,self.online)
 			self.clickLienzo.signalNoCapa.connect(self.seleccionarCapa)
 
 	def modoDual(self):
@@ -379,11 +400,21 @@ class SIGRDAP:
 		else:
 			self.actions[7].setChecked(False)
 
+	def monitor(self):
+		if not hasattr(self,'dragon'):
+			self.dragon = Dragon(True)
+		else:
+			if self.dragon.running:
+				self.dragon.showNormal()
+				self.dragon.activateWindow()
+			else:
+				self.dragon = Dragon(True)
+
 	def togglePantallaCompleta(self):
 		if not hasattr(self,'pantallaCompleta'):
 			self.pantallaCompleta = PantallaCompleta()
 			self.pantallaCompleta.restaurar()
-		if(self.actions[9].isChecked()):
+		if(self.actions[10].isChecked()):
 			self.pantallaCompleta.guardarBarras()
 			self.pantallaCompleta.ocultarBarras()
 			self.pantallaCompleta.setPresionado(1)
@@ -410,7 +441,7 @@ class SIGRDAP:
 			self.direccionesDeCorreo.hide()
 			del self.direccionesDeCorreo
 		for action in self.actions:
-			if action is not self.actions[9]:
+			if action is not self.actions[10]:
 			#if action is not self.actions[6] and action is not self.actions[7]:
 				if action is not self.actions[actual]:
 					action.setChecked(False)
@@ -424,7 +455,7 @@ class SIGRDAP:
 		accion = self.iface.actionPan()
 		group.addAction(accion)
 		#group.removeAction(self.actions[6])
-		group.removeAction(self.actions[9])
+		group.removeAction(self.actions[10])
 
 	def actualizarTiempoReal(self):
 		start_worker(self.tiempoReal,self.iface,'Iniciado el monitoreo en tiempo real')

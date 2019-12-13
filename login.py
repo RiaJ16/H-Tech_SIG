@@ -10,7 +10,7 @@ from qgis.core import *
 from qgis.gui import *
 
 from PyQt5 import QtWidgets, uic
-from PyQt5.QtGui import QPixmap, QImage, QMovie
+from PyQt5.QtGui import QIcon, QImage, QMovie, QPixmap
 from PyQt5.QtWidgets import QLayout
 from PyQt5.QtCore import Qt, QObject, pyqtSignal, pyqtSlot, QSize
 
@@ -35,18 +35,24 @@ class Login(QtWidgets.QDialog,FORM_CLASS,QObject):
 		self.setupUi(self)
 		self.iface = qgis.utils.iface
 		self.online = online
-		img = QImage(":Varios/icons/logosig.png")
-		#img = img.scaled(475, 148, Qt.KeepAspectRatio)
+		self.setWindowFlags(Qt.SplashScreen | Qt.WindowStaysOnTopHint)
+		self.botonCerrar.enterEvent = self.cerrarEnterEvent
+		self.botonCerrar.leaveEvent = self.cerrarLeaveEvent
+		img = QImage(":Varios/icons/logosig2.png")
+		#img = img.scaled(238, 74, Qt.KeepAspectRatio)
 		self.logo.setPixmap(QPixmap.fromImage(img))
-		self.busy = BusyIcon(self.layout())
+		self.busy = BusyIcon(self.layout(), inverted=True)
 		self.busy.startAnimation()
 		self.loading()
 		#self.logo.setScaledContents(True);
 		self.layout().setSizeConstraint(QLayout.SetFixedSize)
 		self.botonLogin.clicked.connect(self.iniciarConexion)
 		self.botonLogout.clicked.connect(self.desconectar)
+		self.botonAceptar.clicked.connect(self.close)
+		self.botonCerrar.clicked.connect(self.close)
 		self.online.signalLoggedIn.connect(self.verificarConexion)
 		self.online.signalLoggedOut.connect(self.logout)
+		self.online.signalUsuarioConsultado.connect(self.mostrarSaludo)
 		t1 = threading.Thread(target=self.online.login)
 		t1.start()
 
@@ -88,7 +94,11 @@ class Login(QtWidgets.QDialog,FORM_CLASS,QObject):
 			self.__comprobarDirectorio()
 			self.guardarDatos()
 			LimpiarObjetos().limpiar()
+			hiloConsultarUsuario = threading.Thread(target=self.online.consultarUsuario)
+			hiloConsultarUsuario.start()
 		else:
+			hiloConsultarUsuario = threading.Thread(target=self.online.consultarUsuario)
+			hiloConsultarUsuario.start()
 			self.mostrarOcultar(True)
 
 	def __comprobarDirectorio(self):
@@ -97,14 +107,14 @@ class Login(QtWidgets.QDialog,FORM_CLASS,QObject):
 			os.makedirs(directory)
 
 	def loading(self):
-		elementos = [self.spacer1,self.spacer2,self.spacer3,self.editUsuario,self.editPassword,self.botonLogin,self.botonLogout]
+		elementos = [self.spacer1, self.spacer2, self.editUsuario, self.editPassword, self.botonLogin, self.botonLogout, self.botonAceptar, self.botonForgot, self.spacerF1, self.iconUser, self.iconLock]
 		for elemento in elementos:
 			elemento.setVisible(False)
 		self.busy.show()
 
 	def mostrarOcultar(self,bandera):
-		conectado = [self.botonLogout]
-		desconectado = [self.spacer2,self.spacer3,self.editUsuario,self.editPassword,self.botonLogin]
+		conectado = [self.spacerC1, self.botonLogout, self.spacerC2, self.botonAceptar]
+		desconectado = [self.spacer1, self.spacer2,self.editUsuario,self.editPassword,self.botonLogin, self.iconUser, self.iconLock, self.botonForgot, self.spacerF1]
 		for elemento in conectado:
 			elemento.setVisible(bandera)
 		for elemento in desconectado:
@@ -136,6 +146,28 @@ class Login(QtWidgets.QDialog,FORM_CLASS,QObject):
 			usuario = ''
 		return usuario
 
+	def mostrarSaludo(self, nombre, genero):
+		nombreCorto = nombre.split(' ')[0]
+		saludo = ''
+		if genero == 1:
+			saludo = "Bienvenido"
+		elif genero == 2:
+			saludo = "Bienvenida"
+		elif genero == 3:
+			saludo = "Bienvenide"
+		if nombreCorto == '':
+			self.labelBienvenido.setText("¡{}!".format(saludo, nombreCorto))
+		else:
+			self.labelBienvenido.setText("¡{}, {}!".format(saludo, nombreCorto))
+
+	def cerrarEnterEvent(self, event):
+		icono = QIcon(":General/icons/closeicon.png")
+		self.botonCerrar.setIcon(icono)
+
+	def cerrarLeaveEvent(self, event):
+		icono = QIcon(":General/icons/closeicon-d.png")
+		self.botonCerrar.setIcon(icono)
+
 	def desconectar(self):
 		self.botonLogout.setEnabled(False)
 		self.busy.show()
@@ -148,6 +180,8 @@ class Login(QtWidgets.QDialog,FORM_CLASS,QObject):
 		self.mostrarOcultar(False)
 		self.estado = False
 		self.editPassword.setText('')
+		self.labelBienvenido.setText("Inicio de sesión")
+		self.editUsuario.setText(self.leerDatos())
 		self.signalLoggedOut.emit()
 
 	def reconectar(self):

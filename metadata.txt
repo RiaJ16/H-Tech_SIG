@@ -10,12 +10,12 @@
 name=H-Tech SIG
 qgisMinimumVersion=3.0
 description=Sistema de Información Geográfica que permite realizar operaciones relacionadas con una Red de Distribución de Agua Potable.
-version=3.10
+version=3.11
 author=Jair Nájera @ H-Tech
 email=jair.najera@htech.mx
 
 about=Esta herramienta permite la realización de operaciones de una Red de Distribución de Agua Potable. Para ello, se comunica con el servidor H-Tech Cloud. Necesitas tener una cuenta de H-Tech Cloud para poder hacer uso de todas las funciones de esta app.
-Changelog: -La aplicación ahora funciona en Mac OSX.<br>-Las coordenadas del sensor se pueden cambiar con una nueva función.<br>-Corregidos bugs.
+Changelog: -Agregado el sistema H-Tech Monitor.<br>-Corregidos bugs.
 tracker=https://github.com/RiaJ16/H-Tech_SIG/issues
 repository=https://github.com/RiaJ16/H-Tech_SIG
 # End of mandatory metadata

@@ -31,12 +31,12 @@ class OpcionesSensor(QWidget, FORM_CLASS):
 	ACTIVE_STYLE_SHEET = "font-size: 14pt;color: #FFFFFF;background-color: #3498db;border-radius: 15px;"
 
 
-	def __init__(self,parent=None):
+	def __init__(self, online, parent=None):
 		"""Constructor."""
 		super(OpcionesSensor, self).__init__(parent)
 		self.setupUi(self)
 		self.iface = qgis.utils.iface
-		self.online = Online()
+		self.online = online
 		self.publicador = Publisher()
 		self.alarma = 0
 		self._visualizacionInicial()
@@ -251,6 +251,7 @@ class OpcionesSensor(QWidget, FORM_CLASS):
 			anexo = "_" + self.sensor.idDispositivo
 		password = self.online.consultarPasswordIoT(idDispositivo, flagCoordinador)
 		if self.comprobarPassword(password):
+			print("i.i")
 			password = password[0]['password']
 			topic = "/sensores/{}".format(idDispositivo)
 			for i in range(0,self.fecha.listaFecha.count()):
@@ -270,11 +271,14 @@ class OpcionesSensor(QWidget, FORM_CLASS):
 			qgis.utils.iface.messageBar().pushMessage("Aviso", strings.fecha[3], level=Qgis.Info,duration=4)
 
 	def comprobarPassword(self,password):
-		if password == 1:
-			qgis.utils.iface.messageBar().pushMessage("Error", strings.general[1], level=Qgis.Critical,duration=7)
+		if password == []:
 			return False
-		elif password == 2:
-			qgis.utils.iface.messageBar().pushMessage("Error", strings.general[2], level=Qgis.Critical,duration=7)
-			return False
+		else:
+			if password == 1:
+				qgis.utils.iface.messageBar().pushMessage("Error", strings.general[1], level=Qgis.Critical,duration=7)
+				return False
+			elif password == 2:
+				qgis.utils.iface.messageBar().pushMessage("Error", strings.general[2], level=Qgis.Critical,duration=7)
+				return False
 		return True
 

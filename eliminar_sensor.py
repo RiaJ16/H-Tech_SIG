@@ -13,6 +13,8 @@ from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot
 from PyQt5.QtGui import QPixmap
 
 from .busy_icon import BusyIcon
+from .descargador_fotos import DescargadorFotos
+from .flotante import Flotante
 from .obtener_capa import ObtenerCapa
 from .online import Online
 from .sensor import Sensor
@@ -32,6 +34,7 @@ class EliminarSensor(QtWidgets.QDialog, FORM_CLASS, QObject):
 		self.busy = BusyIcon(self.layout())
 		self.busy.startAnimation()
 		self.online = online
+		self.fotoFlotante = Flotante()
 		self.internet = True
 		self.__signals()
 		self.inicializar()
@@ -41,6 +44,12 @@ class EliminarSensor(QtWidgets.QDialog, FORM_CLASS, QObject):
 		self.online.signalSensorConsultado.connect(self.consultarSensor)
 		self.online.signalConsultarGrupo.connect(self.actualizarFoto)
 		self.online.signalErrorConexion.connect(self.__errorConexion)
+		self.botonFoto.clicked.connect(self.fotoFlotante.show)
+
+	def disconnectSignals(self):
+		self.online.signalSensorConsultado.disconnect(self.consultarSensor)
+		self.online.signalConsultarGrupo.disconnect(self.actualizarFoto)
+		self.online.signalErrorConexion.disconnect(self.__errorConexion)
 
 	def __errorConexion(self):
 		self.setWindowTitle("Error de conexión")
@@ -50,7 +59,7 @@ class EliminarSensor(QtWidgets.QDialog, FORM_CLASS, QObject):
 		self.__mostrarOcultar(False)
 		error = "Conéctese a internet para hacer uso de esta aplicación."
 		self.label.setText(error)
-		self.iface.messageBar().pushMessage("Error de conexión", error, level=Qgis.Critical,duration=3)
+		#self.iface.messageBar().pushMessage("Error de conexión", error, level=Qgis.Critical,duration=3)
 
 	def __errorLogin(self):
 		self.setWindowTitle("Error de autenticación")
@@ -63,7 +72,7 @@ class EliminarSensor(QtWidgets.QDialog, FORM_CLASS, QObject):
 		self.iface.messageBar().pushMessage("Error", error, level=Qgis.Critical,duration=3)
 
 	def __mostrarOcultar(self,flag):
-		self.labelFoto.setVisible(flag)
+		self.botonFoto.setVisible(flag)
 		self.labelDireccion.setVisible(flag)
 		self.labelTipo.setVisible(flag)
 		self.adjustSize()
@@ -127,39 +136,13 @@ class EliminarSensor(QtWidgets.QDialog, FORM_CLASS, QObject):
 		return id
 
 	def actualizarFoto(self):
-		try:
-			filename = self.online.grupo.foto
-		except:
-			filename = ""
-		if filename == "" or filename == None:
-			filename = "%s/.sigrdap/Fotos/nodisponible.png" % os.path.expanduser('~')
-		else:
-			filename = "%s/.sigrdap/Fotos/%s" % (os.path.expanduser('~'),filename)
-		foto = QPixmap(filename)
-		if foto.isNull():
-			url = filename.split('/')
-			url = url[len(url)-1]
-			t1 = threading.Thread(target=self.online.descargarFoto,args=(url,filename))
-			t1.start()
-			foto = QPixmap(filename)
-		newHeight = 80
-		try:
-			newWidth = foto.width()*newHeight/foto.height()
-		except:
-			newWidth = 0
-		if newWidth > 154:
-			newWidth = 154
-			newHeight = foto.height()*newWidth/foto.width()
-		self.labelFoto.setPixmap(foto.scaled(newWidth,newHeight))
-		self.adjustSize()
-		self.adjustSize()
-		newWidth = foto.width()
-		newHeight = foto.height()
-		if newWidth > 1024:
-			newWidth = 1024
-			newHeight = newHeight * newWidth / foto.width()
-		html = "<p><img src=\'%s' width='%f' height='%f'></p>" % (filename,newWidth,newHeight)
-		self.labelFoto.setToolTip(html)
+		descargadorFotos = DescargadorFotos(self.online)
+		miniatura = descargadorFotos.obtenerMiniatura()
+		self.botonFoto.setIcon(miniatura[0])
+		self.botonFoto.setIconSize(miniatura[1])
+		reduccion = descargadorFotos.obtenerReduccion()
+		self.fotoFlotante.setFixedSize(reduccion[1].width(), reduccion[1].height())
+		self.fotoFlotante.setText(reduccion[0])
 		self.loading(False)
 
 	def loading(self,flag=True,asFlag=True):

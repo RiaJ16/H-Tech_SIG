@@ -1,10 +1,14 @@
 <RCC>
   <qresource prefix="sigrdap">
+    <file>icons/monitor.png</file>
+    <file>icons/monitor2.png</file>
     <file>icons/mover_s.png</file>
     <file>icons/mover_s2.png</file>
     <file>icons/configsensor2.png</file>
     <file>icons/configsensor3.png</file>
     <file>icons/configsensor.png</file>
+    <file>icons/bomba.png</file>
+    <file>icons/bomba2.png</file>
     <file>icons/xbee.png</file>
     <file>icons/email.png</file>
     <file>icons/email2.png</file>
@@ -60,6 +64,14 @@
   <qresource prefix="VentanaAsociar">
     <file>icons/coordenadas.png</file>
   </qresource>
+  <qresource prefix="General">
+    <file>icons/closeicon-d.png</file>
+    <file>icons/lockicon-i.png</file>
+    <file>icons/usericon-i.png</file>
+    <file>icons/closeicon.png</file>
+    <file>icons/lockicon.png</file>
+    <file>icons/usericon.png</file>
+  </qresource>
   <qresource prefix="Calendario">
     <file>icons/rep-cancelar.png</file>
     <file>icons/rep-personalizable.png</file>
@@ -80,6 +92,9 @@
     <file>icons/act-tabla.png</file>
   </qresource>
   <qresource prefix="Varios">
+    <file>icons/loading-i.gif</file>
+    <file>icons/logosig2.png</file>
+    <file>icons/chalk.png</file>
     <file>icons/bomba-3.gif</file>
     <file>icons/SIGRDAP.png</file>
     <file>icons/logosig.png</file>

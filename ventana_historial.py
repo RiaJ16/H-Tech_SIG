@@ -1,5 +1,6 @@
 # -*- coding: UTF8 -*-
 
+import ctypes
 import datetime
 import locale
 import os
@@ -12,14 +13,16 @@ from qgis.core import *
 from qgis.gui import *
 
 from PyQt5 import QtGui, uic, QtCore, QtWidgets
-from PyQt5.QtCore import Qt, QTextCodec, QTime, QRectF
+from PyQt5.QtCore import Qt, QTextCodec, QTime, QRectF, QPoint, QSize
 from PyQt5.QtGui import QBrush, QColor, QCursor, QDoubleValidator, QFont, QIcon, QPen, QPixmap
-from PyQt5.QtWidgets import QApplication, QGraphicsScene, QHBoxLayout, QHeaderView, QLabel, QLayout, QPushButton, QTableWidgetItem, QWidget
+from PyQt5.QtWidgets import QApplication, QGraphicsScene, QHBoxLayout, QHeaderView, QLabel, QLayout, QPushButton, QTableWidgetItem, QToolTip, QWidget
 
 from .busy_icon import BusyIcon
 from .calendario import Calendario
+from .descargador_fotos import DescargadorFotos
 from .graficas import Graficas
 from .fecha_widget_item import FechaWidgetItem
+from .flotante import Flotante
 from .obtener_capa import ObtenerCapa
 from .opciones_sensor import OpcionesSensor
 from .sensor import Sensor
@@ -40,13 +43,14 @@ class VentanaHistorial(QtWidgets.QDialog, FORM_CLASS):
 		self.iface = qgis.utils.iface
 		self.semaforo = True
 		self.loadedRows = 0
+		self.fotoFlotante = Flotante()#parent = self.iface.mainWindow())
 		self.__visualizacionInicial()
 		self.comprobarPermisos()
 		self.__signals()
 		self.__estilizarTabla()
 
 	#INICIALIZACIÓN	
-		
+
 	def __visualizacionInicial(self):
 		#self.__habilitarBotones(False)
 		self.graficoBarra.setVisible(False)
@@ -60,9 +64,15 @@ class VentanaHistorial(QtWidgets.QDialog, FORM_CLASS):
 		#self.actualizarFoto()
 
 	def __habilitarBotones(self,bandera):
-		botones = [self.botonGraficar,self.botonReportes,self.seleccionarPeriodo,self.year,self.month,self.fechaInicial,self.fechaFinal,self.horaInicial,self.horaFinal,self.day]
+		botones = [self.botonGraficar,self.botonReportes,self.seleccionarPeriodo,self.year,self.month,self.fechaInicial,self.fechaFinal,self.horaInicial,self.horaFinal,self.day,self.botonConfiguracion]
 		for boton in botones:
 			boton.setEnabled(bandera)
+		if not bandera:
+			self.labelValor.setText("...")
+			self.__reiniciarTabla()
+			simbolos = [self.iconOff, self.iconOn, self.labelDesconocido, self.labelSinConexion, self.labelIntermitente, self.labelConectado]
+			for simbolo in simbolos:
+				simbolo.setVisible(bandera)
 
 	def __mostrarOcultarEstado(self,conectado=False,intermitente=False,sinConexion=False,desconocido=False):
 		self.labelConectado.setVisible(conectado)
@@ -95,6 +105,13 @@ class VentanaHistorial(QtWidgets.QDialog, FORM_CLASS):
 		self.botonConfiguracion.released.connect(self.iconoSoltado)
 		self.botonConfiguracion.clicked.connect(self.configuracion)
 		self.tablaValores.verticalScrollBar().valueChanged.connect(self.scrolleado)
+		self.botonFoto.clicked.connect(self.fotoFlotante.show)
+
+	def disconnectSignals(self):
+		self.online.signalSensorConsultado.disconnect(self.cargarDatosSensor)
+		self.online.signalConsultarGrupo.disconnect(self.actualizarFoto)
+		self.online.signalHistoricos.disconnect(self.cargarRegistros)
+		self.online.signalErrorConexion.disconnect(self.__errorConexion)
 
 	def objetoGeograficoSeleccionado(self,objetoGeografico):
 		self.objetoGeografico = objetoGeografico
@@ -107,7 +124,7 @@ class VentanaHistorial(QtWidgets.QDialog, FORM_CLASS):
 		self.__habilitarBotones(False)
 		self.busy.hide()
 		error = "Conéctese a internet para hacer uso de esta aplicación"
-		self.iface.messageBar().pushMessage("Error de conexión", error, level=Qgis.Critical,duration=3)
+		#self.iface.messageBar().pushMessage("Error de conexión", error, level=Qgis.Critical,duration=3)
 		self.adjustSize()
 
 	#FUNCIONAMIENTO
@@ -243,7 +260,7 @@ class VentanaHistorial(QtWidgets.QDialog, FORM_CLASS):
 		t1.start()
 
 	def cargarDatosSensor(self):
-		sensor = self.online.sensor
+		sensor = self.online.getSensor()
 		self.semaforoDatosSensor = False
 		if sensor.idSensor == 0:
 			self.setWindowTitle("Error")
@@ -272,8 +289,11 @@ class VentanaHistorial(QtWidgets.QDialog, FORM_CLASS):
 			self.setWindowTitle("%s: sensor de %s" % (sensor.grupoTexto,sensor.tipoSensorTexto.lower()))
 			if sensor.tipoSensor == 3:
 				self.graficoBarra.setVisible(True)
+				#self.actualizarGrafica()
+				self.botonReportes.setVisible(False)
 			else:
 				self.graficoBarra.setVisible(False)
+				self.botonReportes.setVisible(True)
 				self.adjustSize()
 			self.cambiarEstado(sensor.estado)
 			self.adjustSize()
@@ -302,41 +322,43 @@ class VentanaHistorial(QtWidgets.QDialog, FORM_CLASS):
 		else:
 			return ''
 
-	def actualizarFoto(self):
+	def actualizarGrafica(self, sensor):
+		volumen = sensor.area * sensor.altura
+		self.graficoBarra.setAlignment(Qt.AlignBottom|Qt.AlignLeft)
+		scene = QGraphicsScene()
+		altura = self.graficoBarra.size().height()
 		try:
-			filename = self.online.grupo.foto
-		except:
-			filename = ""
-		if filename == "" or filename == None:
-			filename = "%s/.sigrdap/Fotos/nodisponible.png" % os.path.expanduser('~')
+			barra = sensor.datoActual * altura / volumen
+			if barra > altura:
+				barra = altura
+			porcentaje = sensor.datoActual / volumen * 100
+		except ZeroDivisionError:
+			barra = 0
+			porcentaje = 0
+		grafica = QRectF(0, 0, self.graficoBarra.size().width(), int(barra))
+		scene.addRect(grafica, QPen(QColor("#3498db")), QBrush(QColor("#3498db")))
+		porcentajeTexto = "{:2.0f}%".format(porcentaje)
+		textItemValor = scene.addText(porcentajeTexto, QFont("Verdana", 7))
+		if porcentaje == 100:
+			textItemValor.setDefaultTextColor(QColor(255,255,255))
+			textItemValor.setPos(-4,0)
+		elif porcentaje > 95:
+			textItemValor.setDefaultTextColor(QColor(255,255,255))
+			textItemValor.setPos(1,0)
 		else:
-			filename = "%s/.sigrdap/Fotos/%s" % (os.path.expanduser('~'),filename)
-		foto = QPixmap(filename)
-		if foto.isNull():
-			url = filename.split('/')
-			url = url[len(url)-1]
-			t1 = threading.Thread(target=self.online.descargarFoto,args=(url,filename))
-			t1.start()
-			#self.online.descargarFoto(url,filename)
-			foto = QPixmap(filename)
-		newHeight = 80
-		try:
-			newWidth = foto.width()*newHeight/foto.height()
-		except:
-			newWidth = 0
-		if newWidth > 154:
-			newWidth = 154
-			newHeight = foto.height()*newWidth/foto.width()
-		self.labelFoto.setPixmap(foto.scaled(newWidth,newHeight))
-		self.adjustSize()
-		self.adjustSize()
-		newWidth = foto.width()
-		newHeight = foto.height()
-		if newWidth > 1024:
-			newWidth = 1024
-			newHeight = newHeight * newWidth / foto.width()
-		html = "<p><img src=\'%s' width='%f' height='%f'></p>" % (filename,newWidth,newHeight)
-		self.labelFoto.setToolTip(html)
+			textItemValor.setDefaultTextColor(QColor("#2980b9"))
+			textItemValor.setPos(1,-20)
+		self.graficoBarra.setScene(scene)
+		self.graficoBarra.setToolTip("El tanque está {} lleno".format(porcentajeTexto))
+
+	def actualizarFoto(self):
+		descargadorFotos = DescargadorFotos(self.online)
+		miniatura = descargadorFotos.obtenerMiniatura()
+		self.botonFoto.setIcon(miniatura[0])
+		self.botonFoto.setIconSize(miniatura[1])
+		reduccion = descargadorFotos.obtenerReduccion()
+		self.fotoFlotante.setFixedSize(reduccion[1].width(), reduccion[1].height())
+		self.fotoFlotante.setText(reduccion[0])
 
 	def iconoPresionado(self):
 		icon = QIcon(':sigrdap/icons/configsensor2.png')
@@ -348,11 +370,12 @@ class VentanaHistorial(QtWidgets.QDialog, FORM_CLASS):
 
 	def configuracion(self):
 		if not hasattr(self,'opcionesSensor'):
-			self.opcionesSensor = OpcionesSensor()
+			self.opcionesSensor = OpcionesSensor(self.online)
 		else:
 			self.opcionesSensor.show()
 			self.opcionesSensor.activateWindow()
 		self.opcionesSensor.setSensor(self.online.sensor,self.windowTitle())
+		self.close()
 		try:
 			self.opcionesSensor.setCoordinador(self.coordinador)
 		except:
@@ -365,6 +388,7 @@ class VentanaHistorial(QtWidgets.QDialog, FORM_CLASS):
 		self.busy.show()
 		t1 = threading.Thread(target=self.hiloFiltrar)
 		t1.start()
+		#self.hiloFiltrar()
 
 	def hiloFiltrar(self,bandera=False):
 		fechaInicial = "%04d%02d%02d" % (self.fechaInicial.date().year(), self.fechaInicial.date().month(), self.fechaInicial.date().day())
@@ -373,12 +397,12 @@ class VentanaHistorial(QtWidgets.QDialog, FORM_CLASS):
 		horaFinal = "%02d%02d%02d" % (self.horaFinal.time().hour(),self.horaFinal.time().minute(),self.horaFinal.time().second())
 		fechaHoraInicial = "%s%s" % (fechaInicial,horaInicial)
 		fechaHoraFinal = "%s%s" % (fechaFinal,horaFinal)
-		#t1 = threading.Thread(target=self.online.consultarHistoricos,args=(1,fechaHoraInicial,fechaHoraFinal))
-		#t1.start()
 		self.semaforoHistoricos = int((int(fechaHoraInicial) + int(fechaHoraFinal))/1000000)
 		while self.semaforoDatosSensor:
 			time.sleep(0.1)
-		self.online.consultarHistoricos(self.online.sensor.idSensor,fechaHoraInicial,fechaHoraFinal)
+		tConsultarHistoricos = threading.Thread(target=self.online.consultarHistoricos,args=(self.online.getSensor().idSensor,fechaHoraInicial,fechaHoraFinal))
+		#self.online.consultarHistoricos(self.online.getSensor().idSensor,fechaHoraInicial,fechaHoraFinal)
+		tConsultarHistoricos.start()
 
 	def cargarRegistros(self,token):
 		if token == self.semaforoHistoricos:
@@ -483,3 +507,15 @@ class VentanaHistorial(QtWidgets.QDialog, FORM_CLASS):
 
 	def cerrar(self):
 		self.hide()
+
+#EVENTOOOOOOS
+
+	def resizeEvent(self, event):
+		toReturn = super().resizeEvent(event)
+		try:
+			sensor = self.online.getSensor()
+			if int(sensor.tipoSensor) == 3:
+				self.actualizarGrafica(sensor)
+		except AttributeError:
+			pass
+		return toReturn

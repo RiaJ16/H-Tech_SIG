@@ -10,7 +10,7 @@ from qgis.gui import *
 
 from PyQt5 import QtWidgets, uic
 from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot, QSize
-from PyQt5.QtGui import QValidator, QMovie
+from PyQt5.QtGui import QIcon, QMovie, QValidator
 from PyQt5.QtWidgets import QComboBox, QLabel, QLineEdit, QPushButton
 
 from .alarmas import Alarmas
@@ -28,17 +28,21 @@ FORM_CLASS, _ = uic.loadUiType(os.path.join(
 class VentanaDatos(QtWidgets.QDialog, FORM_CLASS,QObject):
 
 	signalCambio = pyqtSignal()
+	signalCerrada = pyqtSignal()
 	internet = True
 
-	def __init__(self,direccion='',parent=None):
+	def __init__(self, online, direccion='', parent=None, editar=False):
 		"""Constructor."""
 		QObject.__init__(self)
 		super(VentanaDatos, self).__init__(parent)
 		self.setupUi(self)
+		if editar:
+			self.setWindowIcon(QIcon(":/sigrdap/icons/edit.png"))
+		self.botonOnline.setVisible(False)
 		self.iface = qgis.utils.iface
-		self.online = Online()
-		if not self.online.login():
-			self.internet = False
+		self.online = online
+		#if not self.online.login():
+		#	self.internet = False
 		self.__signals()
 		self.editIdDispositivo.setText(str(direccion))
 		self.busy = BusyIcon(self.layout())
@@ -48,7 +52,7 @@ class VentanaDatos(QtWidgets.QDialog, FORM_CLASS,QObject):
 		#	self.llenarLista()
 
 	def __signals(self):
-		self.online.signalErrorConexion.connect(self.__errorConexion)
+		#self.online.signalErrorConexion.connect(self.__errorConexion)
 		self.botonGuardar.clicked.connect(self.validarAlEnviar)
 		self.editAltura.textChanged.connect(self.actualizarMaximo)
 		self.online.signalMunicipios.connect(self.__llenarMunicipios)
@@ -59,7 +63,16 @@ class VentanaDatos(QtWidgets.QDialog, FORM_CLASS,QObject):
 		self.online.signalConsultarId.connect(self.hiloSensor)
 		self.selectorTipoSensor.currentIndexChanged.connect(self.sensorCambiado)
 		self.online.signalSensorConsultado.connect(self.obtenerSensor)
-		self.online.signalLoggedIn.connect(self.__mostrarVentana)
+		self.online.signalLoggedIn.connect(self._mostrarVentana)
+
+	def disconnectSignals(self):
+		self.online.signalMunicipios.disconnect(self.__llenarMunicipios)
+		self.online.signalTiposSensor.disconnect(self.__llenarTiposSensor)
+		self.online.signalGrupos.disconnect(self.__llenarGrupos)
+		self.online.signalGenerarId.disconnect(self.__generarId)
+		self.online.signalConsultarId.disconnect(self.hiloSensor)
+		self.online.signalSensorConsultado.connect(self.obtenerSensor)
+		self.online.signalLoggedIn.disconnect(self._mostrarVentana)
 
 	def __errorConexion(self):
 		self.internet = False
@@ -82,8 +95,9 @@ class VentanaDatos(QtWidgets.QDialog, FORM_CLASS,QObject):
 			#self.__errorConexion()
 			pass
 		self.adjustSize()
+		self.adjustSize()
 
-	def __mostrarVentana(self,estado):
+	def _mostrarVentana(self,estado):
 		if estado == 0 or estado == 1:
 			if self.internet:
 				self.activateWindow()
@@ -119,25 +133,30 @@ class VentanaDatos(QtWidgets.QDialog, FORM_CLASS,QObject):
 
 	def adaptarCampos(self,bool1,bool2,bool3,texto,bandera,bool4=True):
 		self.editNivelMaximo.setVisible(bool1)
+		self.labelMax.setVisible(bool1)
 		self.labelDerMax.setVisible(bool1)
+		self.labelMin.setVisible(bool1)
 		self.labelDerMin.setVisible(bool1)
 		self.editNivelMinimo.setVisible(bool1)
-		self.editAltura.setVisible(False)#bool2)
-		self.labelDerAlt.setVisible(False)#bool2)
-		self.editArea.setVisible(False)#bool3)
-		self.labelDerArea.setVisible(False)#bool3)
+		self.labelAltura.setVisible(bool2)
+		self.editAltura.setVisible(bool2)
+		self.labelDerAlt.setVisible(bool2)
+		self.labelArea.setVisible(bool2)
+		self.editArea.setVisible(bool2)
+		self.labelDerArea.setVisible(bool2)
 		self.labelDerMax.setText(texto)
 		self.labelDerMin.setText(texto)
 		self.activarAlarma.setVisible(bool4)
 		#self.labelAlarma2.setVisible(bool4)
-		self.editGrafica.setVisible(not bool2)
 		self.labelDerGrafica.setText(texto)
-		self.labelDerGrafica.setVisible(not bool2)
+		if bool2:
+			self.labelDerGrafica.setText("m³")
 		if not bandera:
 			if not bool1:
 				self.activarAlarma.setChecked(False)
 			else:
 				self.activarAlarma.setChecked(True)
+		self.botonOnline.setVisible(False)
 		self.adjustSize()
 		self.adjustSize()
 
@@ -187,11 +206,14 @@ class VentanaDatos(QtWidgets.QDialog, FORM_CLASS,QObject):
 		alarma = 0
 		GPRS = 0
 		if self.activarAlarma.isChecked():
-			alarma = 1
+			if int(self.online.getSensor().alarma) == 0:
+				alarma = 1
+			else:
+				alarma = self.online.getSensor().alarma
 		if self.botonOnline.isChecked():
 			GPRS = 1
 		grupo = self.listaGrupos[self.selectorGrupo.currentIndex()]
-		sensor = Sensor(self.id,self.editIdDispositivo.text(),self.idFeature,self.editCalle.text(),self.editColonia.text(),self.editCP.text(),self.selectorTipoSensor.currentIndex()+1,self.selectorMunicipio.currentIndex()+1,self.editArea.text(),self.editNivelMaximo.text(),self.editNivelMinimo.text(),alarma,self.editAltura.text(),grupo=grupo.getIdGrupo(),online=GPRS,maximo=self.editGrafica.text(),x=self.coordenadaX,y=self.coordenadaY,idSubsistema=grupo.getIdSubsistema())
+		sensor = Sensor(self.id,self.editIdDispositivo.text(),self.idFeature,self.editCalle.text(),self.editColonia.text(),self.editCP.text(),self.selectorTipoSensor.currentIndex()+1,self.selectorMunicipio.currentIndex()+1,self.editArea.text(),self.editNivelMaximo.text(),self.editNivelMinimo.text(),alarma,self.editAltura.text(),datoActual=self.online.getSensor().datoActual,grupo=grupo.getIdGrupo(),online=GPRS,maximo=self.editGrafica.text(),x=self.coordenadaX,y=self.coordenadaY,idSubsistema=grupo.getIdSubsistema())
 		if not banderaEditar:
 			if self.online.insertarSensor(sensor):
 				aviso = "El nuevo sensor se almacenó correctamente"
@@ -215,7 +237,7 @@ class VentanaDatos(QtWidgets.QDialog, FORM_CLASS,QObject):
 	def validar(self):
 		self.validacion = Validacion(self.sender)
 		self.validacion.validarDoble([self.editArea,self.editNivelMaximo,self.editNivelMinimo,self.editAltura,self.editGrafica])
-		self.validacion.validarRegExp([self.editIdDispositivo,self.editCalle,self.editColonia,self.editCP],'[\w|\s]+')
+		self.validacion.validarRegExp([self.editIdDispositivo,self.editCalle,self.editColonia,self.editCP],'[\w|\s|\.]+')
 
 	def validarAlEnviar(self):
 		self.busy.show()
@@ -302,9 +324,9 @@ class VentanaDatos(QtWidgets.QDialog, FORM_CLASS,QObject):
 
 	def limpiarVentana(self):
 		self.editIdDispositivo.setText('')
-		self.editCalle.setText(' ')
-		self.editColonia.setText(' ')
-		self.editCP.setText(' ')
+		self.editCalle.setText('')
+		self.editColonia.setText('')
+		self.editCP.setText('')
 		self.editNivelMaximo.setText('40')
 		self.editNivelMinimo.setText('0')
 		self.editArea.setText('')
@@ -317,10 +339,10 @@ class VentanaDatos(QtWidgets.QDialog, FORM_CLASS,QObject):
 		self.botonOnline.setChecked(True)
 
 	def loading(self,bandera):
-		elementos = self.findChildren(QPushButton);
-		elementos.extend(self.findChildren(QLineEdit));
-		elementos.extend(self.findChildren(QLabel));
-		elementos.extend(self.findChildren(QComboBox));
+		elementos = self.findChildren(QPushButton)
+		elementos.extend(self.findChildren(QLineEdit))
+		elementos.extend(self.findChildren(QLabel))
+		elementos.extend(self.findChildren(QComboBox))
 		for elemento in elementos:
 			elemento.setVisible(not bandera)
 		self.busy.setVisible(bandera)
@@ -331,3 +353,4 @@ class VentanaDatos(QtWidgets.QDialog, FORM_CLASS,QObject):
 
 	def closeEvent(self, event):
 		ObtenerCapa().capa().removeSelection()
+		self.signalCerrada.emit()

@@ -73,21 +73,23 @@
       </layout>
      </item>
      <item>
-      <widget class="QLabel" name="labelFoto">
+      <widget class="QPushButton" name="botonFoto">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="frameShape">
-        <enum>QFrame::WinPanel</enum>
-       </property>
-       <property name="frameShadow">
-        <enum>QFrame::Plain</enum>
+       <property name="styleSheet">
+        <string notr="true">color: black;
+background-color: transparent;
+border: 1px, solid;</string>
        </property>
        <property name="text">
-        <string>Imagen</string>
+        <string/>
+       </property>
+       <property name="flat">
+        <bool>true</bool>
        </property>
       </widget>
      </item>

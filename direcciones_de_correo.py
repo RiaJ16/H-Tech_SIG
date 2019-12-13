@@ -43,8 +43,8 @@ class DireccionesDeCorreo(QtWidgets.QDialog,FORM_CLASS):
 	def __errorConexion(self):
 		self.setWindowTitle("Error de conexión")
 		self.__habilitarBotones(False)
-		error = "Conéctese a internet para hacer uso de esta aplicación"
-		self.iface.messageBar().pushMessage("Error de conexión", error, level=Qgis.Critical,duration=3)
+		#error = "Conéctese a internet para hacer uso de esta aplicación"
+		#self.iface.messageBar().pushMessage("Error de conexión", error, level=Qgis.Critical,duration=3)
 		self.adjustSize()
 
 	def __habilitarBotones(self,flag):
@@ -108,6 +108,7 @@ class DireccionesDeCorreo(QtWidgets.QDialog,FORM_CLASS):
 		except IndexError:
 			pass
 		self.__loading(False)
+		self.botonAgregar.setEnabled(False)
 
 	def agregar(self):
 		if self.validarAlEnviar(self.campoCorreo):

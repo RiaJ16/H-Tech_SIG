@@ -335,7 +335,7 @@ class AdministrarGrupos(QtWidgets.QWidget,FORM_CLASS):
 	def __errorDeConexion(self):
 		self.setWindowTitle("Error de conexión")
 		error = "Conéctese a internet para hacer uso de esta aplicación"
-		self.iface.messageBar().pushMessage("Error de conexión", error, level=Qgis.Critical,duration=3)
+		#self.iface.messageBar().pushMessage("Error de conexión", error, level=Qgis.Critical,duration=3)
 		self.__loading(False)
 		self.__habilitarBotones(False)
 

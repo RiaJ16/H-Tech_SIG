@@ -4,14 +4,17 @@ from PyQt5.QtWidgets import QLabel
 
 class BusyIcon(QLabel):
 
-	def __init__(self,layout):
+	def __init__(self, layout, inverted = False):
 		QLabel.__init__(self)
 		self.setAlignment(Qt.AlignRight)
 		layout.addWidget(self)
+		self.inverted = inverted
 
 	def startAnimation(self):
 		#movie = QMovie(":Varios/icons/valve60fps.mp4")
 		movie = QMovie(":Varios/icons/loading.gif")
+		if self.inverted:
+			movie = QMovie(":Varios/icons/loading-i.gif")
 		movie.setScaledSize(QSize(30,30))
 		self.setMovie(movie)
 		movie.start()
