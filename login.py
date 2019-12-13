@@ -17,13 +17,14 @@ from PyQt5.QtCore import Qt, QObject, pyqtSignal, pyqtSlot, QSize
 from .busy_icon import BusyIcon
 from .limpiar_objetos import LimpiarObjetos
 from .online import Online
+from .q_dialog_next import QDialogNext
 from .validacion import Validacion
 
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
     os.path.dirname(__file__), 'login.ui'))
 
-class Login(QtWidgets.QDialog,FORM_CLASS,QObject):
+class Login(QDialogNext,FORM_CLASS,QObject):
 
 	signalConexionExitosa = pyqtSignal()
 	signalLoggedOut = pyqtSignal()
@@ -33,9 +34,10 @@ class Login(QtWidgets.QDialog,FORM_CLASS,QObject):
 		QObject.__init__(self)
 		super(Login, self).__init__(parent)
 		self.setupUi(self)
+		super().setMovable(self.frame)
 		self.iface = qgis.utils.iface
 		self.online = online
-		self.setWindowFlags(Qt.SplashScreen | Qt.WindowStaysOnTopHint)
+		self.setWindowFlags(Qt.FramelessWindowHint)
 		self.botonCerrar.enterEvent = self.cerrarEnterEvent
 		self.botonCerrar.leaveEvent = self.cerrarLeaveEvent
 		img = QImage(":Varios/icons/logosig2.png")
