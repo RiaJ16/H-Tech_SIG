@@ -3,20 +3,22 @@ import os
 
 from PyQt5 import uic
 from PyQt5.QtCore import QTime
-from PyQt5.QtWidgets import QDialog
 
 from .horario import Horario
 from .publisher import Publisher
+from .q_dialog_next import QDialogNext
 
 
-class ProgramarHorarios(QDialog):
+class ProgramarHorarios(QDialogNext):
 
-    def __init__(self, bomba, publisher, online, contexto = False, parent=None):
+    def __init__(self, bomba, publisher, online, contexto=False, parent=None):
         super(ProgramarHorarios, self).__init__(parent)
         if not contexto:
             uic.loadUi("ui/scheduler.ui", self)
         else:
             uic.loadUi(os.path.join(os.path.dirname(__file__), 'ui/scheduler.ui'), self)
+        super().setMovable(self.kraken)
+        super().setBotonCerrar(self.botonCerrar)
         self.bomba = bomba
         self.publisher = publisher
         self.online = online
@@ -31,6 +33,7 @@ class ProgramarHorarios(QDialog):
 
     def _signals(self):
         self.botonEnviar.clicked.connect(self.enviar)
+        self.checkGlobal.toggled.connect(self.globalCheck)
 
     def enviar(self):
         horarios = []
@@ -99,3 +102,24 @@ class ProgramarHorarios(QDialog):
         for horario in self.horarios:
             encendidos[horario.getDia - 1].setTime(horario.getHoraEncendido)
             apagados[horario.getDia - 1].setTime(horario.getHoraApagado)
+
+    def globalCheck(self, flag):
+        if not flag:
+            lunes = (self.checkLunes, self.tagLunes, self.encendidoLunes, self.apagadoLunes)
+            martes = (self.checkMartes, self.tagMartes, self.encendidoMartes, self.apagadoMartes)
+            miercoles = (self.checkMiercoles, self.tagMiercoles, self.encendidoMiercoles, self.apagadoMiercoles)
+            jueves = (self.checkJueves, self.tagJueves, self.encendidoJueves, self.apagadoJueves)
+            viernes = (self.checkViernes, self.tagViernes, self.encendidoViernes, self.apagadoViernes)
+            sabado = (self.checkSabado, self.tagSabado, self.encendidoSabado, self.apagadoSabado)
+            domingo = (self.checkDomingo, self.tagDomingo, self.encendidoDomingo, self.apagadoDomingo)
+            dias = (lunes, martes, miercoles, jueves, viernes, sabado, domingo)
+            for dia in dias:
+                estado = True
+                if dia[0].checkState() == 0:
+                    estado = False
+                control = 0
+                for elemento in dia:
+                    if control == 0:
+                        control = 1
+                    else:
+                        elemento.setEnabled(estado)

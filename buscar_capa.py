@@ -26,10 +26,9 @@ class BuscarCapa(QDialog,FORM_CLASS):
 		self.capa = ''
 
 	def leerDatos(self):
-		nombreCapa = "capaSensores"
+		nombreCapa = "capaSensores4"
 		linea = ''
 		path = "%s/.sigrdap" % os.path.expanduser('~')
-		print(path)
 		try:
 			archivo = open("%s/%s" % (path,nombreCapa), "r")
 			linea = archivo.readline()
@@ -48,7 +47,7 @@ class BuscarCapa(QDialog,FORM_CLASS):
 		self.exec_()
 
 	def escribirDatos(self,capa):
-		nombreCapa = "capaSensores"
+		nombreCapa = "capaSensores4"
 		path = "%s/.sigrdap" % os.path.expanduser('~')
 		if not os.path.exists(path):
 			os.makedirs(path)
@@ -76,7 +75,7 @@ class BuscarCapa(QDialog,FORM_CLASS):
 	def generarNuevaCapa(self):
 		capa = QgsVectorLayer("Point", "Sensores", "memory")
 		proveedor = capa.dataProvider()
-		proveedor.addAttributes([QgsField("id", QVariant.Int),QgsField("tipoSensor", QVariant.Int),QgsField("alarma", QVariant.Int),QgsField("bomba", QVariant.Int),QgsField("estadoB", QVariant.Int)])
+		proveedor.addAttributes([QgsField("id", QVariant.Int),QgsField("tipoSensor", QVariant.Int),QgsField("alarma", QVariant.Int),QgsField("bomba", QVariant.Int),QgsField("estadoB", QVariant.Int), QgsField("nombre", QVariant.String)])
 		capa.updateFields()
 		path = "%s/.sigrdap/capa" % os.path.expanduser('~')
 		if not os.path.exists(path):

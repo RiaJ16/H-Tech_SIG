@@ -1,11 +1,43 @@
 <RCC>
   <qresource prefix="main">
     <file>monitor_icon.png</file>
+    <file>logo-i.png</file>
+    <file>logo.png</file>
     <file>logored.png</file>
   </qresource>
   <qresource prefix="varios">
     <file>icons/loading_dark.gif</file>
     <file>icons/loading.gif</file>
+  </qresource>
+  <qresource prefix="general">
+    <file>icons/downarrow-g.png</file>
+    <file>icons/uparrow-g.png</file>
+    <file>icons/downarrow-r.png</file>
+    <file>icons/downarrow-y.png</file>
+    <file>icons/uparrow.png</file>
+    <file>icons/uparrow-a.png</file>
+    <file>icons/uparrow-a-i.png</file>
+    <file>icons/uparrow-i.png</file>
+    <file>icons/uparrow-r.png</file>
+    <file>icons/uparrow-y.png</file>
+    <file>icons/lockicon-b.png</file>
+    <file>icons/usericon-b.png</file>
+    <file>icons/fullicon-i.png</file>
+    <file>icons/restorefullicon-i.png</file>
+    <file>icons/downarrow.png</file>
+    <file>icons/downarrow-a.png</file>
+    <file>icons/downarrow-a-i.png</file>
+    <file>icons/downarrow-i.png</file>
+    <file>icons/fullicon.png</file>
+    <file>icons/restorefullicon.png</file>
+    <file>icons/maximizeicon-i.png</file>
+    <file>icons/minimizeicon-i.png</file>
+    <file>icons/restoreicon-i.png</file>
+    <file>icons/maximizeicon.png</file>
+    <file>icons/minimizeicon.png</file>
+    <file>icons/restoreicon.png</file>
+    <file>icons/closeicon.png</file>
+    <file>icons/closeicon-d.png</file>
   </qresource>
   <qresource prefix="buttons">
     <file>icons/icon_off.png</file>
@@ -59,6 +91,7 @@
     <file>icons/voltaje.png</file>
   </qresource>
   <qresource prefix="images">
+    <file>logo-i.png</file>
     <file>images/H-Tech Monitor.png</file>
     <file>images/bomba-off.png</file>
     <file>images/bomba-animated.gif</file>

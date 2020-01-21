@@ -16,7 +16,7 @@ class ObtenerCapa:
 
 	def _leerCapa(self):
 		if self.idCapa == '':
-			nombreCapa = "capaSensores"
+			nombreCapa = "capaSensores4"
 			linea = ''
 			path = "%s/.sigrdap" % os.path.expanduser('~')
 			try:

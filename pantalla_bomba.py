@@ -11,13 +11,14 @@ from qgis.core import Qgis
 from PyQt5 import QtWidgets, uic
 from PyQt5.QtCore import QSize, Qt
 from PyQt5.QtGui import QCursor, QFont, QIcon, QMovie, QPixmap
-from PyQt5.QtWidgets import QAction, QLayout, QMenu
+from PyQt5.QtWidgets import QAction, QLayout, QMenu, QWidget
 
 from .busy_icon import BusyIcon
-from .dragon.programar_horarios import ProgramarHorarios
+from .programar_horarios import ProgramarHorarios
 from .dragon.publisher import Publisher
 from .dragon.strings import strings_dragon as strings
 from .obtener_capa import ObtenerCapa
+from .q_dialog_next import QDialogNext
 
 from .dragon.ui.resources import *
 
@@ -25,14 +26,21 @@ FORM_CLASS, _ = uic.loadUiType(os.path.join(
 	os.path.dirname(__file__), 'dragon/ui/pantalla.ui'))
 
 
-class PantallaBomba(QtWidgets.QDialog, FORM_CLASS):
+class PantallaBomba(QDialogNext, FORM_CLASS):
 
 	def __init__(self, online, parent=None):
 		"""Constructor."""
 		super(PantallaBomba, self).__init__(parent)
-		self.setupUi(self)
+		self.widget = QWidget()
+		uic.loadUi(os.path.join(os.path.dirname(__file__), 'kraken.ui'), self)
+		uic.loadUi(os.path.join(os.path.dirname(__file__), 'dragon/ui/pantalla.ui'), self.widget)
+		self.layout().addWidget(self.widget)
+		#self.setupUi(self)
 		self.online = online
 		self.iface = qgis.utils.iface
+		self.setMovable(self.kraken)
+		self.setBotonCerrar(self.botonCerrar)
+		#self.widget.setVisible(True)
 		#self.layout().setSizeConstraint(QLayout.SetFixedSize)
 		self.busy = BusyIcon(self.layout())
 		self.busy.startAnimation()
@@ -42,9 +50,9 @@ class PantallaBomba(QtWidgets.QDialog, FORM_CLASS):
 
 	def _signals(self):
 		self.online.signalBombaConsultada.connect(self.cargarDatos)
-		self.interruptor.clicked.connect(self.cambiarEstado)
-		self.opciones.clicked.connect(self.mostrarMenu)
-		self.modo.clicked.connect(self.cambiarModo)
+		self.widget.interruptor.clicked.connect(self.cambiarEstado)
+		self.widget.opciones.clicked.connect(self.mostrarMenu)
+		self.widget.modo.clicked.connect(self.cambiarModo)
 
 	def disconnectSignals(self):
 		self.online.signalBombaConsultada.disconnect(self.cargarDatos)
@@ -84,20 +92,20 @@ class PantallaBomba(QtWidgets.QDialog, FORM_CLASS):
 			self.resizeIcons()
 			self.show()
 			self.activateWindow()
-			self.setProperty("state", "pantalla")
-			self.labelEstado.setVisible(False)
+			self.widget.setProperty("state", "pantalla")
+			self.widget.labelEstado.setVisible(False)
 			self.actualizarEstadoPantalla(bomba.getEstado)
-			self.datoPresion.setText(bomba.getPresion)
-			self.datoFlujo.setText(bomba.getFlujo)
-			self.datoVoltaje1.setText(bomba.getVoltaje1)
-			self.datoVoltaje2.setText(bomba.getVoltaje2)
-			self.datoVoltaje3.setText(bomba.getVoltaje3)
-			self.datoCorriente1.setText(bomba.getCorriente1)
-			self.datoCorriente2.setText(bomba.getCorriente2)
-			self.datoCorriente3.setText(bomba.getCorriente3)
-			elementos = [(bomba.getFase1, self.iconFase1, self.iconFase1Off)]
-			elementos.append((bomba.getFase2, self.iconFase2, self.iconFase2Off))
-			elementos.append((bomba.getFase3, self.iconFase3, self.iconFase3Off))
+			self.widget.datoPresion.setText(bomba.getPresion)
+			self.widget.datoFlujo.setText(bomba.getFlujo)
+			self.widget.datoVoltaje1.setText(bomba.getVoltaje1)
+			self.widget.datoVoltaje2.setText(bomba.getVoltaje2)
+			self.widget.datoVoltaje3.setText(bomba.getVoltaje3)
+			self.widget.datoCorriente1.setText(bomba.getCorriente1)
+			self.widget.datoCorriente2.setText(bomba.getCorriente2)
+			self.widget.datoCorriente3.setText(bomba.getCorriente3)
+			elementos = [(bomba.getFase1, self.widget.iconFase1, self.widget.iconFase1Off)]
+			elementos.append((bomba.getFase2, self.widget.iconFase2, self.widget.iconFase2Off))
+			elementos.append((bomba.getFase3, self.widget.iconFase3, self.widget.iconFase3Off))
 			for dato, iconoOn, iconoOff in elementos:
 				if dato == 1:
 					iconoOn.setVisible(True)
@@ -105,26 +113,26 @@ class PantallaBomba(QtWidgets.QDialog, FORM_CLASS):
 				else:
 					iconoOn.setVisible(False)
 					iconoOff.setVisible(True)
-			self.labelId.setText(str(bomba.getNombre))
+			self.widget.labelId.setText(str(bomba.getNombre))
 			self.setWindowTitle(str(bomba.getNombre))
-			self.labelEstado.setText('')
-			self.labelEstado.setText(str(bomba.getEstado))
-			self.conectadoOn.setVisible(False)
-			self.conectadoOff.setVisible(False)
+			self.widget.labelEstado.setText('')
+			self.widget.labelEstado.setText(str(bomba.getEstado))
+			self.widget.conectadoOn.setVisible(False)
+			self.widget.conectadoOff.setVisible(False)
 			if bomba.getModoOperacion == 0:
 				icon = QIcon()
 				icon.addPixmap(QPixmap(':/icons/icons/icon_manual.png'))
-				self.modo.setIcon(icon)
+				self.widget.modo.setIcon(icon)
 			elif bomba.getModoOperacion == 1:
 				icon = QIcon()
 				icon.addPixmap(QPixmap(':/icons/icons/icon_automatico.png'))
 			self.revisarConectado(bomba)
-			self.setStyle(self.style())
+			self.widget.setStyle(self.style())
 
 	def resizeIcons(self):
 		iconUrls = (':/icons/icons/presion.png', ':/icons/icons/flujo.png', ':/icons/icons/voltaje.png',
 					':/icons/icons/corriente.png')
-		labels = (self.iconPresion, self.iconFlujo, self.iconVoltaje, self.iconCorriente)
+		labels = (self.widget.iconPresion, self.widget.iconFlujo, self.widget.iconVoltaje, self.widget.iconCorriente)
 		for iconUrl, label in zip(iconUrls, labels):
 			height = int(label.size().height())
 			width = int(label.size().width())
@@ -137,25 +145,25 @@ class PantallaBomba(QtWidgets.QDialog, FORM_CLASS):
 					':/icons/icons/ledon.png', ':/icons/icons/ledoff.png', ':/icons/icons/ledoff.png',
 					':/icons/icons/ledoff.png')
 		labels = (
-			self.iconFase1, self.iconFase2, self.iconFase3, self.iconFase1Off, self.iconFase2Off,
-			self.iconFase3Off)
+			self.widget.iconFase1, self.widget.iconFase2, self.widget.iconFase3, self.widget.iconFase1Off, self.widget.iconFase2Off,
+			self.widget.iconFase3Off)
 		for iconUrl, label in zip(iconUrls, labels):
 			height = int(label.size().height())
 			icon = QPixmap(iconUrl)
 			label.setPixmap(icon.scaledToHeight(height * .5, Qt.SmoothTransformation))
 		try:
-			estado = int(self.labelEstado.text())
+			estado = int(self.widget.labelEstado.text())
 		except ValueError:
 			estado = 0
 		if estado == 0 or estado == 1:
 			iconBomba = QPixmap(':/images/images/bomba-off.png')
-			self.imagenBomba.setPixmap(
+			self.widget.imagenBomba.setPixmap(
 				iconBomba.scaled(QSize(442,338), Qt.KeepAspectRatio, Qt.SmoothTransformation))
 		#elif estado == 2 or estado == 3:
 		#	self.bombaEncendida(self)
-		firstLabels = (self.datoPresion, self.datoFlujo)
-		labels = (self.datoVoltaje1, self.datoVoltaje2, self.datoVoltaje3, self.datoCorriente1,
-				  self.datoCorriente2, self.datoCorriente3)
+		firstLabels = (self.widget.datoPresion, self.widget.datoFlujo)
+		labels = (self.widget.datoVoltaje1, self.widget.datoVoltaje2, self.widget.datoVoltaje3, self.widget.datoCorriente1,
+				  self.widget.datoCorriente2, self.widget.datoCorriente3)
 		fontSizeFirst = int(labels[0].size().height() / 1.5)
 		fontSize = int(labels[0].size().height() / 4.5)
 		fuente = 11
@@ -173,59 +181,59 @@ class PantallaBomba(QtWidgets.QDialog, FORM_CLASS):
 		for label in firstLabels:
 			label.setFont(QFont('Verdana', fontSizeFirst, QFont.Medium))
 		labels = (
-			self.uniPresion, self.uniFlujo, self.uniVoltaje1, self.uniVoltaje2, self.uniVoltaje3,
-			self.uniCorriente1, self.uniCorriente2, self.uniCorriente3)
+			self.widget.uniPresion, self.widget.uniFlujo, self.widget.uniVoltaje1, self.widget.uniVoltaje2, self.widget.uniVoltaje3,
+			self.widget.uniCorriente1, self.widget.uniCorriente2, self.widget.uniCorriente3)
 		for label in labels:
 			label.setFont(QFont('Verdana', fontSize / 1.5))
-		labels = (self.labelF1, self.labelF2, self.labelF3)
+		labels = (self.widget.labelF1, self.widget.labelF2, self.widget.labelF3)
 		for label in labels:
 			label.setFont(QFont('Verdana', fontSize / 1.5, QFont.Bold))
 		self.busy.hide()
 
 	def actualizarEstadoPantalla(self, estado):
-		self.labelEstado.setText(str(estado))
+		self.widget.labelEstado.setText(str(estado))
 		if estado == 0:
-			self.interruptor.setEnabled(True)
+			self.widget.interruptor.setEnabled(True)
 			icon = QIcon()
 			icon.addPixmap(QPixmap(':/buttons/icons/icon_off.png'))
-			self.interruptor.setIcon(icon)
-			self.barraEstado.setProperty("state", "off")
-			self.interruptor.setProperty("state", "off")
-			self.opciones.setProperty("state", "off")
-			self.modo.setProperty("state", "off")
+			self.widget.interruptor.setIcon(icon)
+			self.widget.barraEstado.setProperty("state", "off")
+			self.widget.interruptor.setProperty("state", "off")
+			self.widget.opciones.setProperty("state", "off")
+			self.widget.modo.setProperty("state", "off")
 			iconBomba = QPixmap(':/images/images/bomba-off.png')
-			size = self.imagenBomba.size()
-			self.imagenBomba.setPixmap(iconBomba.scaled(size, Qt.KeepAspectRatio, Qt.SmoothTransformation))
+			size = self.widget.imagenBomba.size()
+			self.widget.imagenBomba.setPixmap(iconBomba.scaled(size, Qt.KeepAspectRatio, Qt.SmoothTransformation))
 		elif estado == 1:
 			icon = QIcon()
 			icon.addPixmap(QPixmap(':/buttons/icons/icon_off.png'))
-			self.barraEstado.setProperty("state", "turning off")
+			self.widget.barraEstado.setProperty("state", "turning off")
 			iconBomba = QPixmap(':/images/images/bomba-off.png')
-			size = self.imagenBomba.size()
-			self.imagenBomba.setPixmap(iconBomba.scaled(size, Qt.KeepAspectRatio, Qt.SmoothTransformation))
+			size = self.widget.imagenBomba.size()
+			self.widget.imagenBomba.setPixmap(iconBomba.scaled(size, Qt.KeepAspectRatio, Qt.SmoothTransformation))
 		elif estado == 2:
 			icon = QIcon()
 			icon.addPixmap(QPixmap(':/buttons/icons/icon_on.png'))
-			self.barraEstado.setProperty("state", "turning on")
+			self.widget.barraEstado.setProperty("state", "turning on")
 			self.bombaEncendida()
 		elif estado == 3:
-			self.interruptor.setEnabled(True)
+			self.widget.interruptor.setEnabled(True)
 			icon = QIcon()
 			icon.addPixmap(QPixmap(':/buttons/icons/icon_on.png'))
-			self.interruptor.setIcon(icon)
-			self.barraEstado.setProperty("state", "on")
-			self.interruptor.setProperty("state", "on")
-			self.opciones.setProperty("state", "on")
-			self.modo.setProperty("state", "on")
+			self.widget.interruptor.setIcon(icon)
+			self.widget.barraEstado.setProperty("state", "on")
+			self.widget.interruptor.setProperty("state", "on")
+			self.widget.opciones.setProperty("state", "on")
+			self.widget.modo.setProperty("state", "on")
 			self.bombaEncendida()
-		self.barraEstado.setStyle(self.style())
-		self.interruptor.setStyle(self.style())
-		self.opciones.setStyle(self.style())
+		self.widget.barraEstado.setStyle(self.style())
+		self.widget.interruptor.setStyle(self.style())
+		self.widget.opciones.setStyle(self.style())
 
 	#@staticmethod
 	def bombaEncendida(self):
 		movie = QMovie(":/images/images/bomba-animated.gif")
-		labelSize = self.imagenBomba.size()
+		labelSize = self.widget.imagenBomba.size()
 		ORIGINAL_WIDTH = 1412
 		ORIGINAL_HEIGHT = 1080
 		width = labelSize.width()
@@ -239,7 +247,7 @@ class PantallaBomba(QtWidgets.QDialog, FORM_CLASS):
 		size = QSize(width, height)
 		movie.setScaledSize(size)
 		movie.setCacheMode(1)
-		self.imagenBomba.setMovie(movie)
+		self.widget.imagenBomba.setMovie(movie)
 		movie.start()
 
 	def revisarConectado(self, bomba):
@@ -248,13 +256,13 @@ class PantallaBomba(QtWidgets.QDialog, FORM_CLASS):
 			coordinador = bomba.getCoordinador
 			conectado = coordinador.getConectado
 		if conectado > 0:
-			self.labelId.setEnabled(True)
-			self.conectadoOn.setVisible(True)
-			self.conectadoOff.setVisible(False)
+			self.widget.labelId.setEnabled(True)
+			self.widget.conectadoOn.setVisible(True)
+			self.widget.conectadoOff.setVisible(False)
 		else:
-			self.labelId.setEnabled(False)
-			self.conectadoOn.setVisible(False)
-			self.conectadoOff.setVisible(True)
+			self.widget.labelId.setEnabled(False)
+			self.widget.conectadoOn.setVisible(False)
+			self.widget.conectadoOff.setVisible(True)
 
 	def cambiarEstado(self):
 		bomba = self.online.getBomba()
@@ -272,7 +280,7 @@ class PantallaBomba(QtWidgets.QDialog, FORM_CLASS):
 				topic = "/sensores/%s" % bomba.getIdDispositivo
 			cadena = ''
 			if bomba.getEstado == 0:
-				self.barraEstado.setProperty("state", "turning on")
+				self.widget.barraEstado.setProperty("state", "turning on")
 				if flagCoordinador:
 					cadena = "{\"Tipo\":\"Config\",\"Cadena\":\"WB1_%s\"}" % bomba.getIdDispositivo
 				else:
@@ -280,7 +288,7 @@ class PantallaBomba(QtWidgets.QDialog, FORM_CLASS):
 				# self.online.actualizarEstadoBomba(bomba.getIdGrupo, 2)
 				self.iface.messageBar().pushMessage("Aviso", strings.general[3], level=Qgis.Info, duration=7)
 			elif bomba.getEstado == 3:
-				self.barraEstado.setProperty("state", "turning off")
+				self.widget.barraEstado.setProperty("state", "turning off")
 				if flagCoordinador:
 					cadena = "{\"Tipo\":\"Config\",\"Cadena\":\"WB0_%s\"}" % bomba.getIdDispositivo
 				else:

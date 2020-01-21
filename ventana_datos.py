@@ -17,6 +17,7 @@ from .alarmas import Alarmas
 from .busy_icon import BusyIcon
 from .obtener_capa import ObtenerCapa
 from .online import Online
+from .q_dialog_next import QDialogNext
 from .sensor import Sensor
 from .validacion import Validacion
 
@@ -25,7 +26,7 @@ FORM_CLASS, _ = uic.loadUiType(os.path.join(
     os.path.dirname(__file__), 'ventana_datos.ui'))
 
 
-class VentanaDatos(QtWidgets.QDialog, FORM_CLASS,QObject):
+class VentanaDatos(QDialogNext, FORM_CLASS,QObject):
 
 	signalCambio = pyqtSignal()
 	signalCerrada = pyqtSignal()
@@ -36,6 +37,8 @@ class VentanaDatos(QtWidgets.QDialog, FORM_CLASS,QObject):
 		QObject.__init__(self)
 		super(VentanaDatos, self).__init__(parent)
 		self.setupUi(self)
+		self.setMovable(self.kraken)
+		self.setBotonCerrar(self.botonCerrar)
 		if editar:
 			self.setWindowIcon(QIcon(":/sigrdap/icons/edit.png"))
 		self.botonOnline.setVisible(False)
@@ -196,9 +199,15 @@ class VentanaDatos(QtWidgets.QDialog, FORM_CLASS,QObject):
 
 	def checkboxCambiada(self):
 		if not self.activarAlarma.isChecked():
+			self.activarAlarma.setText("Encender alarma")
+			icono = QIcon(":VentanaConfiguracion/icons/alarma_active.png")
+			self.activarAlarma.setIcon(icono)
 			self.editNivelMaximo.setEnabled(False)
 			self.editNivelMinimo.setEnabled(False)
 		else:
+			self.activarAlarma.setText("Apagar alarma")
+			icono = QIcon(":VentanaConfiguracion/icons/alarma.png")
+			self.activarAlarma.setIcon(icono)
 			self.editNivelMaximo.setEnabled(True)
 			self.editNivelMinimo.setEnabled(True)
 

@@ -47,6 +47,7 @@ class Alarmas():
 			fieldId2 = provider.fields().indexFromName('tipoSensor')
 			fieldId3 = provider.fields().indexFromName('bomba')
 			fieldId4 = provider.fields().indexFromName('estadoB')
+			fieldId5 = provider.fields().indexFromName('nombre')
 			features = provider.getFeatures()
 			#t1 = threading.Thread(target=self.online.actualizarEstados)
 			#t1.start()
@@ -60,8 +61,9 @@ class Alarmas():
 				else:
 					idBomba = int(bomba['idGrupo'])
 					estadoB = int(bomba['estado'])
-				updateMap[feature.id()] = {fieldId1:sensor.alarma,fieldId2:sensor.tipoSensor,fieldId3:idBomba,fieldId4:estadoB}
-				if not (sensor.alarma == feature.attribute(2) and idBomba == feature.attribute(3) and estadoB == feature.attribute(4)):
+				#updateMap[feature.id()] = {fieldId1:sensor.alarma,fieldId2:sensor.tipoSensor,fieldId3:idBomba,fieldId4:estadoB}
+				updateMap[feature.id()] = {fieldId1:sensor.alarma,fieldId2:sensor.tipoSensor,fieldId3:idBomba,fieldId4:estadoB,fieldId5:sensor.grupoTexto}
+				if not (sensor.alarma == feature.attribute(2) and idBomba == feature.attribute(3) and estadoB == feature.attribute(4) and sensor.grupoTexto == feature.attribute(5)):
 					diferentes = True
 			if diferentes:
 				#print("diferentes")

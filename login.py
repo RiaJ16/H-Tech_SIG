@@ -35,11 +35,9 @@ class Login(QDialogNext,FORM_CLASS,QObject):
 		super(Login, self).__init__(parent)
 		self.setupUi(self)
 		super().setMovable(self.frame)
+		super().setBotonCerrar(self.botonCerrar)
 		self.iface = qgis.utils.iface
 		self.online = online
-		self.setWindowFlags(Qt.FramelessWindowHint)
-		self.botonCerrar.enterEvent = self.cerrarEnterEvent
-		self.botonCerrar.leaveEvent = self.cerrarLeaveEvent
 		img = QImage(":Varios/icons/logosig2.png")
 		#img = img.scaled(238, 74, Qt.KeepAspectRatio)
 		self.logo.setPixmap(QPixmap.fromImage(img))
@@ -51,7 +49,6 @@ class Login(QDialogNext,FORM_CLASS,QObject):
 		self.botonLogin.clicked.connect(self.iniciarConexion)
 		self.botonLogout.clicked.connect(self.desconectar)
 		self.botonAceptar.clicked.connect(self.close)
-		self.botonCerrar.clicked.connect(self.close)
 		self.online.signalLoggedIn.connect(self.verificarConexion)
 		self.online.signalLoggedOut.connect(self.logout)
 		self.online.signalUsuarioConsultado.connect(self.mostrarSaludo)
@@ -156,19 +153,11 @@ class Login(QDialogNext,FORM_CLASS,QObject):
 		elif genero == 2:
 			saludo = "Bienvenida"
 		elif genero == 3:
-			saludo = "Bienvenide"
+			saludo = "Bienvenid@"
 		if nombreCorto == '':
 			self.labelBienvenido.setText("¡{}!".format(saludo, nombreCorto))
 		else:
 			self.labelBienvenido.setText("¡{}, {}!".format(saludo, nombreCorto))
-
-	def cerrarEnterEvent(self, event):
-		icono = QIcon(":General/icons/closeicon.png")
-		self.botonCerrar.setIcon(icono)
-
-	def cerrarLeaveEvent(self, event):
-		icono = QIcon(":General/icons/closeicon-d.png")
-		self.botonCerrar.setIcon(icono)
 
 	def desconectar(self):
 		self.botonLogout.setEnabled(False)

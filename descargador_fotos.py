@@ -9,13 +9,13 @@ from PyQt5.QtGui import QIcon, QPixmap
 
 class DescargadorFotos:
 
-	def __init__(self, online):
+	def __init__(self, online, descargar=True):
 		self.filename = self._obtenerNombreArchivo(online)
 		self.foto = QPixmap(self.filename)
-		if self.foto.isNull():
+		if self.foto.isNull() and descargar:
 			url = self.filename.split('/')
 			url = url[len(url)-1]
-			t1 = threading.Thread(target=online.descargarFoto, args=(url, self.filename))
+			t1 = threading.Thread(target=online.descargarFoto, args=(url, self.filename, 1))
 			t1.start()
 			self.foto = QPixmap(self.filename)
 

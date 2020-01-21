@@ -54,6 +54,8 @@ class SIGRDAP:
 	#app = QApplication.instance()
 	#qss_file = open(r"C:\Program Files\QGIS 3.8\apps\qgis\resources\themes\Night Mapping\Style.qss").read()
 	#app.setStyleSheet(qss_file)
+	#QApplication.instance().setStyle("windowsvista")
+	#QApplication.instance().setStyle("fusion")
 
 	sistema = 0
 	sistemaString = platform.system().lower()
@@ -402,7 +404,7 @@ class SIGRDAP:
 
 	def monitor(self):
 		if not hasattr(self,'dragon'):
-			self.dragon = Dragon(True)
+			self.dragon = Dragon(QApplication.instance().desktop().screenGeometry(), contexto=True)
 		else:
 			if self.dragon.running:
 				self.dragon.showNormal()

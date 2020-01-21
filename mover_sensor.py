@@ -17,6 +17,7 @@ from .descargador_fotos import DescargadorFotos
 from .flotante import Flotante
 from .obtener_capa import ObtenerCapa
 from .online import Online
+from .q_dialog_next import QDialogNext
 from .validacion import Validacion
 
 
@@ -38,11 +39,13 @@ class MoverSensor(QObject):
 		self.online.signalSensorConsultado.connect(self.consultarSensor)
 		self.online.signalConsultarGrupo.connect(self.actualizarFoto)
 		self.online.signalErrorConexion.connect(self._errorConexion)
+		self.online.signalFotoDescargada.connect(self.fotoDescargada)
 
 	def disconnectSignals(self):
 		self.online.signalSensorConsultado.disconnect(self.consultarSensor)
 		self.online.signalConsultarGrupo.disconnect(self.actualizarFoto)
 		self.online.signalErrorConexion.disconnect(self._errorConexion)
+		self.online.signalFotoDescargada.disconnect(self.fotoDescargada)
 
 	def _errorConexion(self):
 		try:
@@ -86,7 +89,19 @@ class MoverSensor(QObject):
 			if sensor.idSensor == 0:
 				self._errorLogin()
 			else:
-				self.widget.labelDireccion.setText("<b><font color='#2980b9'>Ubicación:</font></b> %s, %s, %s, %s" % (sensor.calle,sensor.colonia,sensor.cp,sensor.municipioTexto))
+				if sensor.calle == "" or sensor.calle.isspace():
+					calle = ""
+				else:
+					calle = "%s, " % sensor.calle
+				if sensor.colonia == "" or sensor.colonia.isspace():
+					colonia = ""
+				else:
+					colonia = "%s, " % sensor.colonia
+				if sensor.cp == "" or sensor.cp.isspace():
+					cp = ""
+				else:
+					cp = "%s, " % sensor.cp
+				self.widget.labelDireccion.setText("<b><font color='#2980b9'>Ubicación:</font></b> %s%s%s%s" % (calle,colonia,cp,sensor.municipioTexto))
 				self.widget.labelTipo.setText("<b><font color='#2980b9'>Tipo:</font></b> %s" % sensor.tipoSensorTexto)
 				self.widget.labelGrupo.setText("<b>%s</b>" % sensor.grupoTexto.upper())
 				t1 = threading.Thread(target=self.online.consultarGrupoPorId,args=(sensor.grupo,))
@@ -97,8 +112,10 @@ class MoverSensor(QObject):
 
 	def crearBarra(self):
 		if not hasattr(self, 'widget'):
-			self.widget = QDialog()
+			self.widget = QDialogNext()
 			uic.loadUi(os.path.join(os.path.dirname(__file__), 'mover_sensor.ui'), self.widget)
+			self.widget.setMovable(self.widget.kraken)
+			self.widget.setBotonCerrar(self.widget.botonCerrar)
 			self.widget.textoX.textChanged.connect(self.resaltarPunto)
 			self.widget.textoY.textChanged.connect(self.resaltarPunto)
 			self.widget.boton.setEnabled(False)
@@ -108,7 +125,7 @@ class MoverSensor(QObject):
 			self.busy = BusyIcon(self.widget.layout())
 			self.busy.startAnimation()
 			self.busy.hide()
-			self.widget.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
+			self.widget.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowStaysOnTopHint)
 		self._mostrarOcultar()
 		self.widget.closeEvent = self.closeEvent
 		t1 = threading.Thread(target=self.online.consultarSensorPorIdFeature,args=(self.objetoGeografico.attribute('id'),))
@@ -158,8 +175,8 @@ class MoverSensor(QObject):
 		except ValueError:
 			pass
 
-	def actualizarFoto(self):
-		descargadorFotos = DescargadorFotos(self.online)
+	def actualizarFoto(self, descargar = True):
+		descargadorFotos = DescargadorFotos(self.online, descargar)
 		miniatura = descargadorFotos.obtenerMiniatura()
 		self.widget.botonFoto.setIcon(miniatura[0])
 		self.widget.botonFoto.setIconSize(miniatura[1])
@@ -167,6 +184,9 @@ class MoverSensor(QObject):
 		self.fotoFlotante.setFixedSize(reduccion[1].width(), reduccion[1].height())
 		self.fotoFlotante.setText(reduccion[0])
 		self.loading(False)
+
+	def fotoDescargada(self, token):
+		self.actualizarFoto(False)
 
 	def loading(self, flag=True):
 		self.busy.setVisible(flag)

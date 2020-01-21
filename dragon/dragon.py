@@ -1,4 +1,3 @@
-import ctypes
 import math
 import os
 import threading
@@ -15,6 +14,7 @@ from .busy_icon import BusyIcon
 from .custom_qwidget import CustomQWidget
 from .indexed_qtable_widget_item import IndexedQTableWidgetItem
 from .login import Login
+from .new_ui_methods import NewUIMethods
 from .online import Online
 from .programar_horarios import ProgramarHorarios
 from .publisher import Publisher
@@ -36,13 +36,20 @@ class Dragon(QMainWindow):
     signalNuevaBomba = pyqtSignal()
     signalSubsistemasConsultados = pyqtSignal()
 
-    def __init__(self, contexto=False, parent=None):
+    def __init__(self, screenSize, contexto=False, parent=None):
         super(Dragon, self).__init__(parent)
+        support = NewUIMethods(self, screenSize)
+        self.screenSize = screenSize
         self.contexto = contexto
         if not contexto:
             uic.loadUi("ui/main.ui", self)
         else:
             uic.loadUi(os.path.join(os.path.dirname(__file__), 'ui/main.ui'), self)
+        support.setMovable(self.kraken)
+        support.setBotonCerrar(self.botonCerrar)
+        support.setBotonMaximizar(self.botonMaximizar)
+        support.setBotonMinimizar(self.botonMinimizar)
+        support.setBotonFullScreen(self.botonFullScreen)
         self.online = Online()
         self.login = Login(self.online, self.statusBar(), contexto)
         self.fixUi()
@@ -132,7 +139,7 @@ class Dragon(QMainWindow):
         self.busy.hide()
         self._reiniciarSelector(self.selectorSubsistema)
         for subsistema in self.subsistemas:
-            self.selectorSubsistema.addItem(subsistema.nombre)
+            self.selectorSubsistema.addItem(subsistema.nombre.upper())
 
     @staticmethod
     def _reiniciarSelector(selector):
@@ -146,6 +153,7 @@ class Dragon(QMainWindow):
         for bomba in bombas:
             self.tablaBombas.insertRow(self.tablaBombas.rowCount())
             item = IndexedQTableWidgetItem(bomba.getNombre.upper(), bomba.getIdGrupo)
+            item.setToolTip(bomba.getNombre)
             self.tablaBombas.setItem(self.tablaBombas.rowCount() - 1, 0, item)
         if self.tablaBombas.rowCount() > 0:
             self.tablaBombas.selectAll()
@@ -290,7 +298,7 @@ class Dragon(QMainWindow):
                   pantalla.datoCorriente2, pantalla.datoCorriente3)
         fontSizeFirst = int(labels[0].size().height() / 1.5)
         fontSize = int(labels[0].size().height() / 4.5)
-        screenSize = ctypes.windll.user32.GetSystemMetrics(0), ctypes.windll.user32.GetSystemMetrics(1)
+        screenSize = self.screenSize.width(), self.screenSize.height()
         if screenSize < (1536, 864):
             fuente = 9
             maxFuente = 18

@@ -7,9 +7,10 @@ import time
 from PyQt5 import QtWidgets, uic
 from PyQt5.QtGui import QPixmap, QImage, QMovie
 from PyQt5.QtWidgets import QLayout
-from PyQt5.QtCore import Qt, pyqtSignal, pyqtSlot, QSize
+from PyQt5.QtCore import Qt, QObject, pyqtSignal, pyqtSlot, QSize
 
 from .busy_icon import BusyIcon
+from .q_dialog_next import QDialogNext
 try:
     from strings import strings_login as strings
     from ui.resources import *
@@ -18,7 +19,7 @@ except ModuleNotFoundError:
     from .ui.resources import *
 
 
-class Login(QtWidgets.QDialog):
+class Login(QDialogNext):
 
     signalConexionExitosa = pyqtSignal()
     signalLoggedOut = pyqtSignal()
@@ -26,17 +27,20 @@ class Login(QtWidgets.QDialog):
 
     def __init__(self, online, statusBar, contexto = False, parent=None):
         """Constructor."""
-        self.online = online
-        self.statusBar = statusBar
+        QObject.__init__(self)
         super(Login, self).__init__(parent)
         if not contexto:
             uic.loadUi("ui/login.ui", self)
         else:
             uic.loadUi(os.path.join(os.path.dirname(__file__), 'ui/login.ui'), self)
+        super().setMovable(self.kraken)
+        super().setBotonCerrar(self.botonCerrar)
+        self.online = online
+        self.statusBar = statusBar
         #self.setupUi(self)
-        img = QImage(":/images/images/H-Tech Monitor.png")
+        #img = QImage(":/images/images/H-Tech Monitor.png")
         #img = img.scaled(475, 148, Qt.KeepAspectRatio)
-        self.logo.setPixmap(QPixmap.fromImage(img))
+        #self.logo.setPixmap(QPixmap.fromImage(img))
         self.busy = BusyIcon(self.layout())
         self.busy.startAnimation()
         self.loading()
@@ -48,12 +52,15 @@ class Login(QtWidgets.QDialog):
     def _signals(self):
         self.botonLogin.clicked.connect(self.iniciarConexion)
         self.botonLogout.clicked.connect(self.desconectar)
+        self.botonAceptar.clicked.connect(self.close)
         self.online.signalLoggedIn.connect(self.verificarConexion)
         self.online.signalLoggedOut.connect(self.logout)
         self.online.signalErrorConexion.connect(self.errorConexion)
+        self.online.signalUsuarioConsultado.connect(self.mostrarSaludo)
 
     def inicializar(self):
         self.show()
+        self.activateWindow()
 
     def verificarConexion(self, codigo):
         self.busy.hide()
@@ -80,22 +87,26 @@ class Login(QtWidgets.QDialog):
         elif codigo == 0:
             self.signalConexionExitosa.emit()
             self.mostrarOcultar(True)
+        if codigo == 2 or codigo == 1 or codigo == 0:
+            hiloConsultarUsuario = threading.Thread(target=self.online.consultarUsuario)
+            hiloConsultarUsuario.start()
         try:
             self.statusBar.showMessage(strings.general[codigo], 5000)
         except KeyError:
             pass
 
     def loading(self):
-        elementos = [self.spacer1, self.spacer2, self.spacer3, self.editUsuario, self.editPassword, self.botonLogin,
-                     self.botonLogout]
+        elementos = [self.spacer1, self.spacer2, self.editUsuario, self.editPassword, self.botonLogin, self.botonLogout, self.botonAceptar, self.botonForgot, self.spacerF1, self.iconUser, self.iconLock]
         for elemento in elementos:
             elemento.setVisible(False)
+        self.adjustSize()
+        self.adjustSize()
 
     # self.busy.show()
 
     def mostrarOcultar(self, bandera):
-        conectado = [self.botonLogout]
-        desconectado = [self.spacer2, self.spacer3, self.editUsuario, self.editPassword, self.botonLogin]
+        conectado = [self.spacerC1, self.botonLogout, self.spacerC2, self.botonAceptar]
+        desconectado = [self.spacer1, self.spacer2,self.editUsuario,self.editPassword,self.botonLogin, self.iconUser, self.iconLock, self.botonForgot, self.spacerF1]
         for elemento in conectado:
             elemento.setVisible(bandera)
         for elemento in desconectado:
@@ -127,6 +138,20 @@ class Login(QtWidgets.QDialog):
             usuario = ''
         return usuario
 
+    def mostrarSaludo(self, nombre, genero):
+        nombreCorto = nombre.split(' ')[0]
+        saludo = ''
+        if genero == 1:
+            saludo = "Bienvenido"
+        elif genero == 2:
+            saludo = "Bienvenida"
+        elif genero == 3:
+            saludo = "Bienvenid@"
+        if nombreCorto == '':
+            self.labelBienvenido.setText("¡{}!".format(saludo, nombreCorto))
+        else:
+            self.labelBienvenido.setText("¡{}, {}!".format(saludo, nombreCorto))
+
     def desconectar(self):
         self.botonLogout.setEnabled(False)
         # self.busy.show()
@@ -139,6 +164,8 @@ class Login(QtWidgets.QDialog):
         self.mostrarOcultar(False)
         self.estado = False
         self.editPassword.setText('')
+        self.labelBienvenido.setText("Inicio de sesión")
+        self.editUsuario.setText(self.leerDatos())
         self.signalLoggedOut.emit()
 
     def errorConexion(self):

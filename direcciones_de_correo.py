@@ -11,19 +11,22 @@ from PyQt5.QtWidgets import QLineEdit, QListWidget, QPushButton
 
 from .busy_icon import BusyIcon
 from .correo import Correo
+from .q_dialog_next import QDialogNext
 from .q_list_widget_item_indexado import QListWidgetItemIndexado
 from .validacion import Validacion
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
     os.path.dirname(__file__), 'ventana_correos.ui'))
 
-class DireccionesDeCorreo(QtWidgets.QDialog,FORM_CLASS):
+class DireccionesDeCorreo(QDialogNext,FORM_CLASS):
 
 	def __init__(self,online,parent=None):
 		super(DireccionesDeCorreo, self).__init__(parent)
 		self.setupUi(self)
 		self.online = online
 		self.iface = qgis.utils.iface
+		self.setMovable(self.kraken)
+		self.setBotonCerrar(self.botonCerrar)
 		self.__signals()
 		self.editando = False
 		self.validar()
@@ -108,7 +111,7 @@ class DireccionesDeCorreo(QtWidgets.QDialog,FORM_CLASS):
 		except IndexError:
 			pass
 		self.__loading(False)
-		self.botonAgregar.setEnabled(False)
+		#self.botonAgregar.setEnabled(False)
 
 	def agregar(self):
 		if self.validarAlEnviar(self.campoCorreo):

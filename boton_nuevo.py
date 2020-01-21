@@ -12,6 +12,7 @@ from PyQt5.QtWidgets import QDialog, QLayout, QHBoxLayout, QLabel, QLineEdit, QM
 
 from .busy_icon import BusyIcon
 from .obtener_capa import ObtenerCapa
+from .q_dialog_next import QDialogNext
 from .ventana_datos import VentanaDatos
 from .validacion import Validacion
 import qgis.utils
@@ -42,9 +43,12 @@ class BotonNuevo(QObject):
 
 	def crearBarra(self):
 		if not hasattr(self, 'widget'):
-			self.widget = QDialog()
+			self.widget = QDialogNext()
 			#self.widget.setWindowFlags(Qt.Dialog | Qt.MSWindowsFixedSizeDialogHint)
 			uic.loadUi(os.path.join(os.path.dirname(__file__), 'agregar_sensor.ui'), self.widget)
+			self.widget.logo.setToolTip(self.widget.windowTitle())
+			self.widget.setMovable(self.widget.kraken)
+			self.widget.setBotonCerrar(self.widget.botonCerrar)
 			self.widget.textoX.textChanged.connect(self.resaltarPunto)
 			self.widget.textoY.textChanged.connect(self.resaltarPunto)
 			self.widget.boton.setEnabled(False)
@@ -53,7 +57,7 @@ class BotonNuevo(QObject):
 			self.busy = BusyIcon(self.widget.layout())
 			self.busy.startAnimation()
 			self.busy.hide()
-			self.widget.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
+			self.widget.setWindowFlags(Qt.FramelessWindowHint | QtCore.Qt.WindowStaysOnTopHint)
 		self.widget.closeEvent = self.closeEvent
 		self.widget.setVisible(True)
 

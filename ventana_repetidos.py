@@ -12,12 +12,13 @@ from PyQt5.QtGui import QBrush, QColor, QFont
 from PyQt5.QtWidgets import QHeaderView
 
 from .obtener_capa import ObtenerCapa
+from .q_dialog_next import QDialogNext
 from .widget_item_mas import WidgetItemMas
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
 	os.path.dirname(__file__), 'ventana_repetidos.ui'))
 
-class VentanaRepetidos(QtWidgets.QDialog, FORM_CLASS):
+class VentanaRepetidos(QDialogNext, FORM_CLASS):
 
 	def __init__(self, online, bomba=False, parent=None):
 		"""Constructor."""
@@ -27,6 +28,8 @@ class VentanaRepetidos(QtWidgets.QDialog, FORM_CLASS):
 		self.bomba = bomba
 		self.iface = qgis.utils.iface
 		self.lienzo = qgis.utils.iface.mapCanvas()
+		self.setMovable(self.kraken)
+		self.setBotonCerrar(self.botonCerrar)
 
 	def inicializar(self):
 		self.botonAceptar.setEnabled(False)

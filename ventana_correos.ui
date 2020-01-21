@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>601</width>
-    <height>214</height>
+    <width>615</width>
+    <height>287</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -63,27 +63,554 @@ QListWidget::item:selected:!active{
 QListWidget::item:!selected:hover{
 	background-color: #F5F5F5;
 	/*color: #5bade4;*/
-}</string>
+}
+
+/*aaaaa*/
+
+QWidget#Grupos{
+	background-color: #ecf0f1;
+}
+
+QLineEdit{
+background-color: transparent;
+border-style: solid;
+border-bottom: 2px solid #3498db;
+}
+
+QLineEdit:disabled{
+color: #7f8c8d;
+background-color: #bdc3c7;
+border-bottom: 2px solid #95a5a6;
+}
+
+QPushButton:enabled{
+	color: #ecf0f1;
+	background-color: #3498db;
+	padding: 5px;
+	border: none;
+}
+
+QPushButton:disabled{
+	color: #ecf0f1;
+	background-color: #bdc3c7;
+	padding: 5px;
+	border: none;
+}
+
+QPushButton:hover{
+	padding: 5px;
+	color: white;
+	background-color: #2980b9;
+}
+
+QPushButton:checked{
+	color: white;
+	background-color: #18679a;
+	border-top: 1px solid black;
+	border-left: 1px solid black;
+	border-bottom: 6px solid #3498db;
+}
+
+QPushButton:checked:disabled{
+	color: #ecf0f1;
+	background-color: #bdc3c7;
+	border-bottom: 6px solid #7f8c8d;
+}
+
+QComboBox, QDateEdit, QAbstractSpinBox{
+	color: #2c3e50;
+	background-color: #d1e3ee;
+	subcontrol-origin: padding;
+	subcontrol-position: top right;
+	border: none;
+	border-bottom: 6px solid #3498db;
+	padding-left: 5px;
+}
+
+QComboBox:down-arrow, QDateEdit:down-arrow, QAbstractSpinBox:down-button{
+	image: url(:General/icons/downarrow-a.png);
+	width: 18px;
+	height: 18px;
+}
+
+QAbstractSpinBox:down-button{
+		padding-right: 12px;
+}
+
+QComboBox:down-arrow:hover, QDateEdit:down-arrow:hover, QAbstractSpinBox:down-button:hover{
+	image: url(:General/icons/downarrow.png);
+	width: 18px;
+	height: 18px;
+}
+
+QAbstractSpinBox:up-button{
+	image: url(:General/icons/uparrow-a.png);
+	width: 18px;
+	height: 18px;
+	padding-right: 12px;
+}
+
+QAbstractSpinBox:up-button:hover{
+	image: url(:General/icons/uparrow.png);
+	width: 18px;
+	height: 18px;
+}
+
+QComboBox:drop-down, QDateEdit:drop-down, QAbstractSpinBox:drop-down{
+	 subcontrol-origin: padding;
+	 subcontrol-position: top right;
+	 width: 30px;
+	 color: white;
+	 border-left-width: 0px;
+	 border-left-color: darkgray;
+	 border-left-style: solid; /* just a single line */
+	 border-top-right-radius: 3px; /* same radius as the QComboBox */
+	 border-bottom-right-radius: 3px;
+	 padding-right: 5px;
+ }
+
+QComboBox:enabled, QDateEdit:enabled, QAbstractSpinBox:enabled{
+	background-color: #d1e3ee;
+}
+
+QComboBox:disabled, QDateEdit:disabled, QAbstractSpinBox:disabled{
+	color: #7f8c8d;
+	background-color: #bdc3c7;
+	border-bottom: 6px solid #95a5a6;
+}
+
+QComboBox:down-arrow:disabled, QDateEdit:down-arrow:disabled, QAbstractSpinBox:down-arrow:disabled{
+     image: url(:General/icons/downarrow-a-i.png);
+     width: 20px;
+     height: 20px;
+}
+
+QComboBox:hover, QDateEdit:hover, QAbstractSpinBox:hover{
+	color: white;
+	background-color: #2980b9;
+}
+
+QScrollBar:vertical {
+	border-radius: 100px;
+	background: #ecf0f1;
+	width: 5px;
+	margin: 0px 0 0px 0;
+}
+
+QScrollBar::handle:vertical{
+	background: #3498db;
+	min-height: 20px;
+}
+
+QScrollBar::add-line:vertical{
+	width: 0;
+}
+
+QScrollBar::sub-line:vertical{
+	width: 0;
+}
+
+QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical{
+	border: 2px solid grey;
+	width: 3px;
+	height: 3px;
+	background: white;
+}
+
+QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+	background: none;
+}
+</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_3">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
+    <widget class="QFrame" name="kraken">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>65</height>
+      </size>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: #3498db;</string>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_7">
+      <property name="spacing">
+       <number>0</number>
+      </property>
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QLabel" name="logo">
+        <property name="styleSheet">
+         <string notr="true"/>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="pixmap">
+         <pixmap>:/Varios/icons/logosig2-i.png</pixmap>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_3">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout_7">
+        <property name="spacing">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QPushButton" name="botonCerrar">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>50</width>
+            <height>50</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>50</width>
+            <height>50</height>
+           </size>
+          </property>
+          <property name="focusPolicy">
+           <enum>Qt::NoFocus</enum>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">:enabled{
+	color: black;
+	border: none;
+	padding: 5px;
+}
+
+:disabled{
+	color: black;
+}
+
+:pressed{
+	background-color: black;
+}
+
+:hover{
+	background-color: #e74c3c;
+	border: none;
+}</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset>
+            <normaloff>:/General/icons/closeicon-d.png</normaloff>:/General/icons/closeicon-d.png</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>24</width>
+            <height>24</height>
+           </size>
+          </property>
+          <property name="flat">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="verticalSpacer_6">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>10</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <layout class="QVBoxLayout" name="verticalLayout_4">
+     <property name="leftMargin">
+      <number>11</number>
+     </property>
+     <property name="topMargin">
+      <number>11</number>
+     </property>
+     <property name="rightMargin">
+      <number>11</number>
+     </property>
+     <property name="bottomMargin">
+      <number>11</number>
+     </property>
      <item>
-      <layout class="QVBoxLayout" name="verticalLayout_2">
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
        <item>
-        <widget class="QPushButton" name="botonFuentes">
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <widget class="QPushButton" name="botonFuentes">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>180</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <family>Verdana</family>
+             <pointsize>10</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>Fuentes de
+abastecimiento</string>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>40</width>
+             <height>40</height>
+            </size>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+           <property name="autoExclusive">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="botonRedes">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="font">
+            <font>
+             <family>Verdana</family>
+             <pointsize>10</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>Redes de
+distribución</string>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>40</width>
+             <height>40</height>
+            </size>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+           <property name="autoRepeat">
+            <bool>false</bool>
+           </property>
+           <property name="autoExclusive">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <item>
+          <widget class="QListWidget" name="listaCorreos">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>400</width>
+             <height>150</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <family>Verdana</family>
+             <pointsize>12</pointsize>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">QListWidget{
+color: #2c3e50;
+selection-color: #ecf0f1;
+background-color: #ecf0f1;
+selection-background-color: #5bade4;
+alternate-background-color: #ddf1ff;
+background: white;
+border: none;
+}
+
+QListWidget:item{
+	padding-top: 5px;
+	padding-bottom: 5px;
+}</string>
+           </property>
+           <property name="alternatingRowColors">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QLineEdit" name="campoCorreo">
+         <property name="minimumSize">
+          <size>
+           <width>170</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Verdana</family>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="botonAgregar">
          <property name="enabled">
           <bool>true</bool>
          </property>
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
+         <property name="minimumSize">
+          <size>
+           <width>115</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Verdana</family>
+           <pointsize>10</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="text">
+          <string>AGREGAR</string>
+         </property>
+         <property name="autoDefault">
+          <bool>true</bool>
+         </property>
+         <property name="default">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="botonEliminar">
+         <property name="enabled">
+          <bool>false</bool>
          </property>
          <property name="minimumSize">
           <size>
-           <width>180</width>
+           <width>115</width>
            <height>0</height>
           </size>
          </property>
@@ -96,193 +623,9 @@ QListWidget::item:!selected:hover{
           </font>
          </property>
          <property name="text">
-          <string>Fuentes de
-abastecimiento</string>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>40</width>
-           <height>40</height>
-          </size>
-         </property>
-         <property name="checkable">
-          <bool>true</bool>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
-         </property>
-         <property name="autoExclusive">
-          <bool>true</bool>
+          <string>ELIMINAR</string>
          </property>
         </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="botonRedes">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="font">
-          <font>
-           <family>Verdana</family>
-           <pointsize>10</pointsize>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="text">
-          <string>Redes de
-distribución</string>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>40</width>
-           <height>40</height>
-          </size>
-         </property>
-         <property name="checkable">
-          <bool>true</bool>
-         </property>
-         <property name="autoRepeat">
-          <bool>false</bool>
-         </property>
-         <property name="autoExclusive">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="label">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>32</height>
-          </size>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <layout class="QVBoxLayout" name="verticalLayout">
-       <item>
-        <widget class="QListWidget" name="listaCorreos">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>150</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Verdana</family>
-           <pointsize>10</pointsize>
-          </font>
-         </property>
-         <property name="styleSheet">
-          <string notr="true"/>
-         </property>
-         <property name="alternatingRowColors">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout">
-         <item>
-          <widget class="QLineEdit" name="campoCorreo">
-           <property name="minimumSize">
-            <size>
-             <width>170</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="font">
-            <font>
-             <family>Verdana</family>
-             <pointsize>9</pointsize>
-            </font>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="botonAgregar">
-           <property name="enabled">
-            <bool>true</bool>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>100</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="font">
-            <font>
-             <family>Verdana</family>
-             <pointsize>10</pointsize>
-             <weight>75</weight>
-             <bold>true</bold>
-            </font>
-           </property>
-           <property name="styleSheet">
-            <string notr="true"/>
-           </property>
-           <property name="text">
-            <string>AGREGAR</string>
-           </property>
-           <property name="autoDefault">
-            <bool>true</bool>
-           </property>
-           <property name="default">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="botonEliminar">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>100</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="font">
-            <font>
-             <family>Verdana</family>
-             <pointsize>10</pointsize>
-             <weight>75</weight>
-             <bold>true</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>ELIMINAR</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
        </item>
       </layout>
      </item>

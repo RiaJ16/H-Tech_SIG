@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>545</width>
-    <height>610</height>
+    <width>647</width>
+    <height>722</height>
    </rect>
   </property>
   <property name="baseSize">
@@ -24,367 +24,954 @@
     <normaloff>:/sigrdap/icons/historial.png</normaloff>:/sigrdap/icons/historial.png</iconset>
   </property>
   <property name="styleSheet">
-   <string notr="true">QPushButton:enabled{
-background-color: #3498db;
-color: rgb(255, 255, 255);
+   <string notr="true">QWidget#Registros{
+	background-color: #ecf0f1;
+}
+
+QPushButton:enabled{
+	color: #ecf0f1;
+	background-color: #3498db;
+	padding: 5px;
+	border: none;
 }
 
 QPushButton:disabled{
-background-color: #adc1ce;
-color: rgb(255, 255, 255);
-}</string>
+	color: #ecf0f1;
+	background-color: #bdc3c7;
+	padding: 5px;
+	border: none;
+}
+
+QPushButton:hover{
+	padding: 5px;
+	color: white;
+	background-color: #2980b9;
+}
+
+QComboBox, QDateEdit, QAbstractSpinBox{
+	color: #2c3e50;
+	background-color: #d1e3ee;
+	subcontrol-origin: padding;
+	subcontrol-position: top right;
+	border: none;
+	border-bottom: 6px solid #3498db;
+	padding-left: 5px;
+}
+
+QComboBox:down-arrow, QDateEdit:down-arrow, QAbstractSpinBox:down-button{
+	image: url(:General/icons/downarrow-a.png);
+	width: 18px;
+	height: 18px;
+}
+
+QAbstractSpinBox:down-button{
+		padding-right: 12px;
+}
+
+QComboBox:down-arrow:hover, QDateEdit:down-arrow:hover, QAbstractSpinBox:down-button:hover{
+	image: url(:General/icons/downarrow.png);
+	width: 18px;
+	height: 18px;
+}
+
+QAbstractSpinBox:up-button{
+	image: url(:General/icons/uparrow-a.png);
+	width: 18px;
+	height: 18px;
+	padding-right: 12px;
+}
+
+QAbstractSpinBox:up-button:hover{
+	image: url(:General/icons/uparrow.png);
+	width: 18px;
+	height: 18px;
+}
+
+QComboBox:drop-down, QDateEdit:drop-down, QAbstractSpinBox:drop-down{
+	 subcontrol-origin: padding;
+	 subcontrol-position: top right;
+	 width: 30px;
+	 color: white;
+	 border-left-width: 0px;
+	 border-left-color: darkgray;
+	 border-left-style: solid; /* just a single line */
+	 border-top-right-radius: 3px; /* same radius as the QComboBox */
+	 border-bottom-right-radius: 3px;
+	 padding-right: 5px;
+ }
+
+QComboBox:enabled, QDateEdit:enabled, QAbstractSpinBox:enabled{
+	background-color: #d1e3ee;
+}
+
+QComboBox:disabled, QDateEdit:disabled, QAbstractSpinBox:disabled{
+	color: #7f8c8d;
+	background-color: #bdc3c7;
+	border-bottom: 6px solid #95a5a6;
+}
+
+QComboBox:down-arrow:disabled, QDateEdit:down-arrow:disabled, QAbstractSpinBox:down-arrow:disabled{
+     image: url(:General/icons/downarrow-a-i.png);
+     width: 20px;
+     height: 20px;
+}
+
+QComboBox:hover, QDateEdit:hover, QAbstractSpinBox:hover{
+	color: white;
+	background-color: #2980b9;
+}
+
+QListView{
+	color: #2c3e50;
+	background-color: #ecf0f1;
+	selection-color: #2c3e50;
+	selection-background-color: #d1e3ee;
+	border: none;
+}
+
+QScrollBar:vertical {
+	border-radius: 100px;
+	background: #ecf0f1;
+	width: 5px;
+	margin: 0px 0 0px 0;
+}
+
+QScrollBar::handle:vertical{
+	background: #3498db;
+	min-height: 20px;
+}
+
+QScrollBar::add-line:vertical{
+	width: 0;
+}
+
+QScrollBar::sub-line:vertical{
+	width: 0;
+}
+
+QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical{
+	border: 2px solid grey;
+	width: 3px;
+	height: 3px;
+	background: white;
+}
+
+QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+	background: none;
+}
+</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_3">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
-     <item>
-      <widget class="QLabel" name="labelValor">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="font">
-        <font>
-         <family>Verdana</family>
-         <pointsize>18</pointsize>
-         <weight>50</weight>
-         <bold>false</bold>
-        </font>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">color: #2980b9;</string>
-       </property>
-       <property name="frameShape">
-        <enum>QFrame::NoFrame</enum>
-       </property>
-       <property name="frameShadow">
-        <enum>QFrame::Plain</enum>
-       </property>
-       <property name="lineWidth">
-        <number>1</number>
-       </property>
-       <property name="text">
-        <string>...</string>
-       </property>
-       <property name="textFormat">
-        <enum>Qt::AutoText</enum>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-       <property name="wordWrap">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="labelDesconocido">
-       <property name="toolTip">
-        <string>Estado desconocido</string>
-       </property>
-       <property name="text">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/Estados/icons/unknownconnection.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="labelSinConexion">
-       <property name="toolTip">
-        <string>Inactivo</string>
-       </property>
-       <property name="text">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/Estados/icons/noconnection.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="labelIntermitente">
-       <property name="toolTip">
-        <string>Intermitente</string>
-       </property>
-       <property name="text">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/Estados/icons/intermconnection.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="labelConectado">
-       <property name="toolTip">
-        <string>Activo</string>
-       </property>
-       <property name="text">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/Estados/icons/goodconnection.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="iconOn">
-       <property name="toolTip">
-        <string>Conectado</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="pixmap">
-        <pixmap>:/Estados/icons/ledon_small.png</pixmap>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="iconOff">
-       <property name="toolTip">
-        <string>Desconectado</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="pixmap">
-        <pixmap>:/Estados/icons/ledoff_small.png</pixmap>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="botonConfiguracion">
-       <property name="cursor">
-        <cursorShape>PointingHandCursor</cursorShape>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">background-color: none;</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="icon">
-        <iconset>
-         <normaloff>:/sigrdap/icons/configsensor.png</normaloff>:/sigrdap/icons/configsensor.png</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>35</width>
-         <height>35</height>
-        </size>
-       </property>
-       <property name="flat">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-    </layout>
+    <widget class="QFrame" name="kraken">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>65</height>
+      </size>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: #3498db;</string>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_10">
+      <property name="spacing">
+       <number>0</number>
+      </property>
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QLabel" name="logo">
+        <property name="styleSheet">
+         <string notr="true"/>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="pixmap">
+         <pixmap>:/Varios/icons/logosig2-i.png</pixmap>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout_7">
+        <property name="spacing">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QPushButton" name="botonCerrar">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>50</width>
+            <height>50</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>50</width>
+            <height>50</height>
+           </size>
+          </property>
+          <property name="focusPolicy">
+           <enum>Qt::NoFocus</enum>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">:enabled{
+	color: black;
+	border: none;
+	padding: 5px;
+}
+
+:disabled{
+	color: black;
+}
+
+:pressed{
+	background-color: black;
+}
+
+:hover{
+	background-color: #e74c3c;
+	border: none;
+}</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset>
+            <normaloff>:/General/icons/closeicon-d.png</normaloff>:/General/icons/closeicon-d.png</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>24</width>
+            <height>24</height>
+           </size>
+          </property>
+          <property name="flat">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="verticalSpacer_7">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>10</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_4">
+    <layout class="QVBoxLayout" name="verticalLayout_4">
+     <property name="leftMargin">
+      <number>11</number>
+     </property>
+     <property name="topMargin">
+      <number>11</number>
+     </property>
+     <property name="rightMargin">
+      <number>11</number>
+     </property>
+     <property name="bottomMargin">
+      <number>11</number>
+     </property>
      <item>
-      <layout class="QVBoxLayout" name="verticalLayout_2">
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
        <item>
-        <widget class="QTableWidget" name="tablaValores">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
+        <widget class="QLabel" name="labelValor">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="minimumSize">
-          <size>
-           <width>430</width>
-           <height>300</height>
-          </size>
+         <property name="font">
+          <font>
+           <family>Verdana</family>
+           <pointsize>18</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
          </property>
          <property name="styleSheet">
-          <string notr="true">selection-color: #FFFFFF;
-selection-background-color: #5bade4;
-alternate-background-color: #ddf1ff;
-</string>
+          <string notr="true">color: #2980b9;</string>
          </property>
-         <property name="horizontalScrollBarPolicy">
-          <enum>Qt::ScrollBarAlwaysOff</enum>
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
          </property>
-         <property name="alternatingRowColors">
-          <bool>true</bool>
+         <property name="frameShadow">
+          <enum>QFrame::Plain</enum>
          </property>
-         <property name="selectionBehavior">
-          <enum>QAbstractItemView::SelectRows</enum>
+         <property name="lineWidth">
+          <number>1</number>
          </property>
-         <property name="showGrid">
+         <property name="text">
+          <string>...</string>
+         </property>
+         <property name="textFormat">
+          <enum>Qt::AutoText</enum>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+         <property name="wordWrap">
           <bool>false</bool>
          </property>
-         <attribute name="horizontalHeaderVisible">
-          <bool>false</bool>
-         </attribute>
-         <attribute name="verticalHeaderVisible">
-          <bool>false</bool>
-         </attribute>
-         <column>
-          <property name="text">
-           <string/>
-          </property>
-          <property name="font">
-           <font>
-            <family>Verdana</family>
-           </font>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string/>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string/>
-          </property>
-         </column>
         </widget>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_9">
+        <widget class="QLabel" name="labelDesconocido">
+         <property name="toolTip">
+          <string>Estado desconocido</string>
+         </property>
+         <property name="text">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/Estados/icons/unknownconnection.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="labelSinConexion">
+         <property name="toolTip">
+          <string>Inactivo</string>
+         </property>
+         <property name="text">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/Estados/icons/noconnection.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="labelIntermitente">
+         <property name="toolTip">
+          <string>Intermitente</string>
+         </property>
+         <property name="text">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/Estados/icons/intermconnection.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="labelConectado">
+         <property name="toolTip">
+          <string>Activo</string>
+         </property>
+         <property name="text">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/Estados/icons/goodconnection.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="iconOn">
+         <property name="toolTip">
+          <string>Conectado</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="pixmap">
+          <pixmap>:/Estados/icons/ledon_small.png</pixmap>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="iconOff">
+         <property name="toolTip">
+          <string>Desconectado</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="pixmap">
+          <pixmap>:/Estados/icons/ledoff_small.png</pixmap>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="botonConfiguracion">
+         <property name="cursor">
+          <cursorShape>PointingHandCursor</cursorShape>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: none;</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>:/sigrdap/icons/configsensor.png</normaloff>:/sigrdap/icons/configsensor.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>35</width>
+           <height>35</height>
+          </size>
+         </property>
+         <property name="flat">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_4">
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_2">
          <item>
-          <widget class="QComboBox" name="seleccionarPeriodo">
-           <property name="font">
-            <font>
-             <family>Verdana</family>
-             <pointsize>9</pointsize>
-            </font>
+          <widget class="QTableWidget" name="tablaValores">
+           <property name="enabled">
+            <bool>true</bool>
            </property>
-           <item>
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>430</width>
+             <height>300</height>
+            </size>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">color: #34495e;
+selection-color: #ecf0f1;
+selection-background-color: #5bade4;
+alternate-background-color: #ddf1ff;
+border: none;</string>
+           </property>
+           <property name="horizontalScrollBarPolicy">
+            <enum>Qt::ScrollBarAlwaysOff</enum>
+           </property>
+           <property name="alternatingRowColors">
+            <bool>true</bool>
+           </property>
+           <property name="selectionBehavior">
+            <enum>QAbstractItemView::SelectRows</enum>
+           </property>
+           <property name="showGrid">
+            <bool>false</bool>
+           </property>
+           <attribute name="horizontalHeaderVisible">
+            <bool>false</bool>
+           </attribute>
+           <attribute name="verticalHeaderVisible">
+            <bool>false</bool>
+           </attribute>
+           <column>
             <property name="text">
-             <string>Última hora</string>
+             <string/>
             </property>
-           </item>
-           <item>
+            <property name="font">
+             <font>
+              <family>Verdana</family>
+             </font>
+            </property>
+           </column>
+           <column>
             <property name="text">
-             <string>Día</string>
+             <string/>
             </property>
-           </item>
-           <item>
+           </column>
+           <column>
             <property name="text">
-             <string>Mes</string>
+             <string/>
             </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Personalizado</string>
-            </property>
-           </item>
+           </column>
           </widget>
          </item>
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_8">
+          <layout class="QHBoxLayout" name="horizontalLayout_9">
            <item>
-            <widget class="QDateEdit" name="day">
-             <property name="font">
-              <font>
-               <family>Verdana</family>
-               <pointsize>9</pointsize>
-              </font>
-             </property>
-             <property name="displayFormat">
-              <string>dd/MMM/yyyy</string>
-             </property>
-             <property name="calendarPopup">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QComboBox" name="month">
-             <property name="enabled">
-              <bool>true</bool>
+            <widget class="QComboBox" name="seleccionarPeriodo">
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>35</height>
+              </size>
              </property>
              <property name="font">
               <font>
                <family>Verdana</family>
-               <pointsize>9</pointsize>
+               <pointsize>10</pointsize>
+               <weight>50</weight>
+               <bold>false</bold>
+               <kerning>true</kerning>
               </font>
              </property>
              <item>
               <property name="text">
-               <string>Enero</string>
+               <string>Última hora</string>
               </property>
              </item>
              <item>
               <property name="text">
-               <string>Febrero</string>
+               <string>Día</string>
               </property>
              </item>
              <item>
               <property name="text">
-               <string>Marzo</string>
+               <string>Mes</string>
               </property>
              </item>
              <item>
               <property name="text">
-               <string>Abril</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Mayo</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Junio</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Julio</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Agosto</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Septiembre</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Octubre</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Noviembre</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Diciembre</string>
+               <string>Personalizado</string>
               </property>
              </item>
             </widget>
            </item>
            <item>
-            <widget class="QSpinBox" name="year">
-             <property name="enabled">
-              <bool>true</bool>
-             </property>
+            <layout class="QHBoxLayout" name="horizontalLayout_8">
+             <item>
+              <widget class="QDateEdit" name="day">
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>35</height>
+                </size>
+               </property>
+               <property name="font">
+                <font>
+                 <family>Verdana</family>
+                 <pointsize>10</pointsize>
+                 <weight>50</weight>
+                 <bold>false</bold>
+                </font>
+               </property>
+               <property name="displayFormat">
+                <string>dd/MMM/yyyy</string>
+               </property>
+               <property name="calendarPopup">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QComboBox" name="month">
+               <property name="enabled">
+                <bool>true</bool>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>35</height>
+                </size>
+               </property>
+               <property name="font">
+                <font>
+                 <family>Verdana</family>
+                 <pointsize>10</pointsize>
+                </font>
+               </property>
+               <item>
+                <property name="text">
+                 <string>Enero</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Febrero</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Marzo</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Abril</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Mayo</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Junio</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Julio</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Agosto</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Septiembre</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Octubre</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Noviembre</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Diciembre</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item>
+              <widget class="QSpinBox" name="year">
+               <property name="enabled">
+                <bool>true</bool>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>35</height>
+                </size>
+               </property>
+               <property name="font">
+                <font>
+                 <family>Verdana</family>
+                 <pointsize>10</pointsize>
+                </font>
+               </property>
+               <property name="minimum">
+                <number>1990</number>
+               </property>
+               <property name="maximum">
+                <number>2199</number>
+               </property>
+               <property name="singleStep">
+                <number>1</number>
+               </property>
+               <property name="value">
+                <number>2016</number>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_11">
+           <item>
+            <layout class="QVBoxLayout" name="verticalLayout_8">
+             <item>
+              <widget class="QLabel" name="labelFechaInicial">
+               <property name="font">
+                <font>
+                 <family>Verdana</family>
+                </font>
+               </property>
+               <property name="text">
+                <string>Fecha inicial</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="labelHoraInicial">
+               <property name="font">
+                <font>
+                 <family>Verdana</family>
+                 <pointsize>8</pointsize>
+                </font>
+               </property>
+               <property name="text">
+                <string>Hora inicial</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QVBoxLayout" name="verticalLayout_9">
+             <item>
+              <widget class="QDateEdit" name="fechaInicial">
+               <property name="enabled">
+                <bool>true</bool>
+               </property>
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>150</width>
+                 <height>35</height>
+                </size>
+               </property>
+               <property name="font">
+                <font>
+                 <family>Verdana</family>
+                 <pointsize>10</pointsize>
+                 <weight>50</weight>
+                 <bold>false</bold>
+                </font>
+               </property>
+               <property name="frame">
+                <bool>true</bool>
+               </property>
+               <property name="keyboardTracking">
+                <bool>false</bool>
+               </property>
+               <property name="displayFormat">
+                <string>dd/MMM/yyyy</string>
+               </property>
+               <property name="calendarPopup">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QTimeEdit" name="horaInicial">
+               <property name="enabled">
+                <bool>true</bool>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>150</width>
+                 <height>35</height>
+                </size>
+               </property>
+               <property name="font">
+                <font>
+                 <family>Verdana</family>
+                 <pointsize>10</pointsize>
+                </font>
+               </property>
+               <property name="displayFormat">
+                <string>HH:mm:ss</string>
+               </property>
+               <property name="calendarPopup">
+                <bool>true</bool>
+               </property>
+               <property name="time">
+                <time>
+                 <hour>0</hour>
+                 <minute>0</minute>
+                 <second>0</second>
+                </time>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QVBoxLayout" name="verticalLayout_10">
+             <item>
+              <widget class="QLabel" name="labelFechaFinal">
+               <property name="font">
+                <font>
+                 <family>Verdana</family>
+                </font>
+               </property>
+               <property name="text">
+                <string>Fecha final</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="labelHoraFinal">
+               <property name="font">
+                <font>
+                 <family>Verdana</family>
+                </font>
+               </property>
+               <property name="text">
+                <string>Hora final</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QVBoxLayout" name="verticalLayout_11">
+             <item>
+              <widget class="QDateEdit" name="fechaFinal">
+               <property name="enabled">
+                <bool>true</bool>
+               </property>
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>150</width>
+                 <height>35</height>
+                </size>
+               </property>
+               <property name="font">
+                <font>
+                 <family>Verdana</family>
+                 <pointsize>10</pointsize>
+                </font>
+               </property>
+               <property name="frame">
+                <bool>true</bool>
+               </property>
+               <property name="readOnly">
+                <bool>false</bool>
+               </property>
+               <property name="keyboardTracking">
+                <bool>false</bool>
+               </property>
+               <property name="displayFormat">
+                <string>dd/MMM/yyyy</string>
+               </property>
+               <property name="calendarPopup">
+                <bool>true</bool>
+               </property>
+               <property name="timeSpec">
+                <enum>Qt::LocalTime</enum>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QTimeEdit" name="horaFinal">
+               <property name="enabled">
+                <bool>true</bool>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>150</width>
+                 <height>35</height>
+                </size>
+               </property>
+               <property name="font">
+                <font>
+                 <family>Verdana</family>
+                 <pointsize>10</pointsize>
+                </font>
+               </property>
+               <property name="displayFormat">
+                <string>HH:mm:ss</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_5">
+           <item>
+            <widget class="QPushButton" name="botonGraficar">
              <property name="font">
               <font>
                <family>Verdana</family>
-               <pointsize>9</pointsize>
+               <pointsize>10</pointsize>
+               <weight>75</weight>
+               <bold>true</bold>
               </font>
              </property>
-             <property name="minimum">
-              <number>1990</number>
+             <property name="styleSheet">
+              <string notr="true"/>
              </property>
-             <property name="maximum">
-              <number>2199</number>
+             <property name="text">
+              <string>GRAFICAR</string>
              </property>
-             <property name="singleStep">
-              <number>1</number>
+             <property name="icon">
+              <iconset>
+               <normaloff>:/VentanaHistorial/icons/grafica.png</normaloff>:/VentanaHistorial/icons/grafica.png</iconset>
              </property>
-             <property name="value">
-              <number>2016</number>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="botonReportes">
+             <property name="font">
+              <font>
+               <family>Verdana</family>
+               <pointsize>10</pointsize>
+               <weight>75</weight>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="styleSheet">
+              <string notr="true"/>
+             </property>
+             <property name="text">
+              <string>REPORTES</string>
+             </property>
+             <property name="icon">
+              <iconset>
+               <normaloff>:/VentanaHistorial/icons/calendario.png</normaloff>:/VentanaHistorial/icons/calendario.png</iconset>
              </property>
             </widget>
            </item>
@@ -393,199 +980,38 @@ alternate-background-color: #ddf1ff;
         </layout>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_7">
+        <layout class="QVBoxLayout" name="verticalLayout_5">
          <item>
-          <widget class="QLabel" name="labelFechaInicial">
-           <property name="font">
-            <font>
-             <family>Verdana</family>
-            </font>
+          <widget class="QGraphicsView" name="graficoBarra">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Maximum" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
            </property>
-           <property name="text">
-            <string>Fecha inicial</string>
+           <property name="minimumSize">
+            <size>
+             <width>40</width>
+             <height>0</height>
+            </size>
            </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QDateEdit" name="fechaInicial">
-           <property name="enabled">
-            <bool>true</bool>
-           </property>
-           <property name="font">
-            <font>
-             <pointsize>9</pointsize>
-            </font>
-           </property>
-           <property name="frame">
-            <bool>true</bool>
-           </property>
-           <property name="keyboardTracking">
-            <bool>false</bool>
-           </property>
-           <property name="displayFormat">
-            <string>dd/MMM/yyyy</string>
-           </property>
-           <property name="calendarPopup">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="labelFechaFinal">
-           <property name="font">
-            <font>
-             <family>Verdana</family>
-            </font>
-           </property>
-           <property name="text">
-            <string>Fecha final</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QDateEdit" name="fechaFinal">
-           <property name="enabled">
-            <bool>true</bool>
-           </property>
-           <property name="font">
-            <font>
-             <pointsize>9</pointsize>
-            </font>
-           </property>
-           <property name="frame">
-            <bool>true</bool>
-           </property>
-           <property name="readOnly">
-            <bool>false</bool>
-           </property>
-           <property name="keyboardTracking">
-            <bool>false</bool>
-           </property>
-           <property name="displayFormat">
-            <string>dd/MMM/yyyy</string>
-           </property>
-           <property name="calendarPopup">
-            <bool>true</bool>
-           </property>
-           <property name="timeSpec">
-            <enum>Qt::LocalTime</enum>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_6">
-         <item>
-          <widget class="QLabel" name="labelHoraInicial">
-           <property name="font">
-            <font>
-             <family>Verdana</family>
-             <pointsize>8</pointsize>
-            </font>
-           </property>
-           <property name="text">
-            <string>Hora inicial</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QTimeEdit" name="horaInicial">
-           <property name="enabled">
-            <bool>true</bool>
-           </property>
-           <property name="font">
-            <font>
-             <pointsize>9</pointsize>
-            </font>
-           </property>
-           <property name="displayFormat">
-            <string>HH:mm:ss</string>
-           </property>
-           <property name="calendarPopup">
-            <bool>true</bool>
-           </property>
-           <property name="time">
-            <time>
-             <hour>0</hour>
-             <minute>0</minute>
-             <second>0</second>
-            </time>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="labelHoraFinal">
-           <property name="font">
-            <font>
-             <family>Verdana</family>
-            </font>
-           </property>
-           <property name="text">
-            <string>Hora final</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QTimeEdit" name="horaFinal">
-           <property name="enabled">
-            <bool>true</bool>
-           </property>
-           <property name="font">
-            <font>
-             <pointsize>9</pointsize>
-            </font>
-           </property>
-           <property name="displayFormat">
-            <string>HH:mm:ss</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_5">
-         <item>
-          <widget class="QPushButton" name="botonGraficar">
-           <property name="font">
-            <font>
-             <family>Verdana</family>
-             <pointsize>10</pointsize>
-             <weight>75</weight>
-             <bold>true</bold>
-            </font>
+           <property name="maximumSize">
+            <size>
+             <width>40</width>
+             <height>16777215</height>
+            </size>
            </property>
            <property name="styleSheet">
-            <string notr="true"/>
+            <string notr="true">background: #c8e2f3;</string>
            </property>
-           <property name="text">
-            <string>GRAFICAR</string>
+           <property name="frameShape">
+            <enum>QFrame::Panel</enum>
            </property>
-           <property name="icon">
-            <iconset>
-             <normaloff>:/VentanaHistorial/icons/grafica.png</normaloff>:/VentanaHistorial/icons/grafica.png</iconset>
+           <property name="verticalScrollBarPolicy">
+            <enum>Qt::ScrollBarAlwaysOff</enum>
            </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="botonReportes">
-           <property name="font">
-            <font>
-             <family>Verdana</family>
-             <pointsize>10</pointsize>
-             <weight>75</weight>
-             <bold>true</bold>
-            </font>
-           </property>
-           <property name="styleSheet">
-            <string notr="true"/>
-           </property>
-           <property name="text">
-            <string>REPORTES</string>
-           </property>
-           <property name="icon">
-            <iconset>
-             <normaloff>:/VentanaHistorial/icons/calendario.png</normaloff>:/VentanaHistorial/icons/calendario.png</iconset>
+           <property name="horizontalScrollBarPolicy">
+            <enum>Qt::ScrollBarAlwaysOff</enum>
            </property>
           </widget>
          </item>
@@ -594,132 +1020,109 @@ alternate-background-color: #ddf1ff;
       </layout>
      </item>
      <item>
-      <layout class="QVBoxLayout" name="verticalLayout_5">
+      <widget class="Line" name="line">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>4</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">color: #3498db;</string>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Plain</enum>
+       </property>
+       <property name="lineWidth">
+        <number>2</number>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
-        <widget class="QGraphicsView" name="graficoBarra">
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <item>
+          <widget class="QLabel" name="labelGrupo">
+           <property name="font">
+            <font>
+             <family>Verdana</family>
+             <pointsize>12</pointsize>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">color: rgb(41, 128, 185);</string>
+           </property>
+           <property name="text">
+            <string>Cargando...</string>
+           </property>
+           <property name="wordWrap">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="labelTipo">
+           <property name="font">
+            <font>
+             <family>Verdana</family>
+             <pointsize>9</pointsize>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true"/>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="wordWrap">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="labelDireccion">
+           <property name="font">
+            <font>
+             <family>Verdana</family>
+             <pointsize>9</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="wordWrap">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QPushButton" name="botonFoto">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Maximum" vsizetype="Expanding">
+          <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="minimumSize">
-          <size>
-           <width>40</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>40</width>
-           <height>16777215</height>
-          </size>
-         </property>
          <property name="styleSheet">
-          <string notr="true">background: #c8e2f3;</string>
-         </property>
-         <property name="frameShape">
-          <enum>QFrame::Panel</enum>
-         </property>
-         <property name="verticalScrollBarPolicy">
-          <enum>Qt::ScrollBarAlwaysOff</enum>
-         </property>
-         <property name="horizontalScrollBarPolicy">
-          <enum>Qt::ScrollBarAlwaysOff</enum>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-    </layout>
-   </item>
-   <item>
-    <widget class="Line" name="line">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <layout class="QVBoxLayout" name="verticalLayout">
-       <item>
-        <widget class="QLabel" name="labelGrupo">
-         <property name="font">
-          <font>
-           <family>Verdana</family>
-           <pointsize>12</pointsize>
-          </font>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">color: rgb(41, 128, 185);</string>
-         </property>
-         <property name="text">
-          <string>Cargando...</string>
-         </property>
-         <property name="wordWrap">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="labelTipo">
-         <property name="font">
-          <font>
-           <family>Verdana</family>
-           <pointsize>9</pointsize>
-          </font>
-         </property>
-         <property name="styleSheet">
-          <string notr="true"/>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="wordWrap">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="labelDireccion">
-         <property name="font">
-          <font>
-           <family>Verdana</family>
-           <pointsize>9</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="wordWrap">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <widget class="QPushButton" name="botonFoto">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">color: black;
+          <string notr="true">color: black;
 background-color: transparent;
 border: 1px, solid;</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="flat">
-        <bool>true</bool>
-       </property>
-      </widget>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="flat">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
     </layout>
    </item>

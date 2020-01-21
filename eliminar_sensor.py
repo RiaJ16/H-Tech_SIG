@@ -17,12 +17,13 @@ from .descargador_fotos import DescargadorFotos
 from .flotante import Flotante
 from .obtener_capa import ObtenerCapa
 from .online import Online
+from .q_dialog_next import QDialogNext
 from .sensor import Sensor
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
 	os.path.dirname(__file__), 'eliminar_sensor.ui'))
 
-class EliminarSensor(QtWidgets.QDialog, FORM_CLASS, QObject):
+class EliminarSensor(QDialogNext, FORM_CLASS, QObject):
 
 	signalCambio = pyqtSignal()
 
@@ -36,6 +37,8 @@ class EliminarSensor(QtWidgets.QDialog, FORM_CLASS, QObject):
 		self.online = online
 		self.fotoFlotante = Flotante()
 		self.internet = True
+		self.setMovable(self.kraken)
+		self.setBotonCerrar(self.botonCerrar)
 		self.__signals()
 		self.inicializar()
 
@@ -44,12 +47,14 @@ class EliminarSensor(QtWidgets.QDialog, FORM_CLASS, QObject):
 		self.online.signalSensorConsultado.connect(self.consultarSensor)
 		self.online.signalConsultarGrupo.connect(self.actualizarFoto)
 		self.online.signalErrorConexion.connect(self.__errorConexion)
+		self.online.signalFotoDescargada.connect(self.fotoDescargada)
 		self.botonFoto.clicked.connect(self.fotoFlotante.show)
 
 	def disconnectSignals(self):
 		self.online.signalSensorConsultado.disconnect(self.consultarSensor)
 		self.online.signalConsultarGrupo.disconnect(self.actualizarFoto)
 		self.online.signalErrorConexion.disconnect(self.__errorConexion)
+		self.online.signalFotoDescargada.disconnect(self.fotoDescargada)
 
 	def __errorConexion(self):
 		self.setWindowTitle("Error de conexión")
@@ -93,7 +98,19 @@ class EliminarSensor(QtWidgets.QDialog, FORM_CLASS, QObject):
 			if sensor.idSensor == 0:
 				self.__errorLogin()
 			else:
-				self.labelDireccion.setText("<b><font color='#2980b9'>Ubicación:</font></b> %s, %s, %s, %s" % (sensor.calle,sensor.colonia,sensor.cp,sensor.municipioTexto))
+				if sensor.calle == "" or sensor.calle.isspace():
+					calle = ""
+				else:
+					calle = "%s, " % sensor.calle
+				if sensor.colonia == "" or sensor.colonia.isspace():
+					colonia = ""
+				else:
+					colonia = "%s, " % sensor.colonia
+				if sensor.cp == "" or sensor.cp.isspace():
+					cp = ""
+				else:
+					cp = "%s, " % sensor.cp
+				self.labelDireccion.setText("<b><font color='#2980b9'>Ubicación:</font></b> %s%s%s%s" % (calle,colonia,cp,sensor.municipioTexto))
 				self.labelTipo.setText("<b><font color='#2980b9'>Tipo:</font></b> %s" % sensor.tipoSensorTexto)
 				self.labelGrupo.setText("<b>%s</b>" % sensor.grupoTexto.upper())
 				#self.setWindowTitle("%s: sensor de %s" % (sensor.grupoTexto,sensor.tipoSensorTexto.lower()))
@@ -135,8 +152,8 @@ class EliminarSensor(QtWidgets.QDialog, FORM_CLASS, QObject):
 		id = objetoGeografico.attribute('id')
 		return id
 
-	def actualizarFoto(self):
-		descargadorFotos = DescargadorFotos(self.online)
+	def actualizarFoto(self, descargar = True):
+		descargadorFotos = DescargadorFotos(self.online, descargar)
 		miniatura = descargadorFotos.obtenerMiniatura()
 		self.botonFoto.setIcon(miniatura[0])
 		self.botonFoto.setIconSize(miniatura[1])
@@ -144,6 +161,9 @@ class EliminarSensor(QtWidgets.QDialog, FORM_CLASS, QObject):
 		self.fotoFlotante.setFixedSize(reduccion[1].width(), reduccion[1].height())
 		self.fotoFlotante.setText(reduccion[0])
 		self.loading(False)
+
+	def fotoDescargada(self, token):
+		self.actualizarFoto(False)
 
 	def loading(self,flag=True,asFlag=True):
 		self.busy.setVisible(flag)

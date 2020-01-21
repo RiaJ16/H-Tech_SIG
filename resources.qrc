@@ -65,7 +65,19 @@
     <file>icons/coordenadas.png</file>
   </qresource>
   <qresource prefix="General">
+    <file>icons/downarrow-a-i.png</file>
+    <file>icons/uparrow-a-i.png</file>
+    <file>icons/downarrow-r.png</file>
+    <file>icons/downarrow-y.png</file>
+    <file>icons/uparrow-r.png</file>
+    <file>icons/uparrow-y.png</file>
+    <file>icons/downarrow-a.png</file>
+    <file>icons/uparrow-a.png</file>
+    <file>icons/uparrow-i.png</file>
+    <file>icons/downarrow-i.png</file>
     <file>icons/closeicon-d.png</file>
+    <file>icons/downarrow.png</file>
+    <file>icons/uparrow.png</file>
     <file>icons/lockicon-i.png</file>
     <file>icons/usericon-i.png</file>
     <file>icons/closeicon.png</file>
@@ -92,6 +104,7 @@
     <file>icons/act-tabla.png</file>
   </qresource>
   <qresource prefix="Varios">
+    <file>icons/logosig2-i.png</file>
     <file>icons/loading-i.gif</file>
     <file>icons/logosig2.png</file>
     <file>icons/chalk.png</file>

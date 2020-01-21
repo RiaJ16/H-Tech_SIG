@@ -16,13 +16,14 @@ from functools import partial
 
 from .online import Online
 from .publisher import Publisher
+from .q_dialog_next import QDialogNext
 from .resources import *
 from .strings import strings_opciones_sensor as strings
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
 	os.path.dirname(__file__), 'opciones_sensor.ui'))
 
-class OpcionesSensor(QWidget, FORM_CLASS):
+class OpcionesSensor(QDialogNext, FORM_CLASS):
 
 	grupo = QButtonGroup()
 	sensor = ''
@@ -36,13 +37,15 @@ class OpcionesSensor(QWidget, FORM_CLASS):
 		super(OpcionesSensor, self).__init__(parent)
 		self.setupUi(self)
 		self.iface = qgis.utils.iface
+		self.setMovable(self.kraken)
+		self.setBotonCerrar(self.botonCerrar)
 		self.online = online
 		self.publicador = Publisher()
 		self.alarma = 0
 		self._visualizacionInicial()
 
 	def _visualizacionInicial(self):
-		self.setWindowFlags(Qt.Widget | Qt.MSWindowsFixedSizeDialogHint)
+		#self.setWindowFlags(Qt.Widget | Qt.MSWindowsFixedSizeDialogHint)
 		#self.setFixedSize(self.size())
 		self.scrollArea.setLayout(QVBoxLayout())
 		self.alarmas = QWidget()

@@ -14,12 +14,13 @@ from qgis.gui import *
 from PyQt5 import QtCore, QtWidgets, uic
 from PyQt5.QtGui import QIcon, QPixmap
 
+from .q_dialog_next import QDialogNext
 from .reportes import Reportes
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
 	os.path.dirname(__file__), 'calendario.ui'))
 
-class Calendario(QtWidgets.QWidget, FORM_CLASS):
+class Calendario(QDialogNext, FORM_CLASS):
 
 	def __init__(self,online,sensor,parent=None):
 		"""Constructor."""
@@ -27,6 +28,9 @@ class Calendario(QtWidgets.QWidget, FORM_CLASS):
 		self.setupUi(self)
 		self.datos = dict()
 		self.online = online
+		self.setWindowTitle("Calendario de {}: sensor de {}".format(sensor.grupoTexto, sensor.tipoSensorTexto.lower()))
+		self.setMovable(self.kraken)
+		self.setBotonCerrar(self.botonCerrar)
 		self.sensor = sensor
 		self.__cambiarContexto()
 		self.barraDeProgreso.setVisible(False)

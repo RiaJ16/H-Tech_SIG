@@ -23,8 +23,10 @@ class Online(QObject):
     signalLoggedOut = pyqtSignal(int)
     signalBombasConsultadas = pyqtSignal()
     signalPassword = pyqtSignal(str)
+    signalUsuarioConsultado = pyqtSignal(str, int)
 
     CONSULTAR_GRUPOS = 6
+    CONSULTAR_USUARIO = 18
     CONSULTAR_PASSWORD_IOT = 26
     CONSULTAR_COORDINADOR = 27
     CONSULTAR_BOMBAS_POR_SUBSISTEMA = 101
@@ -115,6 +117,14 @@ class Online(QObject):
         except requests.exceptions.ReadTimeout:
             self.signalErrorConexion.emit()
             return []
+
+    def consultarUsuario(self):
+        args = {'opcion': self.CONSULTAR_USUARIO}
+        jsondoc = self.consultar(args)
+        try:
+            self.signalUsuarioConsultado.emit(jsondoc[0]['nombre'], int(jsondoc[0]['genero']))
+        except TypeError:
+            pass
 
     def consultarBombasPorSubsistema(self, idSubsistema):
         args = {'opcion': self.CONSULTAR_BOMBAS_POR_SUBSISTEMA, 'id_subsistema': idSubsistema}

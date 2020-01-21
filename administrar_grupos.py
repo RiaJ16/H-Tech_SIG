@@ -16,12 +16,13 @@ from shutil import copyfile
 
 from .busy_icon import BusyIcon
 from .grupo import Grupo
+from .q_dialog_next import QDialogNext
 from .sensor import Sensor
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
 	os.path.dirname(__file__), 'ventana_grupos.ui'))
 
-class AdministrarGrupos(QtWidgets.QWidget,FORM_CLASS):
+class AdministrarGrupos(QDialogNext,FORM_CLASS):
 
 	editando = False
 	cambiandoFoto = False
@@ -31,8 +32,10 @@ class AdministrarGrupos(QtWidgets.QWidget,FORM_CLASS):
 	def __init__(self,online,parent=None):
 		super(AdministrarGrupos, self).__init__(parent)
 		self.setupUi(self)
-		self.iface = qgis.utils.iface
 		self.online = online
+		self.iface = qgis.utils.iface
+		self.setMovable(self.kraken)
+		self.setBotonCerrar(self.botonCerrar)
 		self.busy = BusyIcon(self.layout())
 		self.busy.startAnimation()
 		self.__loading(False)
@@ -223,7 +226,7 @@ class AdministrarGrupos(QtWidgets.QWidget,FORM_CLASS):
 		if self.listaTokens == []:
 			self.busy.setVisible(False)
 			self.adjustSize()
-		
+
 	def obtenerId(self):
 		listaIdGrupos = []
 		for grupo in self.listaGrupos:

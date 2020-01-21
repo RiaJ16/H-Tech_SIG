@@ -25,12 +25,13 @@ from .fecha_widget_item import FechaWidgetItem
 from .flotante import Flotante
 from .obtener_capa import ObtenerCapa
 from .opciones_sensor import OpcionesSensor
+from .q_dialog_next import QDialogNext
 from .sensor import Sensor
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
 	os.path.dirname(__file__), 'ventana_historial.ui'))
 
-class VentanaHistorial(QtWidgets.QDialog, FORM_CLASS):
+class VentanaHistorial(QDialogNext, FORM_CLASS):
 
 	semaforoDatosSensor = True
 	semaforoHistoricos = 0
@@ -41,6 +42,8 @@ class VentanaHistorial(QtWidgets.QDialog, FORM_CLASS):
 		self.setupUi(self)
 		self.online = online
 		self.iface = qgis.utils.iface
+		self.setMovable(self.kraken)
+		self.setBotonCerrar(self.botonCerrar)
 		self.semaforo = True
 		self.loadedRows = 0
 		self.fotoFlotante = Flotante()#parent = self.iface.mainWindow())
@@ -101,6 +104,7 @@ class VentanaHistorial(QtWidgets.QDialog, FORM_CLASS):
 		self.online.signalConsultarGrupo.connect(self.actualizarFoto)
 		self.online.signalHistoricos.connect(self.cargarRegistros)
 		self.online.signalErrorConexion.connect(self.__errorConexion)
+		self.online.signalFotoDescargada.connect(self.fotoDescargada)
 		self.botonConfiguracion.pressed.connect(self.iconoPresionado)
 		self.botonConfiguracion.released.connect(self.iconoSoltado)
 		self.botonConfiguracion.clicked.connect(self.configuracion)
@@ -112,6 +116,7 @@ class VentanaHistorial(QtWidgets.QDialog, FORM_CLASS):
 		self.online.signalConsultarGrupo.disconnect(self.actualizarFoto)
 		self.online.signalHistoricos.disconnect(self.cargarRegistros)
 		self.online.signalErrorConexion.disconnect(self.__errorConexion)
+		self.online.signalFotoDescargada.disconnect(self.fotoDescargada)
 
 	def objetoGeograficoSeleccionado(self,objetoGeografico):
 		self.objetoGeografico = objetoGeografico
@@ -282,7 +287,15 @@ class VentanaHistorial(QtWidgets.QDialog, FORM_CLASS):
 			else:
 				self.iconOff.setVisible(not sensor.conectado)
 				self.iconOn.setVisible(sensor.conectado)
-			self.labelDireccion.setText("<b><font color='#2980b9'>Ubicación:</font></b> %s, %s, %s" % (sensor.calle,sensor.colonia,sensor.municipioTexto))
+			if sensor.calle == "" or sensor.calle.isspace():
+				calle = ""
+			else:
+				calle = "%s, " % sensor.calle
+			if sensor.colonia == "" or sensor.colonia.isspace():
+				colonia = ""
+			else:
+				colonia = "%s, " % sensor.colonia
+			self.labelDireccion.setText("<b><font color='#2980b9'>Ubicación:</font></b> %s%s%s" % (calle, colonia, sensor.municipioTexto))
 			self.labelTipo.setText("<b><font color='#2980b9'>Tipo:</font></b> %s" % sensor.tipoSensorTexto)
 			self.labelGrupo.setText("<b>%s</b>" % sensor.grupoTexto.upper())
 			self.labelValor.setText("%2.2f<span style='font-size:12pt;color:gray;vertical-align:top'>%s</span>" % (sensor.datoActual,self.__unidades(sensor.tipoSensor)))
@@ -351,14 +364,17 @@ class VentanaHistorial(QtWidgets.QDialog, FORM_CLASS):
 		self.graficoBarra.setScene(scene)
 		self.graficoBarra.setToolTip("El tanque está {} lleno".format(porcentajeTexto))
 
-	def actualizarFoto(self):
-		descargadorFotos = DescargadorFotos(self.online)
+	def actualizarFoto(self, descargar=True):
+		descargadorFotos = DescargadorFotos(self.online, descargar)
 		miniatura = descargadorFotos.obtenerMiniatura()
 		self.botonFoto.setIcon(miniatura[0])
 		self.botonFoto.setIconSize(miniatura[1])
 		reduccion = descargadorFotos.obtenerReduccion()
 		self.fotoFlotante.setFixedSize(reduccion[1].width(), reduccion[1].height())
 		self.fotoFlotante.setText(reduccion[0])
+
+	def fotoDescargada(self, token):
+		self.actualizarFoto(False)
 
 	def iconoPresionado(self):
 		icon = QIcon(':sigrdap/icons/configsensor2.png')
