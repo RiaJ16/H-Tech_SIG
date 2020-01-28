@@ -10,7 +10,7 @@
 name=H-Tech SIG
 qgisMinimumVersion=3.0
 description=Sistema de Información Geográfica que permite realizar operaciones relacionadas con una Red de Distribución de Agua Potable.
-version=4.0.2
+version=4.0.1
 author=Jair Nájera @ H-Tech
 email=jair.najera@htech.mx
 
