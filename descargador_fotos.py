@@ -1,17 +1,20 @@
 # -*- coding: utf-8 -*-
 
-import ctypes
 import os
 import threading
 
+from qgis.PyQt.QtWidgets import QApplication
+
 from PyQt5.QtCore import QSize
 from PyQt5.QtGui import QIcon, QPixmap
+
 
 class DescargadorFotos:
 
 	def __init__(self, online, descargar=True):
 		self.filename = self._obtenerNombreArchivo(online)
 		self.foto = QPixmap(self.filename)
+		self.resolucion = QApplication.instance().desktop().screenGeometry()
 		if self.foto.isNull() and descargar:
 			url = self.filename.split('/')
 			url = url[len(url)-1]
@@ -46,7 +49,7 @@ class DescargadorFotos:
 	def obtenerReduccion(self):
 		newWidth = self.foto.width()
 		newHeight = self.foto.height()
-		screenSize = ctypes.windll.user32.GetSystemMetrics(0)*3/4, ctypes.windll.user32.GetSystemMetrics(1)*3/4
+		screenSize = self.resolucion.width()*3/4, self.resolucion.height()*3/4
 		if newWidth > screenSize[0]:
 			newWidth = screenSize[0]
 			newHeight = newHeight * newWidth / self.foto.width()

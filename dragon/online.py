@@ -80,11 +80,11 @@ class Online(QObject):
             self.signalLoggedOut.emit(1)
 
     def __guardarSesion(self, sesion):
-        path = '%s\\.htech_monitor\\' % os.path.expanduser('~')
+        path = '%s/.htech_monitor/' % os.path.expanduser('~')
         if not os.path.exists(path):
             os.makedirs(path)
         try:
-            with open('%s\\sesion' % path, 'wb') as f:
+            with open('%s/sesion' % path, 'wb') as f:
                 pickle.dump(sesion, f)
         except FileNotFoundError:
             print("error")
@@ -92,7 +92,7 @@ class Online(QObject):
     def __leerSesion(self):
         sesion = requests.session()
         try:
-            with open('%s\\.htech_monitor\\sesion' % os.path.expanduser('~'), 'rb') as f:
+            with open('%s/.htech_monitor/sesion' % os.path.expanduser('~'), 'rb') as f:
                 sesion = pickle.load(f)
         except FileNotFoundError:
             pass

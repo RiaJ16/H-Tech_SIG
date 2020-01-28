@@ -157,6 +157,7 @@ class SIGRDAP:
 
 	def initGui(self):
 		"""Create the menu entries and toolbar icons inside the QGIS GUI."""
+		self.geometria = QApplication.instance().desktop().screenGeometry()
 		self.acciones()
 		self.ocultarIconos()
 		self.online = Online()
@@ -404,13 +405,13 @@ class SIGRDAP:
 
 	def monitor(self):
 		if not hasattr(self,'dragon'):
-			self.dragon = Dragon(QApplication.instance().desktop().screenGeometry(), contexto=True)
+			self.dragon = Dragon(self.geometria, contexto=True)
 		else:
 			if self.dragon.running:
 				self.dragon.showNormal()
 				self.dragon.activateWindow()
 			else:
-				self.dragon = Dragon(True)
+				self.dragon = Dragon(self.geometria, contexto=True)
 
 	def togglePantallaCompleta(self):
 		if not hasattr(self,'pantallaCompleta'):
