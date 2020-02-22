@@ -101,7 +101,7 @@ class BuscarCapa(QDialog,FORM_CLASS):
 		regla = self.setRegla(regla, "Bomba", "tipoSensor = 1 and bomba > 0", "#FFFFFF", "#000000", 1, QgsSimpleMarkerSymbolLayerBase.Hexagon, 9)
 		subregla = self.setRegla(root_rule.children()[0].clone(), "Encendida", "estadoB = 3", "#E5F7FF", "#2980B9", 1, QgsSimpleMarkerSymbolLayerBase.Hexagon, 9)
 		regla.appendChild(subregla)
-		subregla = self.setRegla(root_rule.children()[0].clone(), "Apagada", "estadoB < 3", "#FAEBEA", "#E74C3C", 1, QgsSimpleMarkerSymbolLayerBase.Hexagon, 9)
+		subregla = self.setRegla(root_rule.children()[0].clone(), "Apagada", "estadoB < 3", "#ECF0F1", "#7F8C8D", 1, QgsSimpleMarkerSymbolLayerBase.Hexagon, 9)
 		regla.appendChild(subregla)
 		root_rule.appendChild(regla)
 		#Reglas para los tipos de sensor

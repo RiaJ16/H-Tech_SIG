@@ -1,30 +1,142 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>alarmas</class>
- <widget class="QWidget" name="alarmas">
+ <class>Alertas</class>
+ <widget class="QWidget" name="Alertas">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>325</height>
+    <width>393</width>
+    <height>529</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>Alertas</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">QLabel{
-	color: gray;
-	font-family: &quot;Verdana&quot;;
+   <string notr="true">QPushButton{
+font-size: 10pt;
+font-family: &quot;Verdana&quot;;
+font-weight: bold;
+}
+
+QPushButton:enabled{
+	color: #ecf0f1;
+	background-color: #3498db;
+	padding: 5px;
+	border: none;
+}
+
+QPushButton:disabled{
+	color: #ecf0f1;
+	background-color: #bdc3c7;
+	padding: 5px;
+	border: none;
+}
+
+QPushButton:hover{
+	padding: 5px;
+	color: white;
+	background-color: #2980b9;
+}
+
+QListWidget{
+/*background-color: #5d5d5d;*/
+background-color: #3498db;
+color: #FFFFFF;
+selection-color: #54626e;
+selection-background-color: #FFFFFF;
+outline: none;
+}
+
+QListWidget::item:selected:active{
+    background-color: #5bade4;
+	color: white;
+	border: none;
+	outline: none;
+}
+
+QListWidget::item:selected:!active{
+    background-color: #5bade4;
+	color: black;
+	border: none;
+	outline: none;
+}
+
+QListWidget::item:!selected:hover{
+	background-color: #F5F5F5;
+	/*color: #5bade4;*/
+}
+
+QAbstractSpinBox{
+	font-family: Verdana;
 	font-size: 10pt;
+}
+
+QAbstractSpinBox:down-button:disabled{
+	image: none;
+	width: 0px;
+	height: 0px;
+	padding: 0px;
+}
+
+QAbstractSpinBox:down-button{
+	padding-right: 10px;
+}
+
+QAbstractSpinBox:down-button:hover{
+	image: url(:General/icons/downarrow.png);
+	width: 20px;
+	height: 20px;
+}
+
+QAbstractSpinBox:up-button{
+	image: none;
+	width: 0px;
+	height: 0px;
+	padding-right: 12px;
+}
+
+QAbstractSpinBox:up-button:hover{
+	image: url(:General/icons/uparrow.png);
+	width: 20px;
+	height: 20px;
+}
+
+QScrollBar:vertical {
+	border-radius: 100px;
+	background: #ecf0f1;
+	width: 5px;
+	margin: 0px 0 0px 0;
+}
+
+QScrollBar::handle:vertical{
+	background: #3498db;
+	min-height: 20px;
+}
+
+QScrollBar::add-line:vertical{
+	width: 0;
+}
+
+QScrollBar::sub-line:vertical{
+	width: 0;
+}
+
+QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical{
+	border: 2px solid grey;
+	width: 3px;
+	height: 3px;
+	background: white;
+}
+
+QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+	background: none;
 }
 
 QDoubleSpinBox {
 background-color: transparent;
 border-style: solid;
-font-size: 11pt;
-fon-family: &quot;Verdana&quot;;
 }
 
 QWidget[state=&quot;on&quot;]{
@@ -35,49 +147,138 @@ QWidget[state=&quot;off&quot;]{
 font-size: 10pt;color: #7f8f98;background-color: #cbe3f2;boder: 5px solid #64D6EE;border-radius: 7px;
 }</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
+  <layout class="QVBoxLayout" name="verticalLayout_2">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
    <item>
-    <layout class="QVBoxLayout" name="verticalLayout_2">
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <property name="leftMargin">
+      <number>11</number>
+     </property>
+     <property name="topMargin">
+      <number>11</number>
+     </property>
+     <property name="rightMargin">
+      <number>11</number>
+     </property>
+     <property name="bottomMargin">
+      <number>11</number>
+     </property>
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout">
+      <layout class="QHBoxLayout" name="horizontalLayout_4">
        <item>
-        <spacer name="horizontalSpacer">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item>
-        <widget class="QPushButton" name="botonAlarma">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
+        <widget class="QDoubleSpinBox" name="alerta">
+         <property name="enabled">
+          <bool>true</bool>
          </property>
          <property name="styleSheet">
-          <string notr="true">background-color: #F0F0F0;</string>
+          <string notr="true">QAbstractSpinBox{
+	border-bottom: 6px solid #3498db;
+	background-color: #d1e3ee;
+	subcontrol-origin: padding;
+	subcontrol-position: top right;
+	padding: 5px;
+}
+
+:up-button{
+	image: url(:General/icons/uparrow-a.png);
+	width: 20px;
+	height: 20px;
+	padding-right: 10px;
+}
+
+:up-button:hover{
+	image: url(:General/icons/uparrow.png);
+	width: 20px;
+	height: 20px;
+	padding-right: 10px;
+}
+
+:down-button{
+	image: url(:General/icons/downarrow-a.png);
+	width: 20px;
+	height: 20px;
+	padding-right: 10px;
+}
+
+:down-button:hover{
+	image: url(:General/icons/downarrow.png);
+	width: 20px;
+	height: 20px;
+	padding-right: 10px;
+}</string>
          </property>
-         <property name="text">
-          <string/>
+         <property name="frame">
+          <bool>false</bool>
          </property>
-         <property name="icon">
-          <iconset>
-           <normaloff>:/VentanaConfiguracion/icons/icon_on.png</normaloff>:/VentanaConfiguracion/icons/icon_on.png</iconset>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
          </property>
-         <property name="iconSize">
+         <property name="buttonSymbols">
+          <enum>QAbstractSpinBox::PlusMinus</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="labelUnidades3">
+         <property name="minimumSize">
           <size>
-           <width>93</width>
-           <height>43</height>
+           <width>40</width>
+           <height>0</height>
           </size>
          </property>
-         <property name="flat">
+         <property name="maximumSize">
+          <size>
+           <width>36</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QLabel{
+	color: gray;
+	font-family: &quot;Verdana&quot;;
+	font-size: 10pt;
+	margin-top: 6px;
+}</string>
+         </property>
+         <property name="text">
+          <string>mca</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="botonAgregar">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="font">
+          <font>
+           <family>Verdana</family>
+           <pointsize>10</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>AGREGAR</string>
+         </property>
+         <property name="autoDefault">
+          <bool>true</bool>
+         </property>
+         <property name="default">
           <bool>true</bool>
          </property>
         </widget>
@@ -85,36 +286,248 @@ font-size: 10pt;color: #7f8f98;background-color: #cbe3f2;boder: 5px solid #64D6E
       </layout>
      </item>
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <layout class="QHBoxLayout" name="horizontalLayout_5">
        <item>
-        <widget class="QLabel" name="label_2">
+        <widget class="QListWidget" name="listaAlertas">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>270</width>
+           <height>126</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>126</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Verdana</family>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QListWidget{
+color: #2c3e50;
+selection-color: #ecf0f1;
+background-color: #ecf0f1;
+selection-background-color: #5bade4;
+alternate-background-color: #ddf1ff;
+background: white;
+border: none;
+}
+
+QListWidget:item{
+	padding-top: 0.3em;
+	padding-bottom: 0.3em;
+}
+
+QListWidget::item:selected:active:hover{
+	color: white;
+}
+
+QListWidget::item:selected:active{
+    background-color: #5bade4;
+	color: white;
+	border: none;
+}
+
+QListWidget::item:selected:!active{
+    background-color:#5bade4;
+	color: white;
+}
+
+QListWidget::item:!selected:hover{
+	background-color: #F5F5F5;
+	/*color: #5bade4;*/
+}</string>
+         </property>
+         <property name="alternatingRowColors">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QVBoxLayout" name="verticalLayout_5">
+       <item>
+        <widget class="QPushButton" name="botonEliminar">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="font">
+          <font>
+           <family>Verdana</family>
+           <pointsize>10</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
          <property name="text">
-          <string>Mínimo</string>
+          <string>ELIMINAR</string>
          </property>
         </widget>
        </item>
        <item>
-        <spacer name="horizontalSpacer_2">
+        <spacer name="verticalSpacer">
          <property name="orientation">
-          <enum>Qt::Horizontal</enum>
+          <enum>Qt::Vertical</enum>
          </property>
          <property name="sizeHint" stdset="0">
           <size>
-           <width>40</width>
-           <height>20</height>
+           <width>20</width>
+           <height>40</height>
           </size>
          </property>
         </spacer>
        </item>
+      </layout>
+     </item>
+     <item>
+      <widget class="Line" name="line">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>4</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">color: #3498db;</string>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Plain</enum>
+       </property>
+       <property name="lineWidth">
+        <number>2</number>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="verticalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <layout class="QVBoxLayout" name="verticalLayout_4">
        <item>
-        <widget class="QDoubleSpinBox" name="minimo">
-         <property name="styleSheet">
-          <string notr="true">QAbstractSpinBox{
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <item>
+          <spacer name="horizontalSpacer_5">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="botonAlarma">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">background-color: #F0F0F0;</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="resources.qrc">
+             <normaloff>:/VentanaConfiguracion/icons/icon_on.png</normaloff>:/VentanaConfiguracion/icons/icon_on.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>56</width>
+             <height>26</height>
+            </size>
+           </property>
+           <property name="flat">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_3">
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_2">
+           <item>
+            <widget class="QLabel" name="label_2">
+             <property name="styleSheet">
+              <string notr="true">QLabel{
+	color: gray;
+	font-family: &quot;Verdana&quot;;
+	font-size: 10pt;
+}</string>
+             </property>
+             <property name="text">
+              <string>Mínimo</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_3">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QDoubleSpinBox" name="minimo">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">QAbstractSpinBox:enabled{
 	border-bottom: 6px solid #f1c40f;
 	background-color: #ede9cf;
+	subcontrol-origin: padding;
+	subcontrol-position: top right;
+	padding:5px;
 }
 
-:up-button{
+QAbstractSpinBox:disabled{
+	border-bottom: 6px solid #95a5a6;
+	background-color: #bdc3c7;
+	subcontrol-origin: padding;
+	subcontrol-position: top right;
+	padding:5px;
+}
+
+:up-button:enabled{
 	image: url(:General/icons/uparrow-y.png);
 	width: 20px;
 	height: 20px;
@@ -128,7 +541,7 @@ font-size: 10pt;color: #7f8f98;background-color: #cbe3f2;boder: 5px solid #64D6E
 	padding-right: 10px;
 }
 
-:down-button{
+:down-button:enabled{
 	image: url(:General/icons/downarrow-y.png);
 	width: 20px;
 	height: 20px;
@@ -141,74 +554,93 @@ font-size: 10pt;color: #7f8f98;background-color: #cbe3f2;boder: 5px solid #64D6E
 	height: 20px;
 	padding-right: 10px;
 }</string>
-         </property>
-         <property name="frame">
-          <bool>false</bool>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-         <property name="buttonSymbols">
-          <enum>QAbstractSpinBox::PlusMinus</enum>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="labelUnidades1">
-         <property name="text">
-          <string>mca</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <spacer name="spacer">
-       <property name="orientation">
-        <enum>Qt::Vertical</enum>
-       </property>
-       <property name="sizeType">
-        <enum>QSizePolicy::Fixed</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>20</width>
-         <height>40</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_3">
-       <item>
-        <widget class="QLabel" name="label_3">
-         <property name="text">
-          <string>Máximo</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <spacer name="horizontalSpacer_3">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item>
-        <widget class="QDoubleSpinBox" name="maximo">
-         <property name="styleSheet">
-          <string notr="true">QAbstractSpinBox{
-border-bottom: 6px solid #e74c3c;
-background-color: #ebd8d6;
+             </property>
+             <property name="frame">
+              <bool>false</bool>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+             <property name="buttonSymbols">
+              <enum>QAbstractSpinBox::PlusMinus</enum>
+             </property>
+             <property name="maximum">
+              <double>9999.989999999999782</double>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="labelUnidades1">
+             <property name="styleSheet">
+              <string notr="true">QLabel{
+	color: gray;
+	font-family: &quot;Verdana&quot;;
+	font-size: 10pt;
+	margin-top: 6px;
+}</string>
+             </property>
+             <property name="text">
+              <string>mca</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_3">
+           <item>
+            <widget class="QLabel" name="label_3">
+             <property name="styleSheet">
+              <string notr="true">QLabel{
+	color: gray;
+	font-family: &quot;Verdana&quot;;
+	font-size: 10pt;
+}</string>
+             </property>
+             <property name="text">
+              <string>Máximo</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_4">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QDoubleSpinBox" name="maximo">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">QAbstractSpinBox{
+	border-bottom: 6px solid #e74c3c;
+	background-color: #ebd8d6;
+	subcontrol-origin: padding;
+	subcontrol-position: top right;
+	padding: 5px;
 }
 
-:up-button{
+QAbstractSpinBox:disabled{
+	border-bottom: 6px solid #95a5a6;
+	background-color: #bdc3c7;
+	subcontrol-origin: padding;
+	subcontrol-position: top right;
+	padding:5px;
+}
+
+:up-button:enabled{
 	image: url(:General/icons/uparrow-r.png);
 	width: 20px;
 	height: 20px;
@@ -222,7 +654,7 @@ background-color: #ebd8d6;
 	padding-right: 10px;
 }
 
-:down-button{
+:down-button:enabled{
 	image: url(:General/icons/downarrow-r.png);
 	width: 20px;
 	height: 20px;
@@ -235,22 +667,55 @@ background-color: #ebd8d6;
 	height: 20px;
 	padding-right: 10px;
 }</string>
-         </property>
-         <property name="frame">
-          <bool>false</bool>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-         <property name="buttonSymbols">
-          <enum>QAbstractSpinBox::PlusMinus</enum>
-         </property>
-        </widget>
+             </property>
+             <property name="frame">
+              <bool>false</bool>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+             <property name="buttonSymbols">
+              <enum>QAbstractSpinBox::PlusMinus</enum>
+             </property>
+             <property name="maximum">
+              <double>9999.989999999999782</double>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="labelUnidades2">
+             <property name="styleSheet">
+              <string notr="true">QLabel{
+	color: gray;
+	font-family: &quot;Verdana&quot;;
+	font-size: 10pt;
+	margin-top: 6px;
+}</string>
+             </property>
+             <property name="text">
+              <string>mca</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
        </item>
        <item>
-        <widget class="QLabel" name="labelUnidades2">
+        <widget class="QPushButton" name="botonEnviar">
+         <property name="font">
+          <font>
+           <family>Verdana</family>
+           <pointsize>10</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
          <property name="text">
-          <string>mca</string>
+          <string>ENVIAR</string>
          </property>
         </widget>
        </item>
@@ -258,28 +723,10 @@ background-color: #ebd8d6;
      </item>
     </layout>
    </item>
-   <item>
-    <spacer name="spacer_2">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item>
-    <widget class="QPushButton" name="botonEnviar">
-     <property name="text">
-      <string>ENVIAR</string>
-     </property>
-    </widget>
-   </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="resources.qrc"/>
+ </resources>
  <connections/>
 </ui>

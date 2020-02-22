@@ -13,6 +13,7 @@ from PyQt5.QtCore import QObject, pyqtSignal
 
 from uuid import getnode as get_mac
 
+from .alerta import Alerta
 from .coordinador import Coordinador
 from .correo import Correo
 from .dragon.bomba import Bomba
@@ -48,6 +49,7 @@ class Online(QObject):
 	signalBombaConsultada = pyqtSignal()
 	signalPassword = pyqtSignal(str)
 	signalUsuarioConsultado = pyqtSignal(str, int)
+	signalAlertasConsultadas = pyqtSignal()
 
 	CONSULTAR_ULTIMO_ID = 0
 	COMPROBAR_ID_FEATURE = 1
@@ -74,6 +76,7 @@ class Online(QObject):
 	CONSULTAR_PASSWORD_IOT = 26
 	CONSULTAR_COORDINADOR = 27
 	ACTUALIZAR_COORDENADAS = 28
+	CONSULTAR_ALERTAS = 29
 	CONSULTAR_BOMBAS = 100
 	CONSULTAR_HORARIOS = 104
 	CONSULTAR_BOMBA = 105
@@ -85,6 +88,8 @@ class Online(QObject):
 	INSERTAR_CORREO = 4
 	EDITAR_CORREO = 5
 	CONFIGURAR_ALARMA = 6
+	INSERTAR_ALERTA = 7
+	ELIMINAR_ALERTA = 8
 
 	IP = "https://webservice.htech.mx"
 	IMAGES_DIR = "http://images.htech.mx/grupos/"
@@ -443,6 +448,17 @@ class Online(QObject):
 		except:
 			return False
 
+	def consultarAlertas(self, idSensor):
+		args = {'opcion': self.CONSULTAR_ALERTAS, 'id_sensor': idSensor}
+		jsondoc = self.consultar(args)
+		alertas = []
+		for registro in jsondoc:
+			alerta = Alerta()
+			alerta.set(registro)
+			alertas.append(alerta)
+		self.alertas = alertas
+		self.signalAlertasConsultadas.emit()
+
 	def consultarBombas(self):
 		args = {'opcion': self.CONSULTAR_BOMBAS}
 		return self.consultar(args)
@@ -474,6 +490,14 @@ class Online(QObject):
 	def configurarAlarma(self,sensor):
 		args = {'opcion':self.CONFIGURAR_ALARMA}
 		return self.insertar(args,sensor)
+
+	def insertarAlerta(self, alerta):
+		args = {'opcion':self.INSERTAR_ALERTA}
+		return self.insertar(args, alerta)
+
+	def eliminarAlerta(self, alerta):
+		args = {'opcion':self.ELIMINAR_ALERTA}
+		return self.insertar(args, alerta)
 
 	def actualizarAlarmas(self):
 		url = '%s/alarmas.php' % self.IP

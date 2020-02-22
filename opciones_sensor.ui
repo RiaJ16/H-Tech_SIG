@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>514</width>
-    <height>510</height>
+    <height>560</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -341,7 +341,7 @@ QComboBox:hover, QDateEdit:hover, QAbstractSpinBox:hover{
        </property>
        <item>
         <property name="text">
-         <string>Alarmas</string>
+         <string>Alertas</string>
         </property>
         <property name="toolTip">
          <string>Configurar alarmas</string>
@@ -402,7 +402,7 @@ QComboBox:hover, QDateEdit:hover, QAbstractSpinBox:hover{
           <x>0</x>
           <y>0</y>
           <width>355</width>
-          <height>443</height>
+          <height>493</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout">

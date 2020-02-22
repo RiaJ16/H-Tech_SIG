@@ -159,7 +159,16 @@ QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical{
 QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
 	background: none;
 }
-</string>
+
+QCalendarWidget QAbstractSpinBox:down-button, QCalendarWidget QAbstractSpinBox:down-button:hover{
+	width: 12px;
+	height: 12px;
+}
+
+QCalendarWidget QAbstractSpinBox:up-button, QCalendarWidget QAbstractSpinBox:up-button:hover{
+	width: 12px;
+	height: 12px;
+}</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_3">
    <property name="leftMargin">

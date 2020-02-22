@@ -214,15 +214,21 @@ class VentanaDatos(QDialogNext, FORM_CLASS,QObject):
 	def agregarNodo(self,banderaEditar):
 		alarma = 0
 		GPRS = 0
-		if self.activarAlarma.isChecked():
-			if int(self.online.getSensor().alarma) == 0:
+		datoActual = 0
+		if banderaEditar:
+			if self.activarAlarma.isChecked():
+				if int(self.online.getSensor().alarma) == 0:
+					alarma = 1
+				else:
+					alarma = self.online.getSensor().alarma
+			datoActual = self.online.getSensor().datoActual
+		else:
+			if self.activarAlarma.isChecked():
 				alarma = 1
-			else:
-				alarma = self.online.getSensor().alarma
 		if self.botonOnline.isChecked():
 			GPRS = 1
 		grupo = self.listaGrupos[self.selectorGrupo.currentIndex()]
-		sensor = Sensor(self.id,self.editIdDispositivo.text(),self.idFeature,self.editCalle.text(),self.editColonia.text(),self.editCP.text(),self.selectorTipoSensor.currentIndex()+1,self.selectorMunicipio.currentIndex()+1,self.editArea.text(),self.editNivelMaximo.text(),self.editNivelMinimo.text(),alarma,self.editAltura.text(),datoActual=self.online.getSensor().datoActual,grupo=grupo.getIdGrupo(),online=GPRS,maximo=self.editGrafica.text(),x=self.coordenadaX,y=self.coordenadaY,idSubsistema=grupo.getIdSubsistema())
+		sensor = Sensor(self.id,self.editIdDispositivo.text(),self.idFeature,self.editCalle.text(),self.editColonia.text(),self.editCP.text(),self.selectorTipoSensor.currentIndex()+1,self.selectorMunicipio.currentIndex()+1,self.editArea.text(),self.editNivelMaximo.text(),self.editNivelMinimo.text(),alarma,self.editAltura.text(),datoActual=datoActual,grupo=grupo.getIdGrupo(),online=GPRS,maximo=self.editGrafica.text(),x=self.coordenadaX,y=self.coordenadaY,idSubsistema=grupo.getIdSubsistema())
 		if not banderaEditar:
 			if self.online.insertarSensor(sensor):
 				aviso = "El nuevo sensor se almacenó correctamente"

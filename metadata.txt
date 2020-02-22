@@ -15,7 +15,7 @@ author=Jair Nájera @ H-Tech
 email=jair.najera@htech.mx
 
 about=Esta herramienta permite la realización de operaciones de una Red de Distribución de Agua Potable. Para ello, se comunica con el servidor H-Tech Cloud. Necesitas tener una cuenta de H-Tech Cloud para poder hacer uso de todas las funciones de esta app.
-Changelog: -Corregidos bugs de compatibilidad con macOS.
+Changelog: Nuevo sistema de alertas. Ahora se pueden dar de alta varias alertas máximas personalizables.<br>-Actualizados los colores de las bombas.<br>-Corregido bug que impedía dar de alta nuevos sensores de manera correcta.<br>-Corregidos bugs.
 tracker=https://github.com/RiaJ16/H-Tech_SIG/issues
 repository=https://github.com/RiaJ16/H-Tech_SIG
 # End of mandatory metadata

@@ -3,6 +3,7 @@
 import datetime
 import os
 import qgis.utils
+import threading
 import time
 
 from qgis.core import Qgis
@@ -10,10 +11,12 @@ from qgis.core import Qgis
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon, QPixmap
-from PyQt5.QtWidgets import QButtonGroup, QVBoxLayout, QWidget
+from PyQt5.QtWidgets import QButtonGroup, QListWidgetItem, QVBoxLayout, QWidget
 
 from functools import partial
 
+from .alerta import Alerta
+from .busy_icon import BusyIcon
 from .online import Online
 from .publisher import Publisher
 from .q_dialog_next import QDialogNext
@@ -42,6 +45,7 @@ class OpcionesSensor(QDialogNext, FORM_CLASS):
 		self.online = online
 		self.publicador = Publisher()
 		self.alarma = 0
+		self.unidades = ''
 		self._visualizacionInicial()
 
 	def _visualizacionInicial(self):
@@ -66,6 +70,9 @@ class OpcionesSensor(QDialogNext, FORM_CLASS):
 		self.fecha.listaFecha.setCurrentItem(self.fecha.listaFecha.item(0))
 		self.fecha.selectorFecha.setDate(datetime.date.today())
 		self.fecha.selectorHora.setTime(datetime.datetime.now().time())
+		self.busy = BusyIcon(self.alarmas.layout())
+		self.busy.startAnimation()
+		self.busy.hide()
 		self.show()
 
 	def _signals(self):
@@ -73,8 +80,12 @@ class OpcionesSensor(QDialogNext, FORM_CLASS):
 		self.fecha.listaFecha.itemSelectionChanged.connect(self.opcionFechaCambiada)
 		self.alarmas.botonAlarma.clicked.connect(self.interruptorAlarma)
 		self.alarmas.botonEnviar.clicked.connect(self.enviarAlarmas)
+		self.alarmas.botonAgregar.clicked.connect(self.agregarAlerta)
+		self.alarmas.botonEliminar.clicked.connect(self.eliminarAlerta)
+		self.alarmas.listaAlertas.itemSelectionChanged.connect(self.seleccionCambiada)
 		self.intervalo.botonEnviar.clicked.connect(self.enviarIntervalo)
 		self.fecha.botonEnviar.clicked.connect(self.enviarFechaYHora)
+		self.online.signalAlertasConsultadas.connect(self.alertasConsultadas)
 
 	def _inicializarIntervalo(self):
 		layout = self.intervalo.layout().itemAt(0)
@@ -90,7 +101,7 @@ class OpcionesSensor(QDialogNext, FORM_CLASS):
 
 	def opcionCambiada(self):
 		for item in self.listaOpciones.selectedItems():
-			if item.text() == "Alarmas":
+			if item.text() == "Alertas":
 				self.alarmas.setVisible(True)
 				self.intervalo.setVisible(False)
 				self.fecha.setVisible(False)
@@ -141,6 +152,10 @@ class OpcionesSensor(QDialogNext, FORM_CLASS):
 
 	def setSensor(self,sensor,titulo):
 		self.sensor = sensor
+		self.alarmas.listaAlertas.clear()
+		t1 = threading.Thread(target=self.online.consultarAlertas, args=(sensor.idSensor,))
+		self.busy.show()
+		t1.start()
 		self.alarmas.minimo.setValue(sensor.datoMinimo)
 		self.alarmas.maximo.setValue(sensor.datoMaximo)
 		unidades = ''
@@ -152,6 +167,8 @@ class OpcionesSensor(QDialogNext, FORM_CLASS):
 			unidades = 'm'
 		self.alarmas.labelUnidades1.setText(unidades)
 		self.alarmas.labelUnidades2.setText(unidades)
+		self.alarmas.labelUnidades3.setText(unidades)
+		self.unidades = unidades
 		if int(sensor.intervalo) == 3:
 			self.intervalo.min3.setChecked(True)
 		elif int(sensor.intervalo) == 5:
@@ -273,6 +290,42 @@ class OpcionesSensor(QDialogNext, FORM_CLASS):
 			self.publicador.publicar(topic,mensajeHora,password)
 			qgis.utils.iface.messageBar().pushMessage("Aviso", strings.fecha[3], level=Qgis.Info,duration=4)
 
+	def agregarAlerta(self):
+		alerta = Alerta(self.sensor.idSensor, self.alarmas.alerta.value())
+		if alerta.getValor() >= self.sensor.datoMaximo or alerta.getValor() <= self.sensor.datoMinimo:
+			qgis.utils.iface.messageBar().pushMessage("Aviso", strings.alertas[2], level=Qgis.Critical,duration=7)
+		else:
+			self.online.insertarAlerta(alerta)
+			t1 = threading.Thread(target=self.online.consultarAlertas, args=(self.sensor.idSensor,))
+			self.busy.show()
+			t1.start()
+			qgis.utils.iface.messageBar().pushMessage("Aviso", strings.alertas[1], level=Qgis.Info,duration=7)
+
+	def alertasConsultadas(self):
+		self.alarmas.listaAlertas.clear()
+		for alerta in self.online.alertas:
+			itemAlerta = QListWidgetItem("%s %s" % (alerta.getValor(), self.unidades))
+			itemAlerta.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
+			icon = QIcon(':VentanaConfiguracion/icons/alarma_active.png')
+			icon.addPixmap(QPixmap(':VentanaConfiguracion/icons/alarma.png'), QIcon.Selected)
+			itemAlerta.setIcon(icon)
+			self.alarmas.listaAlertas.addItem(itemAlerta)
+		self.busy.hide()
+
+	def seleccionCambiada(self):
+		self.alarmas.botonEliminar.setEnabled(True)
+		try:
+			self.alarmas.listaAlertas.selectedItems()[0]
+		except:
+			self.alarmas.botonEliminar.setEnabled(False)
+
+	def eliminarAlerta(self):
+		item = self.alarmas.listaAlertas.currentItem()
+		alerta = Alerta(self.sensor.idSensor, item.text().split(' ')[0])
+		self.online.eliminarAlerta(alerta)
+		self.alarmas.listaAlertas.takeItem(self.alarmas.listaAlertas.currentRow())
+		qgis.utils.iface.messageBar().pushMessage("Aviso", strings.alertas[3], level=Qgis.Info,duration=7)
+
 	def comprobarPassword(self,password):
 		if password == []:
 			return False
@@ -284,4 +337,3 @@ class OpcionesSensor(QDialogNext, FORM_CLASS):
 				qgis.utils.iface.messageBar().pushMessage("Error", strings.general[2], level=Qgis.Critical,duration=7)
 				return False
 		return True
-
